@@ -20,12 +20,6 @@ public class ProductLibrary implements Serializable {
     @Column(name = ProductLibraryConstant.PRODUCT_LIBRARY_ID)
     private int productLibraryId;
 
-//    @Column(name = ProductLibraryConstant.PRODUCT_LIBRARY_USER_ID)
-//    private int productLibraryUserId;
-//
-//    @Column(name = ProductLibraryConstant.PRODUCT_LIBRARY_PRODUCT_ID)
-//    private String productLibraryProductId;
-
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = ProductLibraryConstant.PRODUCT_LIBRARY_USER_ID)

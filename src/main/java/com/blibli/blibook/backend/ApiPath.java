@@ -14,4 +14,8 @@ public class ApiPath {
     public static final String PRODUCT_BY_PRODUCT_ID = PRODUCT + "/{productId}";
     public static final String PRODUCT_BY_PRODUCT_CATEGORY = PRODUCT + "/category/{productCategoryId}";
 
+    public static final String PRODUCT_LIBRARY = API + "/library";
+    public static final String PRODUCT_LIBRARY_BY_PRODUCT_LIBRARY_ID = PRODUCT_LIBRARY + "{/productLibraryId}";
+    public static final String PRODUCT_LIBRARY_BY_USER_ID = PRODUCT_LIBRARY + "/user/{userId}";
+
 }

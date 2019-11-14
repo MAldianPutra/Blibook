@@ -12,5 +12,6 @@ public interface ProductLibraryRepository extends JpaRepository<ProductLibrary, 
     ProductLibrary findFirstByProductLibraryId(Integer productLibraryId);
 
     List<ProductLibrary> findByUser_UserId(Integer userId);
+    
 
 }

@@ -28,6 +28,6 @@ public class OrderStatus implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "orderStatus", fetch = FetchType.LAZY)
-    private Set<User> orders;
+    private Set<Order> orders;
 
 }

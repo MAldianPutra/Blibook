@@ -43,4 +43,8 @@ public class Shop implements Serializable {
     @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
     private Set<Cart> carts;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
+    private Set<Order> orders;
+
 }

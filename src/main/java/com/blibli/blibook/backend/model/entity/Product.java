@@ -14,7 +14,7 @@ import java.util.Set;
 @Data
 @EntityListeners(value = {AuditingEntityListener.class})
 @Table(name = ProductConstant.TABLE_NAME, uniqueConstraints = {
-        @UniqueConstraint(columnNames = ProductConstant.PRODUCT_ID),
+        @UniqueConstraint(columnNames = ProductConstant.PRODUCT_ID)
 })
 public class Product implements Serializable {
 

@@ -13,7 +13,6 @@ import java.io.Serializable;
 @EntityListeners(value = {AuditingEntityListener.class})
 @Table(name = OrderConstant.TABLE_NAME, uniqueConstraints = {
         @UniqueConstraint(columnNames = OrderConstant.ORDER_ID),
-        @UniqueConstraint(columnNames = OrderConstant.ORDER_CART_ID),
 })
 public class Order implements Serializable {
 
@@ -40,6 +39,11 @@ public class Order implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = OrderConstant.ORDER_PRODUCT_ID)
     private Product product;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = OrderConstant.ORDER_SHOP_ID)
+    private Shop shop;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

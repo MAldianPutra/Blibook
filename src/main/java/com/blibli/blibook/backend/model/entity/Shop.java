@@ -13,6 +13,8 @@ import java.util.Set;
 @Data
 @EntityListeners(value = {AuditingEntityListener.class})
 @Table(name = ShopConstant.TABLE_NAME, uniqueConstraints = {
+        @UniqueConstraint(columnNames = ShopConstant.SHOP_ID),
+        @UniqueConstraint(columnNames = ShopConstant.SHOP_USER_ID),
         @UniqueConstraint(columnNames = ShopConstant.SHOP_NAME)
 })
 public class Shop implements Serializable {
@@ -22,17 +24,11 @@ public class Shop implements Serializable {
     @Column(name = ShopConstant.SHOP_ID)
     private Integer shopId;
 
-//    @Column(name = ShopConstant.SHOP_USER_ID)
-//    private int shopUserId;
-
     @Column(name = ShopConstant.SHOP_NAME)
     private String shopName;
 
     @Column(name = ShopConstant.SHOP_PHOTO_LINK)
     private String shopPhotoLink;
-
-    @Column(name = ShopConstant.SHOP_IS_BLOCKED)
-    private boolean shopIsBlocked;
 
     @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
@@ -43,8 +39,12 @@ public class Shop implements Serializable {
     @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
     private Set<Product> products;
 
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
-//    private Set<Cart> carts;
+    @JsonIgnore
+    @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
+    private Set<Cart> carts;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
+    private Set<Order> orders;
 
 }

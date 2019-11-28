@@ -13,6 +13,7 @@ import java.util.Set;
 @Data
 @EntityListeners(value = {AuditingEntityListener.class})
 @Table(name = UserConstant.TABLE_NAME, uniqueConstraints = {
+        @UniqueConstraint(columnNames = UserConstant.USER_ID),
         @UniqueConstraint(columnNames = UserConstant.USER_NAME),
         @UniqueConstraint(columnNames = UserConstant.USER_EMAIL)
 })
@@ -35,12 +36,6 @@ public class User implements Serializable {
     @Column(name = UserConstant.USER_PASSWORD_CONFIRMATION)
     private String userPasswordConfirmation;
 
-    @Column(name = UserConstant.USER_IS_ADMIN)
-    private boolean userIsAdmin;
-
-    @Column(name = UserConstant.USER_IS_BLOCKED)
-    private boolean userIsBlocked;
-
     @Column(name = UserConstant.USER_PHOTO_LINK)
     private String userPhotoLink;
 
@@ -50,9 +45,20 @@ public class User implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private Set<ProductLibrary> productLibraries;
+    private Set<Order> orders;
 
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-//    private Set<Cart> carts;
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private Set<Cart> carts;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = UserConstant.USER_STATUS_ID)
+    private UserStatus userStatus;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = UserConstant.USER_ROLE_ID)
+    private UserRole userRole;
+
 }

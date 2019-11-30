@@ -5,8 +5,6 @@ import com.blibli.blibook.backend.model.entity.Product;
 import com.blibli.blibook.backend.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -16,18 +14,16 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    @GetMapping(ApiPath.PRODUCT_BY_PRODUCT_ID)
-    public Product findByProductId(Integer productId){
+    public Product findFirstByProductId(Integer productId){
         return productRepository.findFirstByProductId(productId);
     }
 
-    @GetMapping(ApiPath.PRODUCT_BY_PRODUCT_CATEGORY)
     public List<Product> findByProductCategory(Integer productCategoryId){
         return productRepository.findByProductCategory_ProductCategoryId(productCategoryId);
     }
 
-    @PostMapping(ApiPath.PRODUCT)
     public Product save(Product product){
         return productRepository.save(product);
     }
+
 }

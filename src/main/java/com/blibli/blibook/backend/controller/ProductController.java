@@ -20,7 +20,7 @@ public class ProductController {
 
     @GetMapping(ApiPath.PRODUCT_BY_PRODUCT_ID)
     public Product findByProductId(@PathVariable Integer productId){
-        return productService.findByProductId(productId);
+        return productService.findFirstByProductId(productId);
     }
 
     @GetMapping(ApiPath.PRODUCT_BY_PRODUCT_CATEGORY)

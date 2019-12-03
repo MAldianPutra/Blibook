@@ -26,11 +26,6 @@ public class Order implements Serializable {
     private Payment payment;
 
     @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = OrderConstant.ORDER_CART_ID)
-    private Cart cart;
-
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = OrderConstant.ORDER_USER_ID)
     private User user;

@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Entity
 @Data
 @EntityListeners(value = {AuditingEntityListener.class})
-@Table(name = CartConstant.CART_ID, uniqueConstraints = {
+@Table(name = CartConstant.TABLE_NAME, uniqueConstraints = {
         @UniqueConstraint(columnNames = CartConstant.CART_ID)
 })
 public class Cart implements Serializable {
@@ -20,10 +20,6 @@ public class Cart implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = CartConstant.CART_ID)
     private Integer cartId;
-
-    @JsonIgnore
-    @OneToOne(mappedBy = "cart", fetch = FetchType.LAZY)
-    private Order order;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

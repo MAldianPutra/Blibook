@@ -18,16 +18,22 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @GetMapping(ApiPath.PRODUCT_BY_PRODUCT_ID)
-    public Product findByProductId(@PathVariable Integer productId){
-        return productService.findFirstByProductId(productId);
+    @GetMapping(ApiPath.PRODUCT)
+    public Product findByProductId(@RequestParam Integer id){
+        return productService.findFirstByProductId(id);
     }
 
-    @GetMapping(ApiPath.PRODUCT_BY_PRODUCT_CATEGORY)
-    public List<Product> findByProductCategory(@PathVariable Integer productCategoryId){
-        return productService.findByProductCategory(productCategoryId);
+    @GetMapping(ApiPath.PRODUCT_BY_PRODUCT_CATEGORY_ID)
+    public List<Product> findByProductCategory(@RequestParam Integer categoryId){
+        return productService.findByProductCategory(categoryId);
     }
 
+    @GetMapping(ApiPath.PRODUCT_BY_SHOP_ID)
+    public List<Product> findByShop(@RequestParam Integer shopId){
+        return productService.findByShop(shopId);
+    }
+
+    // Not Yet Completed
     @PostMapping(ApiPath.PRODUCT)
     public Product save(@RequestBody Product product){
         return productService.save(product);

@@ -12,4 +12,5 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
 
     @Transactional
     long deleteByShopId(Integer shopId);
+
 }

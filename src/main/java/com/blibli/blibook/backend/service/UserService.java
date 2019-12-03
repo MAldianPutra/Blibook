@@ -36,8 +36,6 @@ public class UserService {
     }
 
     public User save (User user){
-//        ENCODING
-//        user.setUserPassword(bCryptPasswordEncoder.encode);
         return userRepository.save(user);
     }
 

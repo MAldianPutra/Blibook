@@ -26,7 +26,7 @@ public class PaymentController {
     private OrderService orderService;
 
     @PostMapping(ApiPath.PAYMENT)
-    public Payment paymentProduct(@PathVariable Integer orderId){
+    public Payment paymentProduct(@RequestParam Integer orderId){
         // orderStatusId 2 = WAITING_CONFIRMATION
         Integer orderStatusId = 2;
         Optional<OrderStatus> orderStatus = orderService.findOrderStatusId(orderStatusId);

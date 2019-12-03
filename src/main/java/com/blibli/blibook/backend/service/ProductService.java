@@ -22,6 +22,10 @@ public class ProductService {
         return productRepository.findByProductCategory_ProductCategoryId(productCategoryId);
     }
 
+    public List<Product> findByShop(Integer shopId){
+        return productRepository.findByShop_ShopId(shopId);
+    }
+
     public Product save(Product product){
         return productRepository.save(product);
     }

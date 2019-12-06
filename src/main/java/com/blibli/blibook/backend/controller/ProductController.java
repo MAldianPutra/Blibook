@@ -33,6 +33,11 @@ public class ProductController {
         return productService.findByShop(shopId);
     }
 
+    @GetMapping(ApiPath.PRODUCT_SEARCH)
+    public List<Product> findByProductNameLike(@RequestParam ("key") String searchKey){
+        return productService.findByProductNameLike(searchKey);
+    }
+
     // Not Yet Completed
     @PostMapping(ApiPath.PRODUCT)
     public Product save(@RequestBody Product product){

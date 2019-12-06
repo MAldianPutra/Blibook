@@ -2,6 +2,8 @@ package com.blibli.blibook.backend.controller;
 
 import com.blibli.blibook.backend.ApiPath;
 import com.blibli.blibook.backend.model.entity.*;
+import com.blibli.blibook.backend.payload.DetailOrderPayload;
+import com.blibli.blibook.backend.payload.LibraryPayload;
 import com.blibli.blibook.backend.service.OrderService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,25 +22,41 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping(ApiPath.ORDER_NOT_PAID_BY_USER_ID)
-    public List<Order> userOrderNotPaid(@RequestParam Integer userId){
+    public List<DetailOrderPayload> userOrderNotPaid(@RequestParam ("id") Integer userId){
         // orderStatusId 3 = NOT_PAID
         Integer orderStatusId = 1;
         return orderService.findByUserIdAndOrderStatusId(userId, orderStatusId);
     }
 
+    @GetMapping(ApiPath.ORDER_NOT_PAID_BY_SHOP_ID)
+    public List<DetailOrderPayload> shopOrderNotPaid(@RequestParam ("id") Integer shopId){
+        // orderStatusId 3 = NOT_PAID
+        Integer orderStatusId = 1;
+        return orderService.findByShopIdAndOrderStatusId(shopId, orderStatusId);
+    }
+
     @GetMapping(ApiPath.ORDER_WAITING_CONFIRM_BY_USER_ID)
-    public List<Order> userOrderWaitingConfirm(@RequestParam Integer userId){
+    public List<DetailOrderPayload> userOrderWaitingConfirm(@RequestParam ("id") Integer userId){
         // orderStatusId 2 = WAITING_CONFIRMATION
         Integer orderStatusId = 2;
         return orderService.findByUserIdAndOrderStatusId(userId, orderStatusId);
     }
 
+    @GetMapping(ApiPath.ORDER_WAITING_CONFIRM_BY_SHOP_ID)
+    public List<DetailOrderPayload> shopOrderWaitingConfirm(@RequestParam ("id") Integer shopId){
+        // orderStatusId 2 = WAITING_CONFIRMATION
+        Integer orderStatusId = 2;
+        return orderService.findByShopIdAndOrderStatusId(shopId, orderStatusId);
+    }
+
     @GetMapping(ApiPath.LIBRARY_BY_USER_ID)
-    public List<Order> userLibrary(@RequestParam Integer userId){
+    public List<LibraryPayload> userLibrary(@RequestParam ("id") Integer userId){
         // orderStatusId 3 = COMPLETED
         Integer orderStatusId = 3;
-        return orderService.findByUserIdAndOrderStatusId(userId, orderStatusId);
+        return orderService.findUserLibrary(userId, orderStatusId);
     }
+
+
 
     @PostMapping(ApiPath.ORDER_INITIATE)
     public Order initiateOrder(@RequestParam Integer userId,

@@ -31,7 +31,7 @@ public class UserService {
         return userRoleRepository.findById(userRoleId);
     }
 
-    public User findByUserId(Integer userId){
+    public User findFirstByUserId(Integer userId){
         return userRepository.findFirstByUserId(userId);
     }
 

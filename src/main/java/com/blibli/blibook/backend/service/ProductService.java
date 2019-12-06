@@ -26,6 +26,10 @@ public class ProductService {
         return productRepository.findByShop_ShopId(shopId);
     }
 
+    public List<Product> findByProductNameLike(String searchKey){
+        return productRepository.findByProductNameContaining(searchKey);
+    }
+
     public Product save(Product product){
         return productRepository.save(product);
     }

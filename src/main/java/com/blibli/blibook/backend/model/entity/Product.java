@@ -45,7 +45,7 @@ public class Product implements Serializable {
     private String productDescription;
 
     @Column(name = ProductConstant.PRODUCT_LENGTH)
-    private String productLength;
+    private Integer productLength;
 
     @Column(name = ProductConstant.PRODUCT_RELEASE_YEAR)
     private Integer productReleaseYear;

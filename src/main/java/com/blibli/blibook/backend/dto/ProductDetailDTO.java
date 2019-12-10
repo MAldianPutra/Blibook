@@ -15,7 +15,7 @@ public class ProductDetailDTO {
     private String productCountry;
     private Integer productPrice;
     private String productDescription;
-    private String productLength;
+    private Integer productLength;
     private Integer productReleaseYear;
     private String productLanguage;
     private String productVariant;

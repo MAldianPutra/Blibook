@@ -2,13 +2,11 @@ package com.blibli.blibook.backend.service.impl;
 
 import com.blibli.blibook.backend.model.entity.Product;
 import com.blibli.blibook.backend.service.ProductService;
-import com.blibli.blibook.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 
@@ -21,8 +19,8 @@ public class FileUploadServiceImpl {
     private String projectDir = "D:/Project/blibook.backend/src/main/resources/";
     private String uploadDir = "uploads/";
 
-    public void uploadProductPhoto(@RequestParam Integer productId,
-                                   @RequestParam MultipartFile multipartFile) throws IOException {
+    public Product uploadProductPhoto(@RequestParam Integer productId,
+                                      @RequestParam MultipartFile multipartFile) throws IOException {
         String photoLink = projectDir + uploadDir + "productPhoto/" + productId + ".jpg";
         File file = new File(photoLink);
         if(!file.exists()){
@@ -33,12 +31,12 @@ public class FileUploadServiceImpl {
         multipartFile.transferTo(file);
         Product updateProduct = productService.findProductById(productId);
         updateProduct.setProductPhotoLink(photoLink);
-        productService.save(updateProduct);
+        return productService.save(updateProduct);
     }
 
-    public void uploadProductItem(@RequestParam Integer productId,
-                                  @RequestParam MultipartFile multipartFile) throws IOException {
-        String itemLink = projectDir + uploadDir + "productItem/" + productId + ".jpg";
+    public Product uploadProductItem(@RequestParam Integer productId,
+                                     @RequestParam MultipartFile multipartFile) throws IOException {
+        String itemLink = projectDir + uploadDir + "productItem/" + productId + ".pdf";
         File file = new File(itemLink);
         if(!file.exists()){
             file.mkdirs();
@@ -49,6 +47,7 @@ public class FileUploadServiceImpl {
         Product updateProduct = productService.findProductById(productId);
         updateProduct.setProductItemLink(itemLink);
         productService.save(updateProduct);
+        return updateProduct;
     }
 
 }

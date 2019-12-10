@@ -4,8 +4,12 @@ import com.blibli.blibook.backend.ApiPath;
 import com.blibli.blibook.backend.model.entity.Product;
 import com.blibli.blibook.backend.dto.ProductDetailDTO;
 import com.blibli.blibook.backend.dto.ProductReviewDTO;
+import com.blibli.blibook.backend.model.entity.ProductCategory;
+import com.blibli.blibook.backend.model.entity.ProductStatus;
+import com.blibli.blibook.backend.model.entity.Shop;
 import com.blibli.blibook.backend.service.ProductService;
 import com.blibli.blibook.backend.service.impl.FileUploadServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Api
 @RestController
@@ -22,9 +27,6 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
-
-    @Autowired
-    private FileUploadServiceImpl fileUploadService;
 
     @GetMapping(ApiPath.PRODUCT)
     public ProductDetailDTO findByProductId(@RequestParam Integer id){
@@ -58,13 +60,24 @@ public class ProductController {
 
     // Kaitkan dengan cek login
     @PostMapping(ApiPath.PRODUCT)
-    public Product save(@RequestParam ("photo") MultipartFile photo,
-                        @RequestParam ("item") MultipartFile item,
-                        @RequestBody Product product) throws IOException {
+    public Product save(@RequestParam ("shop") Integer shopId,
+                        @RequestParam ("category") String productCategoryName,
+                        @RequestParam ("item") MultipartFile[] items,
+                        @RequestParam ("product") String productString
+                        ) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        Product product = mapper.readValue(productString, Product.class);
+        Optional<ProductCategory> productCategory = productService.findProductCategoryByProductCategoryName(productCategoryName);
+        productCategory.ifPresent(product::setProductCategory);
+        Optional<ProductStatus> productStatus = productService.findProductStatusByProductStatusName("AVAILABLE");
+        productStatus.ifPresent(product::setProductStatus);
+        Optional<Shop> shop = productService.findShopByShopId(shopId);
+        shop.ifPresent(product::setShop);
+        product.setProductSku(product.getProductId() + "-" + product.getProductName() + "-" + product.getProductVariant());
         productService.save(product);
-        fileUploadService.uploadProductPhoto(product.getProductId(), photo);
-        fileUploadService.uploadProductItem(product.getProductId(), item);
-        return product;
+        productService.uploadProductItem(product.getProductId(), items[0]);
+        productService.uploadProductPhoto(product.getProductId(), items[1]);
+        return productService.findProductById(product.getProductId());
     }
 
 }

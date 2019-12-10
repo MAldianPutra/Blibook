@@ -41,9 +41,19 @@ public class ProductController {
         return productService.findProductReviewByShopId(shopId);
     }
 
-    @GetMapping(ApiPath.PRODUCT_SEARCH)
+    @GetMapping(ApiPath.PRODUCT_SEARCH_BY_NAME)
     public List<ProductReviewDTO> findByProductNameLike(@RequestParam ("key") String searchKey){
         return productService.findProductReviewBySearchKey(searchKey);
+    }
+
+    @GetMapping(ApiPath.PRODUCT_SEARCH_BY_PRICE_LESS_THAN)
+    public List<ProductReviewDTO> findByProductPriceLessThan(@RequestParam ("lessThan") Integer priceDemand){
+        return productService.findProductReviewByPriceLessThan(priceDemand);
+    }
+
+    @GetMapping(ApiPath.ALL_PRODUCTS)
+    public List<Product> findAll(){
+        return productService.findAll();
     }
 
     // Kaitkan dengan cek login

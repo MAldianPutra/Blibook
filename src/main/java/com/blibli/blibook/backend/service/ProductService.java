@@ -42,6 +42,15 @@ public class ProductService {
         return productServiceImpl.findProductReviewList(products);
     }
 
+    public List<ProductReviewDTO> findProductReviewByPriceLessThan(Integer priceDemand){
+        List<Product> products = productRepository.findByProductPriceLessThanEqual(priceDemand);
+        return productServiceImpl.findProductReviewList(products);
+    }
+
+    public List<Product> findAll(){
+        return productRepository.findAll();
+    }
+
     public Product save(Product product){
         return productRepository.save(product);
     }

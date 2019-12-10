@@ -39,7 +39,7 @@ public class Product implements Serializable {
     private String productCountry;
 
     @Column(name = ProductConstant.PRODUCT_PRICE)
-    private Float productPrice;
+    private Integer productPrice;
 
     @Column(name = ProductConstant.PRODUCT_DESCRIPTION)
     private String productDescription;
@@ -49,9 +49,6 @@ public class Product implements Serializable {
 
     @Column(name = ProductConstant.PRODUCT_RELEASE_YEAR)
     private Integer productReleaseYear;
-
-    @Column(name = ProductConstant.PRODUCT_RELEASE_DATE)
-    private Date productReleaseDate;
 
     @Column(name = ProductConstant.PRODUCT_LANGUAGE)
     private String productLanguage;

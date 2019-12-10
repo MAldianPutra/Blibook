@@ -4,6 +4,8 @@ import com.blibli.blibook.backend.ApiPath;
 import com.blibli.blibook.backend.model.entity.User;
 import com.blibli.blibook.backend.model.entity.UserRole;
 import com.blibli.blibook.backend.model.entity.UserStatus;
+import com.blibli.blibook.backend.dto.UserDTO;
+import com.blibli.blibook.backend.service.impl.FileUploadServiceImpl;
 import com.blibli.blibook.backend.service.UserService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,26 +22,29 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private FileUploadServiceImpl fileUploadServiceImpl;
+
     @GetMapping(ApiPath.USER)
-    public User findByUserId(@RequestParam Integer id){
-        return userService.findByUserId(id);
+    public UserDTO findByUserId(@RequestParam ("id") Integer userId) {
+            User user = userService.findFirstByUserId(userId);
+            UserDTO userDTO = new UserDTO(user.getUserName(), user.getUserEmail());
+            return userDTO;
     }
 
     //Testing. Delete Later
     @PostMapping(ApiPath.USER_SIGNUP)
-    public User save(@RequestParam Integer roleId,
-                     @RequestParam Integer statusId,
-                     @RequestBody User user){
-        Optional<UserRole> userRole = userService.findUserRoleId(roleId);
+    public User saveUser(@RequestBody User user){
+        Optional<UserRole> userRole = userService.findUserRoleId(2);
         userRole.ifPresent(user::setUserRole);
-        Optional<UserStatus> userStatus = userService.findUserStatusId(statusId);
+        Optional<UserStatus> userStatus = userService.findUserStatusId(1);
         userStatus.ifPresent(user::setUserStatus);
-        System.out.println("role : " + roleId.toString() + "status : " + statusId.toString());
         return userService.save(user);
     }
 
     @DeleteMapping(ApiPath.USER_DELETE)
-    public boolean deleteByUserId(@RequestParam Integer id){
-        return userService.deleteByUserId(id) > 0;
+    public boolean deleteByUserId(@RequestParam ("id") Integer userId){
+        return userService.deleteByUserId(userId) > 0;
     }
+
 }

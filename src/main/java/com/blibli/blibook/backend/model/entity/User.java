@@ -36,8 +36,14 @@ public class User implements Serializable {
     @Column(name = UserConstant.USER_PASSWORD_CONFIRMATION)
     private String userPasswordConfirmation;
 
-    @Column(name = UserConstant.USER_PHOTO_LINK)
-    private String userPhotoLink;
+    @Column(name = UserConstant.USER_BIRTHDATE)
+    private String userBirthdate;
+
+    @Column(name = UserConstant.USER_HANDPHONE)
+    private String userHandphone;
+
+    @Column(name = UserConstant.USER_GENDER)
+    private String userGender;
 
     @JsonIgnore
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)

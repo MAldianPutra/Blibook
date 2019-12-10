@@ -2,6 +2,8 @@ package com.blibli.blibook.backend.controller;
 
 import com.blibli.blibook.backend.ApiPath;
 import com.blibli.blibook.backend.model.entity.*;
+import com.blibli.blibook.backend.dto.ProductPhotoDTO;
+import com.blibli.blibook.backend.dto.ProductReviewDTO;
 import com.blibli.blibook.backend.service.OrderService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,33 +22,53 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping(ApiPath.ORDER_NOT_PAID_BY_USER_ID)
-    public List<Order> userOrderNotPaid(@RequestParam Integer userId){
+    public List<ProductReviewDTO> userOrderNotPaid(@RequestParam ("id") Integer userId){
         // orderStatusId 3 = NOT_PAID
         Integer orderStatusId = 1;
         return orderService.findByUserIdAndOrderStatusId(userId, orderStatusId);
     }
 
+    @GetMapping(ApiPath.ORDER_NOT_PAID_BY_SHOP_ID)
+    public List<ProductReviewDTO> shopOrderNotPaid(@RequestParam ("id") Integer shopId){
+        // orderStatusId 3 = NOT_PAID
+        Integer orderStatusId = 1;
+        return orderService.findByShopIdAndOrderStatusId(shopId, orderStatusId);
+    }
+
     @GetMapping(ApiPath.ORDER_WAITING_CONFIRM_BY_USER_ID)
-    public List<Order> userOrderWaitingConfirm(@RequestParam Integer userId){
+    public List<ProductReviewDTO> userOrderWaitingConfirm(@RequestParam ("id") Integer userId){
         // orderStatusId 2 = WAITING_CONFIRMATION
         Integer orderStatusId = 2;
         return orderService.findByUserIdAndOrderStatusId(userId, orderStatusId);
     }
 
+    @GetMapping(ApiPath.ORDER_WAITING_CONFIRM_BY_SHOP_ID)
+    public List<ProductReviewDTO> shopOrderWaitingConfirm(@RequestParam ("id") Integer shopId){
+        // orderStatusId 2 = WAITING_CONFIRMATION
+        Integer orderStatusId = 2;
+        return orderService.findByShopIdAndOrderStatusId(shopId, orderStatusId);
+    }
+
     @GetMapping(ApiPath.LIBRARY_BY_USER_ID)
-    public List<Order> userLibrary(@RequestParam Integer userId){
+    public List<ProductPhotoDTO> userLibrary(@RequestParam ("id") Integer userId) {
         // orderStatusId 3 = COMPLETED
         Integer orderStatusId = 3;
-        return orderService.findByUserIdAndOrderStatusId(userId, orderStatusId);
+        return orderService.findUserLibrary(userId, orderStatusId);
     }
 
     @PostMapping(ApiPath.ORDER_INITIATE)
-    public Order initiateOrder(@RequestParam Integer userId,
-                               @RequestParam Integer productId,
-                               @RequestParam Integer shopId ){
+    public String initiateOrder(@RequestParam Integer userId,
+                               @RequestParam Integer productId){
         // orderStatusId 1 = NOT_PAID
         Integer orderStatusId = 1;
-        return constructOrder(orderStatusId, userId, productId, shopId);
+        if(orderService.findOrderExists(userId, productId)){
+            return "Order is already Exists";
+        }
+        else
+        {
+            constructOrder(orderStatusId, userId, productId);
+            return "Order Initiated";
+        }
     }
 
     @PutMapping(ApiPath.ORDER_CONFIRMATION)
@@ -56,23 +78,25 @@ public class OrderController {
         Optional<OrderStatus> orderStatus = orderService.findOrderStatusId(orderStatusId);
         Order updateOrder = orderService.findFirstByOrderId(id);
         updateOrder.setOrderStatus(orderStatus.get());
+        if(orderService.existsCartByUserIdAndProductId(updateOrder.getUser().getUserId(), updateOrder.getProduct().getProductId())){
+            Cart cart = orderService.findCartByUserIdAndProductId(updateOrder.getUser().getUserId(), updateOrder.getProduct().getProductId());
+            orderService.deleteCart(cart.getCartId());
+        }
         return orderService.save(updateOrder);
     }
 
-    private Order constructOrder(@RequestParam Integer statusId,
-                                 @RequestParam Integer userId,
-                                 @RequestParam Integer productId,
-                                 @RequestParam Integer shopId){
+    private void constructOrder(@RequestParam Integer statusId,
+                                @RequestParam Integer userId,
+                                @RequestParam Integer productId){
         Optional<OrderStatus> orderStatus = orderService.findOrderStatusId(statusId);
         Optional<User> user = orderService.findUserId(userId);
         Optional<Product> product = orderService.findProductId(productId);
-        Optional<Shop> shop = orderService.findShopId(shopId);
         Order newOrder = new Order();
-        newOrder.setOrderStatus(orderStatus.get());
-        newOrder.setUser(user.get());
-        newOrder.setProduct(product.get());
-        newOrder.setShop(shop.get());
-        return orderService.save(newOrder);
+        orderStatus.ifPresent(newOrder::setOrderStatus);
+        user.ifPresent(newOrder::setUser);
+        product.ifPresent(newOrder::setProduct);
+        newOrder.setShop(product.get().getShop());
+        orderService.save(newOrder);
     }
 
 }

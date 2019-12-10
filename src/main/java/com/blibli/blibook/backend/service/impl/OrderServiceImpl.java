@@ -2,8 +2,8 @@ package com.blibli.blibook.backend.service.impl;
 
 import com.blibli.blibook.backend.model.entity.Order;
 import com.blibli.blibook.backend.model.entity.Product;
-import com.blibli.blibook.backend.payload.DetailOrderPayload;
-import com.blibli.blibook.backend.payload.LibraryPayload;
+import com.blibli.blibook.backend.dto.ProductPhotoDTO;
+import com.blibli.blibook.backend.dto.ProductReviewDTO;
 import com.blibli.blibook.backend.repository.OrderRepository;
 import com.blibli.blibook.backend.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,32 +21,33 @@ public class OrderServiceImpl {
     @Autowired
     ProductRepository productRepository;
 
-    public List<LibraryPayload> findUserLibrary(Integer userId, Integer orderStatusId){
+    public List<ProductPhotoDTO> findUserLibrary(Integer userId, Integer orderStatusId){
         List<Order> orderList = orderRepository.findByUser_UserIdAndOrderStatus_OrderStatusId(userId, orderStatusId);
-        List<LibraryPayload> libraryPayloads = new ArrayList<>();
+        List<ProductPhotoDTO> productPhotoDTOList = new ArrayList<>();
         for (Order order : orderList){
             Product product = productRepository.findFirstByProductId(order.getProduct().getProductId());
-            libraryPayloads.add(new LibraryPayload(
+            productPhotoDTOList.add(new ProductPhotoDTO(
                     product.getProductId(),
                     product.getProductPhotoLink()));
         }
-        return libraryPayloads;
+        return productPhotoDTOList;
     }
 
-    public List<DetailOrderPayload> findOrderList(List<Order> orderList){
-        List<DetailOrderPayload> detailOrderPayloads = new ArrayList<>();
+    public List<ProductReviewDTO> findOrderList(List<Order> orderList){
+        List<ProductReviewDTO> productReviewDTOList = new ArrayList<>();
         for (Order order : orderList){
             Product product = productRepository.findFirstByProductId(order.getProduct().getProductId());
-            detailOrderPayloads.add(new DetailOrderPayload(
+            productReviewDTOList.add(new ProductReviewDTO(
                     product.getProductId(),
                     product.getProductName(),
                     product.getProductAuthor(),
                     product.getProductLanguage(),
+                    product.getProductDescription(),
                     product.getProductPrice(),
                     product.getProductPhotoLink()
             ));
         }
-        return detailOrderPayloads;
+        return productReviewDTOList;
     }
 
 }

@@ -1,8 +1,6 @@
 package com.blibli.blibook.backend.service.impl;
 
 import com.blibli.blibook.backend.model.entity.Product;
-import com.blibli.blibook.backend.model.entity.User;
-import com.blibli.blibook.backend.payload.UserPayload;
 import com.blibli.blibook.backend.service.ProductService;
 import com.blibli.blibook.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,19 +16,13 @@ import java.io.IOException;
 public class FileUploadServiceImpl {
 
     @Autowired
-    private HttpServletRequest httpServletRequest;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
     private ProductService productService;
 
     private String projectDir = "D:/Project/blibook.backend/src/main/resources/";
     private String uploadDir = "uploads/";
 
-    public Product uploadProductPhoto(@RequestParam Integer productId,
-                                      @RequestParam MultipartFile multipartFile) throws IOException {
+    public void uploadProductPhoto(@RequestParam Integer productId,
+                                   @RequestParam MultipartFile multipartFile) throws IOException {
         String photoLink = projectDir + uploadDir + "productPhoto/" + productId + ".jpg";
         File file = new File(photoLink);
         if(!file.exists()){
@@ -39,13 +31,13 @@ public class FileUploadServiceImpl {
             file.delete();
         }
         multipartFile.transferTo(file);
-        Product updateProduct = productService.findFirstByProductId(productId);
+        Product updateProduct = productService.findProductById(productId);
         updateProduct.setProductPhotoLink(photoLink);
-        return productService.save(updateProduct);
+        productService.save(updateProduct);
     }
 
-    public Product uploadProductItem(@RequestParam Integer productId,
-                                     @RequestParam MultipartFile multipartFile) throws IOException {
+    public void uploadProductItem(@RequestParam Integer productId,
+                                  @RequestParam MultipartFile multipartFile) throws IOException {
         String itemLink = projectDir + uploadDir + "productItem/" + productId + ".jpg";
         File file = new File(itemLink);
         if(!file.exists()){
@@ -54,9 +46,9 @@ public class FileUploadServiceImpl {
             file.delete();
         }
         multipartFile.transferTo(file);
-        Product updateProduct = productService.findFirstByProductId(productId);
+        Product updateProduct = productService.findProductById(productId);
         updateProduct.setProductItemLink(itemLink);
-        return productService.save(updateProduct);
+        productService.save(updateProduct);
     }
 
 }

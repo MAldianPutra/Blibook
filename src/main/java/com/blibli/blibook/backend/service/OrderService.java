@@ -1,8 +1,8 @@
 package com.blibli.blibook.backend.service;
 
 import com.blibli.blibook.backend.model.entity.*;
-import com.blibli.blibook.backend.payload.DetailOrderPayload;
-import com.blibli.blibook.backend.payload.LibraryPayload;
+import com.blibli.blibook.backend.dto.ProductPhotoDTO;
+import com.blibli.blibook.backend.dto.ProductReviewDTO;
 import com.blibli.blibook.backend.repository.*;
 import com.blibli.blibook.backend.service.impl.OrderServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,17 +54,17 @@ public class OrderService {
         return orderRepository.findFirstByOrderId(orderId);
     }
 
-    public List<DetailOrderPayload> findByUserIdAndOrderStatusId(Integer userId, Integer orderStatusId){
+    public List<ProductReviewDTO> findByUserIdAndOrderStatusId(Integer userId, Integer orderStatusId){
         List<Order> orderList = orderRepository.findByUser_UserIdAndOrderStatus_OrderStatusId(userId, orderStatusId);
         return orderServiceImpl.findOrderList(orderList);
     }
 
-    public List<DetailOrderPayload> findByShopIdAndOrderStatusId(Integer shopId, Integer orderStatusId){
+    public List<ProductReviewDTO> findByShopIdAndOrderStatusId(Integer shopId, Integer orderStatusId){
         List<Order> orderList = orderRepository.findByShop_ShopIdAndOrderStatus_OrderStatusId(shopId, orderStatusId);
         return orderServiceImpl.findOrderList(orderList);
     }
 
-    public List<LibraryPayload> findUserLibrary(Integer userId, Integer orderStatusId){
+    public List<ProductPhotoDTO> findUserLibrary(Integer userId, Integer orderStatusId){
         return orderServiceImpl.findUserLibrary(userId, orderStatusId);
     }
 

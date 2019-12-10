@@ -1,11 +1,11 @@
-package com.blibli.blibook.backend.payload;
+package com.blibli.blibook.backend.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class DetailProductPayload {
+public class ProductDetailDTO {
 
     private Integer productId;
     private String productName;
@@ -21,7 +21,7 @@ public class DetailProductPayload {
     private String productVariant;
     private String productPhotoLink;
 
-    private String shopId;
+    private Integer shopId;
     private String shopName;
     private String shopAddress;
     private String shopCity;

@@ -42,10 +42,4 @@ public class ApiPath {
     // LIBRARY ENDPOINTS (IN ORDER CONTROLLER) LIBRARY = COMPLETED ORDER
     public static final String LIBRARY_BY_USER_ID = API + "/library/user";
 
-    // UPLOAD ENDPOINTS
-    public static final String UPLOAD = API + "/upload";
-    public static final String UPLOAD_USER_PHOTO = UPLOAD + "/userPhoto";
-    public static final String UPLOAD_PRODUCT_PHOTO = UPLOAD + "/productPhoto";
-    public static final String UPLOAD_PDF = UPLOAD + "/productPDF";
-
 }

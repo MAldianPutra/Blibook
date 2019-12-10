@@ -2,8 +2,8 @@ package com.blibli.blibook.backend.controller;
 
 import com.blibli.blibook.backend.ApiPath;
 import com.blibli.blibook.backend.model.entity.*;
-import com.blibli.blibook.backend.payload.DetailOrderPayload;
-import com.blibli.blibook.backend.payload.LibraryPayload;
+import com.blibli.blibook.backend.dto.ProductPhotoDTO;
+import com.blibli.blibook.backend.dto.ProductReviewDTO;
 import com.blibli.blibook.backend.service.OrderService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,35 +22,35 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping(ApiPath.ORDER_NOT_PAID_BY_USER_ID)
-    public List<DetailOrderPayload> userOrderNotPaid(@RequestParam ("id") Integer userId){
+    public List<ProductReviewDTO> userOrderNotPaid(@RequestParam ("id") Integer userId){
         // orderStatusId 3 = NOT_PAID
         Integer orderStatusId = 1;
         return orderService.findByUserIdAndOrderStatusId(userId, orderStatusId);
     }
 
     @GetMapping(ApiPath.ORDER_NOT_PAID_BY_SHOP_ID)
-    public List<DetailOrderPayload> shopOrderNotPaid(@RequestParam ("id") Integer shopId){
+    public List<ProductReviewDTO> shopOrderNotPaid(@RequestParam ("id") Integer shopId){
         // orderStatusId 3 = NOT_PAID
         Integer orderStatusId = 1;
         return orderService.findByShopIdAndOrderStatusId(shopId, orderStatusId);
     }
 
     @GetMapping(ApiPath.ORDER_WAITING_CONFIRM_BY_USER_ID)
-    public List<DetailOrderPayload> userOrderWaitingConfirm(@RequestParam ("id") Integer userId){
+    public List<ProductReviewDTO> userOrderWaitingConfirm(@RequestParam ("id") Integer userId){
         // orderStatusId 2 = WAITING_CONFIRMATION
         Integer orderStatusId = 2;
         return orderService.findByUserIdAndOrderStatusId(userId, orderStatusId);
     }
 
     @GetMapping(ApiPath.ORDER_WAITING_CONFIRM_BY_SHOP_ID)
-    public List<DetailOrderPayload> shopOrderWaitingConfirm(@RequestParam ("id") Integer shopId){
+    public List<ProductReviewDTO> shopOrderWaitingConfirm(@RequestParam ("id") Integer shopId){
         // orderStatusId 2 = WAITING_CONFIRMATION
         Integer orderStatusId = 2;
         return orderService.findByShopIdAndOrderStatusId(shopId, orderStatusId);
     }
 
     @GetMapping(ApiPath.LIBRARY_BY_USER_ID)
-    public List<LibraryPayload> userLibrary(@RequestParam ("id") Integer userId) {
+    public List<ProductPhotoDTO> userLibrary(@RequestParam ("id") Integer userId) {
         // orderStatusId 3 = COMPLETED
         Integer orderStatusId = 3;
         return orderService.findUserLibrary(userId, orderStatusId);

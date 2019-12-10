@@ -1,17 +1,18 @@
-package com.blibli.blibook.backend.payload;
+package com.blibli.blibook.backend.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ProductPayload {
+public class ProductReviewDTO {
 
     private Integer productId;
     private String productName;
-    private Integer productPrice;
+    private String productAuthor;
+    private String productLanguage;
     private String productDescription;
+    private Integer productPrice;
     private String productPhotoLink;
-
 
 }

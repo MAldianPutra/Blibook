@@ -2,6 +2,8 @@ package com.blibli.blibook.backend.controller;
 
 import com.blibli.blibook.backend.ApiPath;
 import com.blibli.blibook.backend.model.entity.Product;
+import com.blibli.blibook.backend.dto.ProductDetailDTO;
+import com.blibli.blibook.backend.dto.ProductReviewDTO;
 import com.blibli.blibook.backend.service.ProductService;
 import com.blibli.blibook.backend.service.impl.FileUploadServiceImpl;
 import io.swagger.annotations.Api;
@@ -25,27 +27,26 @@ public class ProductController {
     private FileUploadServiceImpl fileUploadService;
 
     @GetMapping(ApiPath.PRODUCT)
-    public Product findByProductId(@RequestParam Integer id){
-        return productService.findFirstByProductId(id);
+    public ProductDetailDTO findByProductId(@RequestParam Integer id){
+        return productService.findProductDetailById(id);
     }
 
     @GetMapping(ApiPath.PRODUCT_BY_PRODUCT_CATEGORY_ID)
-    public List<Product> findByProductCategory(@RequestParam ("name") String productCategoryName){
-        return productService.findByProductCategory(productCategoryName);
+    public List<ProductReviewDTO> findByProductCategory(@RequestParam ("name") String productCategoryName){
+        return productService.findProductReviewByCategoryName(productCategoryName);
     }
 
     @GetMapping(ApiPath.PRODUCT_BY_SHOP_ID)
-    public List<Product> findByShop(@RequestParam Integer shopId){
-        return productService.findByShop(shopId);
+    public List<ProductReviewDTO> findByShop(@RequestParam Integer shopId){
+        return productService.findProductReviewByShopId(shopId);
     }
 
     @GetMapping(ApiPath.PRODUCT_SEARCH)
-    public List<Product> findByProductNameLike(@RequestParam ("key") String searchKey){
-        return productService.findByProductNameLike(searchKey);
+    public List<ProductReviewDTO> findByProductNameLike(@RequestParam ("key") String searchKey){
+        return productService.findProductReviewBySearchKey(searchKey);
     }
 
-    // Not Yet Completed
-    // Kaitkan dengan Upload login
+    // Kaitkan dengan cek login
     @PostMapping(ApiPath.PRODUCT)
     public Product save(@RequestParam ("photo") MultipartFile photo,
                         @RequestParam ("item") MultipartFile item,

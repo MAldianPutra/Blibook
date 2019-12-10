@@ -16,13 +16,15 @@ public class ShopController {
     @Autowired
     private ShopService shopService;
 
-    @GetMapping(ApiPath.SHOP_BY_SHOP_ID)
-    public Shop findByShopId(@PathVariable Integer shopId){
-        return shopService.findByShopId(shopId);
+    @GetMapping(ApiPath.SHOP)
+    public Shop findByShopId(@RequestParam Integer id){
+        return shopService.findByShopId(id);
     }
 
+    // Not Yet Completed
     @PostMapping(ApiPath.SHOP)
     public Shop save(@RequestBody Shop shop){
         return shopService.save(shop);
     }
+
 }

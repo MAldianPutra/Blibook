@@ -2,11 +2,17 @@ package com.blibli.blibook.backend.controller;
 
 import com.blibli.blibook.backend.ApiPath;
 import com.blibli.blibook.backend.model.entity.User;
+import com.blibli.blibook.backend.model.entity.UserRole;
+import com.blibli.blibook.backend.model.entity.UserStatus;
+import com.blibli.blibook.backend.dto.UserDTO;
+import com.blibli.blibook.backend.service.impl.FileUploadServiceImpl;
 import com.blibli.blibook.backend.service.UserService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @Api
 @RestController
@@ -16,18 +22,29 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping(ApiPath.USER_BY_USER_ID)
-    public User findByUserId(@PathVariable Integer userId){
-        return userService.findByUserId(userId);
+    @Autowired
+    private FileUploadServiceImpl fileUploadServiceImpl;
+
+    @GetMapping(ApiPath.USER)
+    public UserDTO findByUserId(@RequestParam ("id") Integer userId) {
+            User user = userService.findFirstByUserId(userId);
+            UserDTO userDTO = new UserDTO(user.getUserName(), user.getUserEmail());
+            return userDTO;
     }
 
-    @PostMapping(ApiPath.USER)
-    public User save(@RequestBody User user){
+    //Testing. Delete Later
+    @PostMapping(ApiPath.USER_SIGNUP)
+    public User saveUser(@RequestBody User user){
+        Optional<UserRole> userRole = userService.findUserRoleId(2);
+        userRole.ifPresent(user::setUserRole);
+        Optional<UserStatus> userStatus = userService.findUserStatusId(1);
+        userStatus.ifPresent(user::setUserStatus);
         return userService.save(user);
     }
 
-    @DeleteMapping(ApiPath.USER_BY_USER_ID)
-    public boolean deleteByUserId(@PathVariable Integer userId){
+    @DeleteMapping(ApiPath.USER_DELETE)
+    public boolean deleteByUserId(@RequestParam ("id") Integer userId){
         return userService.deleteByUserId(userId) > 0;
     }
+
 }

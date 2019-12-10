@@ -7,7 +7,9 @@ public class UserConstant {
     public static final String USER_EMAIL = "email";
     public static final String USER_PASSWORD = "password";
     public static final String USER_PASSWORD_CONFIRMATION = "password_confirmation";
-    public static final String USER_PHOTO_LINK = "photo_link";
-    public static final String USER_IS_BLOCKED = "is_blocked";
-    public static final String USER_IS_ADMIN = "is_admin";
+    public static final String USER_BIRTHDATE = "birthdate";
+    public static final String USER_HANDPHONE = "handphone";
+    public static final String USER_GENDER = "gender";
+    public static final String USER_ROLE_ID = "user_role_id";
+    public static final String USER_STATUS_ID = "user_status_id";
 }

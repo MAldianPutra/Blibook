@@ -14,7 +14,7 @@ import java.util.Set;
 @Data
 @EntityListeners(value = {AuditingEntityListener.class})
 @Table(name = ProductConstant.TABLE_NAME, uniqueConstraints = {
-        @UniqueConstraint(columnNames = ProductConstant.PRODUCT_SKU)
+        @UniqueConstraint(columnNames = ProductConstant.PRODUCT_ID)
 })
 public class Product implements Serializable {
 
@@ -39,13 +39,7 @@ public class Product implements Serializable {
     private String productCountry;
 
     @Column(name = ProductConstant.PRODUCT_PRICE)
-    private Float productPrice;
-
-    @Column(name = ProductConstant.PRODUCT_DISCOUNT)
-    private Float productDiscount;
-
-    @Column(name = ProductConstant.PRODUCT_DISCOUNTED_PRICE)
-    private Float productDiscountPrice;
+    private Integer productPrice;
 
     @Column(name = ProductConstant.PRODUCT_DESCRIPTION)
     private String productDescription;
@@ -55,9 +49,6 @@ public class Product implements Serializable {
 
     @Column(name = ProductConstant.PRODUCT_RELEASE_YEAR)
     private Integer productReleaseYear;
-
-    @Column(name = ProductConstant.PRODUCT_RELEASE_DATE)
-    private Date productReleaseDate;
 
     @Column(name = ProductConstant.PRODUCT_LANGUAGE)
     private String productLanguage;
@@ -73,7 +64,11 @@ public class Product implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
-    private Set<ProductLibrary> productLibraries;
+    private Set<Order> orders;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private Set<Cart> carts;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -85,7 +80,9 @@ public class Product implements Serializable {
     @JoinColumn(name = ProductConstant.PRODUCT_CATEGORY_ID)
     private ProductCategory productCategory;
 
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
-//    private Set<Cart> carts;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = ProductConstant.PRODUCT_STATUS_ID)
+    private ProductStatus productStatus;
+
 }

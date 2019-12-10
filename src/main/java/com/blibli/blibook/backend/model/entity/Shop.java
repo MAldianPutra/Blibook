@@ -27,8 +27,14 @@ public class Shop implements Serializable {
     @Column(name = ShopConstant.SHOP_NAME)
     private String shopName;
 
-    @Column(name = ShopConstant.SHOP_PHOTO_LINK)
-    private String shopPhotoLink;
+    @Column(name = ShopConstant.SHOP_ADDRESS)
+    private String shopAddress;
+
+    @Column(name = ShopConstant.SHOP_CITY)
+    private String shopCity;
+
+    @Column(name = ShopConstant.SHOP_PROVINCE)
+    private String shopProvince;
 
     @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)

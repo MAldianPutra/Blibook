@@ -10,10 +10,13 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     Product findFirstByProductId(Integer productId);
 
-    List<Product> findByProductCategory_ProductCategoryId(Integer productCategoryId);
+    List<Product> findByProductCategory_ProductCategoryName(String productCategoryName);
 
     List<Product> findByShop_ShopId(Integer shopId);
 
     List<Product> findByProductNameContaining(String searchKey);
+
+    List<Product> findByProductPriceLessThanEqual(Integer priceDemand);
+
 
 }

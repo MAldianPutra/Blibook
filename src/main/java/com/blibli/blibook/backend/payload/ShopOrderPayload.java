@@ -5,13 +5,14 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class DetailOrderPayload {
+public class ShopOrderPayload {
 
-    private Integer productId;
+    private Integer orderId;
+
+    private String userName;
+    private String userHandphone;
+
     private String productName;
-    private String productAuthor;
-    private String productLanguage;
     private Integer productPrice;
-    private String productPhotoLink;
 
 }

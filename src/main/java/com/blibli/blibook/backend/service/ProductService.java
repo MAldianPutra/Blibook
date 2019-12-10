@@ -18,8 +18,8 @@ public class ProductService {
         return productRepository.findFirstByProductId(productId);
     }
 
-    public List<Product> findByProductCategory(Integer productCategoryId){
-        return productRepository.findByProductCategory_ProductCategoryId(productCategoryId);
+    public List<Product> findByProductCategory(String productCategoryName){
+        return productRepository.findByProductCategory_ProductCategoryName(productCategoryName);
     }
 
     public List<Product> findByShop(Integer shopId){

@@ -29,22 +29,6 @@ public class FileUploadServiceImpl {
     private String projectDir = "D:/Project/blibook.backend/src/main/resources/";
     private String uploadDir = "uploads/";
 
-    public UserPayload uploadUserPhoto(@RequestParam Integer userId,
-                                       @RequestParam MultipartFile multipartFile) throws IOException {
-        String photoLink = projectDir + uploadDir + "userPhoto/" + userId + ".jpg";
-        File file = new File(photoLink);
-        if(!file.exists()){
-            file.mkdirs();
-        } else {
-            file.delete();
-        }
-        multipartFile.transferTo(file);
-        User updateUser = userService.findFirstByUserId(userId);
-        updateUser.setUserPhotoLink(photoLink);
-        userService.save(updateUser);
-        return new UserPayload(updateUser.getUserName(), updateUser.getUserEmail(), updateUser.getUserPhotoLink());
-    }
-
     public Product uploadProductPhoto(@RequestParam Integer productId,
                                       @RequestParam MultipartFile multipartFile) throws IOException {
         String photoLink = projectDir + uploadDir + "productPhoto/" + productId + ".jpg";
@@ -57,6 +41,21 @@ public class FileUploadServiceImpl {
         multipartFile.transferTo(file);
         Product updateProduct = productService.findFirstByProductId(productId);
         updateProduct.setProductPhotoLink(photoLink);
+        return productService.save(updateProduct);
+    }
+
+    public Product uploadProductItem(@RequestParam Integer productId,
+                                     @RequestParam MultipartFile multipartFile) throws IOException {
+        String itemLink = projectDir + uploadDir + "productItem/" + productId + ".jpg";
+        File file = new File(itemLink);
+        if(!file.exists()){
+            file.mkdirs();
+        } else {
+            file.delete();
+        }
+        multipartFile.transferTo(file);
+        Product updateProduct = productService.findFirstByProductId(productId);
+        updateProduct.setProductItemLink(itemLink);
         return productService.save(updateProduct);
     }
 

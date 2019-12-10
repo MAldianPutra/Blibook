@@ -5,6 +5,7 @@ import com.blibli.blibook.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,13 +31,6 @@ public class CartService {
     private ProductRepository productRepository;
     public Optional<Product> findProductId(Integer productId){
         return productRepository.findById(productId);
-    }
-
-
-    @Autowired
-    private ShopRepository shopRepository;
-    public Optional<Shop> findShopId(Integer shopId){
-        return shopRepository.findById(shopId);
     }
 
     public List<Cart> findByUserAndCartStatus(Integer userId, Integer cartStatusId){

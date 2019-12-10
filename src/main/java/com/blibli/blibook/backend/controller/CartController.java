@@ -35,35 +35,31 @@ public class CartController {
 
     @PostMapping(ApiPath.ADD_PRODUCT_TO_CART)
     public Cart addCart(@RequestParam Integer userId,
-                        @RequestParam Integer productId,
-                        @RequestParam Integer shopId){
+                        @RequestParam Integer productId){
         // cartStatusId 1 = CART
         Integer cartStatusId = 1;
-        return constructCart(cartStatusId, userId, productId, shopId);
+        return constructCart(cartStatusId, userId, productId);
     }
 
     @PostMapping(ApiPath.ADD_PRODUCT_TO_WISHLIST)
     public Cart addWishlist(@RequestParam Integer userId,
-                            @RequestParam Integer productId,
-                            @RequestParam Integer shopId){
+                            @RequestParam Integer productId){
         // cartStatusId 2 = WISHLIST
         Integer cartStatusId = 2;
-        return constructCart(cartStatusId,userId, productId, shopId);
+        return constructCart(cartStatusId,userId, productId);
     }
 
     private Cart constructCart(@RequestParam Integer cartStatusId,
                                @RequestParam Integer userId,
-                               @RequestParam Integer productId,
-                               @RequestParam Integer shopId) {
+                               @RequestParam Integer productId) {
         Optional<CartStatus> cartStatus = cartService.findCartStatusId(cartStatusId);
         Optional<User> user = cartService.findUserId(userId);
         Optional<Product> product = cartService.findProductId(productId);
-        Optional<Shop> shop = cartService.findShopId(shopId);
         Cart newCart = new Cart();
-        newCart.setCartStatus(cartStatus.get());
-        newCart.setUser(user.get());
-        newCart.setProduct(product.get());
-        newCart.setShop(shop.get());
+        cartStatus.ifPresent(newCart::setCartStatus);
+        user.ifPresent(newCart::setUser);
+        product.ifPresent(newCart::setProduct);
+        newCart.setShop(product.get().getShop());
         return cartService.save(newCart);
     }
 

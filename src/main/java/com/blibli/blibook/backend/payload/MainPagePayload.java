@@ -5,9 +5,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UserPayload {
+public class MainPagePayload {
 
-    private String userName;
-    private String userEmail;
+    private Integer productId;
+    private String productPhotoLink;
 
 }

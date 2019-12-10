@@ -4,7 +4,6 @@ import com.blibli.blibook.backend.ApiPath;
 import com.blibli.blibook.backend.model.entity.User;
 import com.blibli.blibook.backend.model.entity.UserRole;
 import com.blibli.blibook.backend.model.entity.UserStatus;
-//import com.blibli.blibook.backend.service.impl.FileUploadServiceImpl;
 import com.blibli.blibook.backend.payload.UserPayload;
 import com.blibli.blibook.backend.service.impl.FileUploadServiceImpl;
 import com.blibli.blibook.backend.service.UserService;
@@ -29,29 +28,20 @@ public class UserController {
     private FileUploadServiceImpl fileUploadServiceImpl;
 
     @GetMapping(ApiPath.USER)
-    public UserPayload findByUserId(@RequestParam ("id") Integer userId){
-        User user = userService.findFirstByUserId(userId);
-        UserPayload userPayload = new UserPayload(user.getUserName(), user.getUserEmail(), user.getUserPhotoLink());
-        return userPayload;
+    public UserPayload findByUserId(@RequestParam ("id") Integer userId) {
+            User user = userService.findFirstByUserId(userId);
+            UserPayload userPayload = new UserPayload(user.getUserName(), user.getUserEmail());
+            return userPayload;
     }
 
     //Testing. Delete Later
     @PostMapping(ApiPath.USER_SIGNUP)
-    public User save(@RequestParam Integer roleId,
-                     @RequestParam Integer statusId,
-                     @RequestBody User user){
-        Optional<UserRole> userRole = userService.findUserRoleId(roleId);
+    public User saveUser(@RequestBody User user){
+        Optional<UserRole> userRole = userService.findUserRoleId(2);
         userRole.ifPresent(user::setUserRole);
-        Optional<UserStatus> userStatus = userService.findUserStatusId(statusId);
+        Optional<UserStatus> userStatus = userService.findUserStatusId(1);
         userStatus.ifPresent(user::setUserStatus);
-        System.out.println("role : " + roleId.toString() + "status : " + statusId.toString());
         return userService.save(user);
-    }
-
-    @PutMapping(ApiPath.UPLOAD_USER_PHOTO)
-    public UserPayload updatePhoto(@RequestParam ("id") Integer userId,
-                                   @RequestParam ("file") MultipartFile multipartFile) throws IOException {
-        return fileUploadServiceImpl.uploadUserPhoto(userId, multipartFile);
     }
 
     @DeleteMapping(ApiPath.USER_DELETE)

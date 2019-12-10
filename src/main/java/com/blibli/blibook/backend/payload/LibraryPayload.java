@@ -7,8 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class LibraryPayload {
 
-    private String productName;
-    private String productAuthor;
-    private String productDescription;
+    private Integer productId;
+    private String photoLink;
 
 }

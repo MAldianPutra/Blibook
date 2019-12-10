@@ -23,8 +23,7 @@ public class ShopController {
 
     // Not Yet Completed
     @PostMapping(ApiPath.SHOP)
-    public Shop save(@RequestParam Integer userId,
-                     @RequestBody Shop shop){
+    public Shop save(@RequestBody Shop shop){
         return shopService.save(shop);
     }
 

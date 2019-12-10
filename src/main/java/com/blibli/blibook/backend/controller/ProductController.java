@@ -10,6 +10,7 @@ import com.blibli.blibook.backend.model.entity.Shop;
 import com.blibli.blibook.backend.service.ProductService;
 import com.blibli.blibook.backend.service.impl.FileUploadServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.org.apache.xpath.internal.operations.Mult;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -62,7 +63,8 @@ public class ProductController {
     @PostMapping(ApiPath.PRODUCT)
     public Product save(@RequestParam ("shop") Integer shopId,
                         @RequestParam ("category") String productCategoryName,
-                        @RequestParam ("item") MultipartFile[] items,
+                        @RequestParam ("item") MultipartFile item,
+                        @RequestParam ("photo") MultipartFile photo,
                         @RequestParam ("product") String productString
                         ) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
@@ -75,8 +77,8 @@ public class ProductController {
         shop.ifPresent(product::setShop);
         product.setProductSku(product.getProductId() + "-" + product.getProductName() + "-" + product.getProductVariant());
         productService.save(product);
-        productService.uploadProductItem(product.getProductId(), items[0]);
-        productService.uploadProductPhoto(product.getProductId(), items[1]);
+        productService.uploadProductItem(product.getProductId(), item);
+        productService.uploadProductPhoto(product.getProductId(), photo);
         return productService.findProductById(product.getProductId());
     }
 

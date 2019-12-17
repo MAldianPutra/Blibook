@@ -41,4 +41,7 @@ public class CartService {
         return cartRepository.save(cart);
     }
 
+    public long deleteByCartId(Integer cartId){
+        return cartRepository.deleteByCartId(cartId);
+    }
 }

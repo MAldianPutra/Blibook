@@ -49,6 +49,16 @@ public class CartController {
         return constructCart(cartStatusId,userId, productId);
     }
 
+    @DeleteMapping(ApiPath.CART_DELETE)
+    public boolean deleteCart(@RequestParam Integer cartId){
+        return cartService.deleteByCartId(cartId) > 0;
+    }
+
+    @DeleteMapping(ApiPath.WISHLIST_DELETE)
+    public boolean deleteWishlist(@RequestParam Integer cartId){
+        return deleteCart(cartId);
+    }
+
     private Cart constructCart(@RequestParam Integer cartStatusId,
                                @RequestParam Integer userId,
                                @RequestParam Integer productId) {

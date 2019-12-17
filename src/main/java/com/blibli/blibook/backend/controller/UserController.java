@@ -42,6 +42,20 @@ public class UserController {
         return userService.save(user);
     }
 
+    @PutMapping(ApiPath.USER_UPDATE)
+    public User updateUser(@RequestParam ("id") Integer userId,
+                           @RequestBody User user){
+        User updatedUser = userService.findFirstByUserId(userId);
+        updatedUser.setUserName(user.getUserName());
+        updatedUser.setUserEmail(user.getUserEmail());
+        updatedUser.setUserBirthdate(user.getUserBirthdate());
+        updatedUser.setUserGender(user.getUserGender());
+        updatedUser.setUserPassword(user.getUserPassword());
+        updatedUser.setUserPasswordConfirmation(user.getUserPasswordConfirmation());
+        return userService.save(updatedUser);
+
+    }
+
     @DeleteMapping(ApiPath.USER_DELETE)
     public boolean deleteByUserId(@RequestParam ("id") Integer userId){
         return userService.deleteByUserId(userId) > 0;

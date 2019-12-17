@@ -10,6 +10,10 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
 
     Shop findFirstByShopId(Integer shopId);
 
+    Shop findFirstByUser_UserId(Integer userId);
+
+    Integer countShopByUser_UserId(Integer userId);
+
     @Transactional
     long deleteByShopId(Integer shopId);
 

@@ -56,6 +56,11 @@ public class OrderController {
         return orderService.findUserLibrary(userId, orderStatusId);
     }
 
+    @GetMapping(ApiPath.ALL_ORDER)
+    public List<Order> findAll(){
+        return orderService.findAll();
+    }
+
     @PostMapping(ApiPath.ORDER_INITIATE)
     public String initiateOrder(@RequestParam Integer userId,
                                @RequestParam Integer productId){

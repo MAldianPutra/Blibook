@@ -84,4 +84,8 @@ public class ProductService {
     public Optional<Shop> findShopByShopId(Integer shopId){
         return productServiceImpl.findShopByShopId(shopId);
     }
+
+    public long deleteByProductId(Integer productId){
+        return productRepository.deleteByProductId(productId);
+    }
 }

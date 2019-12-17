@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Api
@@ -32,6 +33,11 @@ public class UserController {
             return userDTO;
     }
 
+    @GetMapping(ApiPath.ALL_USERS)
+    public List<User> findAll(){
+        return userService.findAll();
+    }
+
     //Testing. Delete Later
     @PostMapping(ApiPath.USER_SIGNUP)
     public User saveUser(@RequestBody User user){
@@ -40,6 +46,20 @@ public class UserController {
         Optional<UserStatus> userStatus = userService.findUserStatusId(1);
         userStatus.ifPresent(user::setUserStatus);
         return userService.save(user);
+    }
+
+    @PutMapping(ApiPath.USER_UPDATE)
+    public User updateUser(@RequestParam ("id") Integer userId,
+                           @RequestBody User user){
+        User updatedUser = userService.findFirstByUserId(userId);
+        updatedUser.setUserName(user.getUserName());
+        updatedUser.setUserEmail(user.getUserEmail());
+        updatedUser.setUserBirthdate(user.getUserBirthdate());
+        updatedUser.setUserGender(user.getUserGender());
+        updatedUser.setUserPassword(user.getUserPassword());
+        updatedUser.setUserPasswordConfirmation(user.getUserPasswordConfirmation());
+        return userService.save(updatedUser);
+
     }
 
     @DeleteMapping(ApiPath.USER_DELETE)

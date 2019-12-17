@@ -41,4 +41,11 @@ public class CartService {
         return cartRepository.save(cart);
     }
 
+    public List<Cart> findAll(){
+        return cartRepository.findAll();
+    }
+
+    public long deleteByCartId(Integer cartId){
+        return cartRepository.deleteByCartId(cartId);
+    }
 }

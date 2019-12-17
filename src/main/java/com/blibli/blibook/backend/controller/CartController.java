@@ -33,6 +33,11 @@ public class CartController {
         return cartService.findByUserAndCartStatus(userId, cartStatusId);
     }
 
+    @GetMapping(ApiPath.ALL_CARTS)
+    public List<Cart> findAll(){
+        return cartService.findAll();
+    }
+
     @PostMapping(ApiPath.ADD_PRODUCT_TO_CART)
     public Cart addCart(@RequestParam Integer userId,
                         @RequestParam Integer productId){
@@ -47,6 +52,16 @@ public class CartController {
         // cartStatusId 2 = WISHLIST
         Integer cartStatusId = 2;
         return constructCart(cartStatusId,userId, productId);
+    }
+
+    @DeleteMapping(ApiPath.CART_DELETE)
+    public boolean deleteCart(@RequestParam Integer cartId){
+        return cartService.deleteByCartId(cartId) > 0;
+    }
+
+    @DeleteMapping(ApiPath.WISHLIST_DELETE)
+    public boolean deleteWishlist(@RequestParam Integer cartId){
+        return deleteCart(cartId);
     }
 
     private Cart constructCart(@RequestParam Integer cartStatusId,

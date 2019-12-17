@@ -16,8 +16,10 @@ public class FileUploadServiceImpl {
     @Autowired
     private ProductService productService;
 
-    private String projectDir = "D:/Project/blibook.backend/src/main/resources/";
+    private String temp = "Project/blibook.backend/src/main/resources/";
     private String uploadDir = "uploads/";
+    private String projectDir = "D:/" + temp;
+    private String pathServer = "http://127.0.0.1:8080/" + temp;
 
     public Product uploadProductPhoto(@RequestParam Integer productId,
                                       @RequestParam MultipartFile multipartFile) throws IOException {
@@ -30,7 +32,7 @@ public class FileUploadServiceImpl {
         }
         multipartFile.transferTo(file);
         Product updateProduct = productService.findProductById(productId);
-        updateProduct.setProductPhotoLink(photoLink);
+        updateProduct.setProductPhotoLink(pathServer + uploadDir + "productPhoto" + productId + ".jpg");
         return productService.save(updateProduct);
     }
 
@@ -45,9 +47,8 @@ public class FileUploadServiceImpl {
         }
         multipartFile.transferTo(file);
         Product updateProduct = productService.findProductById(productId);
-        updateProduct.setProductItemLink(itemLink);
-        productService.save(updateProduct);
-        return updateProduct;
+        updateProduct.setProductItemLink(pathServer + uploadDir + "productItem/" + productId + ".pdf");
+        return productService.save(updateProduct);
     }
 
 }

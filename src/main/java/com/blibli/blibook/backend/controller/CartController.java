@@ -33,6 +33,11 @@ public class CartController {
         return cartService.findByUserAndCartStatus(userId, cartStatusId);
     }
 
+    @GetMapping(ApiPath.ALL_CARTS)
+    public List<Cart> findAll(){
+        return cartService.findAll();
+    }
+
     @PostMapping(ApiPath.ADD_PRODUCT_TO_CART)
     public Cart addCart(@RequestParam Integer userId,
                         @RequestParam Integer productId){

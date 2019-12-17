@@ -52,6 +52,7 @@ public class ApiPath {
     // ADMIN ENDPOINTS
     public static final String ADMIN = API + "/admin";
     public static final String ALL_USERS =  ADMIN + "/users";
+    public static final String ALL_SHOP = ADMIN + "/shops";
     public static final String ALL_PRODUCTS = ADMIN + "/products";
     public static final String ALL_CARTS =  ADMIN + "/carts";
     public static final String ALL_ORDER = ADMIN + "/orders";

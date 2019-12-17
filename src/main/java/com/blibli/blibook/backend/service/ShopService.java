@@ -7,6 +7,7 @@ import com.blibli.blibook.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,6 +32,10 @@ public class ShopService {
 
     public Integer countShopByUserId(Integer userId){
         return shopRepository.countShopByUser_UserId(userId);
+    }
+
+    public List<Shop> findAll(){
+        return shopRepository.findAll();
     }
 
     public Shop save(Shop shop){

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Api
@@ -30,6 +31,11 @@ public class UserController {
             User user = userService.findFirstByUserId(userId);
             UserDTO userDTO = new UserDTO(user.getUserName(), user.getUserEmail());
             return userDTO;
+    }
+
+    @GetMapping(ApiPath.ALL_USERS)
+    public List<User> findAll(){
+        return userService.findAll();
     }
 
     //Testing. Delete Later

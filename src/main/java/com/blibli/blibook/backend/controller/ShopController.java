@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Api
@@ -23,6 +24,11 @@ public class ShopController {
     @GetMapping(ApiPath.SHOP)
     public Shop findByShopId(@RequestParam Integer id){
         return shopService.findByShopId(id);
+    }
+
+    @GetMapping(ApiPath.ALL_SHOP)
+    public List<Shop> findAll(){
+        return shopService.findAll();
     }
 
     @PostMapping(ApiPath.SHOP)

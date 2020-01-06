@@ -10,6 +10,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     Product findFirstByProductId(Integer productId);
 
+    List<Product> findByProductCountry(String productCountry);
+
     List<Product> findByProductCategory_ProductCategoryName(String productCategoryName);
 
     List<Product> findByShop_ShopId(Integer shopId);
@@ -17,6 +19,4 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     List<Product> findByProductNameContaining(String searchKey);
 
     List<Product> findByProductPriceLessThanEqual(Integer priceDemand);
-
-
 }

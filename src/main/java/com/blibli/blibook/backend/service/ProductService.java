@@ -57,6 +57,11 @@ public class ProductService {
         return productServiceImpl.findProductReviewList(products);
     }
 
+    public List<ProductReviewDTO> findProductByCountry(String productCountry) {
+        List<Product> products = productRepository.findByProductCountry(productCountry);
+        return productServiceImpl.findProductByCountry(products);
+    }
+
     public List<Product> findAll(){
         return productRepository.findAll();
     }

@@ -10,6 +10,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     User findFirstByUserId(Integer userId);
 
+    User findFirstByUserEmailAndUserPassword(String email, String password);
+
     @Transactional
     long deleteByUserId(Integer userId);
 }

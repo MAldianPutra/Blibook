@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -16,7 +17,9 @@ public class FileUploadServiceImpl {
     @Autowired
     private ProductService productService;
 
-    private String projectDir = "D:/Project/blibook.backend/src/main/resources/";
+    private String temp = "Project/blibook.backend/src/main/resources/";
+    private String projectDir = "D:/" + temp;
+    private String pathServer = "http://192.168.43.138:8010/" + temp;
     private String uploadDir = "uploads/";
 
     public Product uploadProductPhoto(@RequestParam Integer productId,
@@ -30,7 +33,7 @@ public class FileUploadServiceImpl {
         }
         multipartFile.transferTo(file);
         Product updateProduct = productService.findProductById(productId);
-        updateProduct.setProductPhotoLink(photoLink);
+        updateProduct.setProductPhotoLink(pathServer + uploadDir + "productPhoto/" + productId + ".jpg");
         return productService.save(updateProduct);
     }
 
@@ -45,7 +48,7 @@ public class FileUploadServiceImpl {
         }
         multipartFile.transferTo(file);
         Product updateProduct = productService.findProductById(productId);
-        updateProduct.setProductItemLink(itemLink);
+        updateProduct.setProductItemLink(pathServer + uploadDir + "productItem/" + productId + ".pdf");
         productService.save(updateProduct);
         return updateProduct;
     }

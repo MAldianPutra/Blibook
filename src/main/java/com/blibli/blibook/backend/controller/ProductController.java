@@ -54,6 +54,11 @@ public class ProductController {
         return productService.findProductReviewByPriceLessThan(priceDemand);
     }
 
+    @GetMapping(ApiPath.PRODUCT_SEARCH_BY_COUNTRY)
+    public List<ProductReviewDTO> findProductByCountry(@RequestParam ("country") String productCountry){
+        return productService.findProductByCountry(productCountry);
+    }
+
     @GetMapping(ApiPath.ALL_PRODUCTS)
     public List<Product> findAll(){
         return productService.findAll();

@@ -43,7 +43,7 @@ public class ShopController {
     }
 
 
-    @PostMapping(ApiPath.SHOP_UPDATE)
+    @PutMapping(ApiPath.SHOP_UPDATE)
     public Response shopRegister(@RequestParam ("shop") String shop) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         Shop objShop = mapper.readValue(shop, Shop.class);

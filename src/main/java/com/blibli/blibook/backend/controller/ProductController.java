@@ -1,6 +1,7 @@
 package com.blibli.blibook.backend.controller;
 
 import com.blibli.blibook.backend.ApiPath;
+import com.blibli.blibook.backend.dto.Response;
 import com.blibli.blibook.backend.model.entity.Product;
 import com.blibli.blibook.backend.dto.ProductDetailDTO;
 import com.blibli.blibook.backend.dto.ProductReviewDTO;
@@ -87,4 +88,24 @@ public class ProductController {
         return productService.findProductById(product.getProductId());
     }
 
+
+    @DeleteMapping(ApiPath.PRODUCT_DELETE_BY_ID)
+    public Response deleteProductByID(@RequestParam ("id") Integer productId) {
+        return productService.deleteProductByID(productId);
+    }
+
+
+    @PutMapping(ApiPath.PRODUCT_UPDATE_BY_ID)
+    public Product updateProductByID(@RequestParam ("product") String productString,
+                                      @RequestParam ("item") MultipartFile item,
+                                      @RequestParam ("photo") MultipartFile photo,
+                                      @RequestParam ("category") String productCategoryName) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        Product product = mapper.readValue(productString, Product.class);
+
+        productService.uploadProductItem(product.getProductId(), item);
+        productService.uploadProductPhoto(product.getProductId(), photo);
+
+        return productService.updateProductByID(product, productCategoryName);
+    }
 }

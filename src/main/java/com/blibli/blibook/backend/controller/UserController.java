@@ -69,7 +69,7 @@ public class UserController {
         return userService.register(objUser);
     }
 
-    @PostMapping(ApiPath.USER_UPDATE)
+    @PutMapping(ApiPath.USER_UPDATE)
     public Response updateUser(@RequestParam ("user") String user) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         User objUser = mapper.readValue(user, User.class);

@@ -26,6 +26,8 @@ public class ApiPath {
     public static final String PRODUCT_SEARCH_BY_NAME = PRODUCT + "/search";
     public static final String PRODUCT_SEARCH_BY_PRICE_LESS_THAN = PRODUCT + "/search/price";
     public static final String PRODUCT_SEARCH_BY_COUNTRY = PRODUCT + "/country";
+    public static final String PRODUCT_DELETE_BY_ID = PRODUCT + "/delete";
+    public static final String PRODUCT_UPDATE_BY_ID = PRODUCT + "/update";
 
     // CART ENDPOINTS
     public static final String CART = API + "/carts";

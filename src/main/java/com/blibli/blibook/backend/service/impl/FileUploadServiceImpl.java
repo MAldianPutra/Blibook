@@ -53,4 +53,11 @@ public class FileUploadServiceImpl {
         return updateProduct;
     }
 
+//    public Product deleteProductPhoto(@RequestParam Integer productId,
+//                                      @RequestParam MultipartFile multipartFile) {
+//        String photoLink = projectDir + uploadDir + "productPhoto/" + productId + ".jpg";
+//        File file = new File();
+//
+//    }
+
 }

@@ -22,6 +22,7 @@ public class FileUploadServiceImpl {
     private String pathServer = "http://192.168.43.138:8010/" + temp;
     private String uploadDir = "uploads/";
 
+
     public Product uploadProductPhoto(@RequestParam Integer productId,
                                       @RequestParam MultipartFile multipartFile) throws IOException {
         String photoLink = projectDir + uploadDir + "productPhoto/" + productId + ".jpg";

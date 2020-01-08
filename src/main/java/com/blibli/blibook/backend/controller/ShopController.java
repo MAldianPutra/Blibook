@@ -12,6 +12,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+
 
 @Api
 @RestController
@@ -26,13 +29,6 @@ public class ShopController {
         return shopService.findByShopId(id);
     }
 
-    // Not Yet Completed
-//    @PostMapping(ApiPath.SHOP)
-//    public Shop save(@RequestBody Shop shop){
-//        return shopService.save(shop);
-//    }
-
-
     @PostMapping(ApiPath.SHOP_REGISTER)
     public Response shopRegister(@RequestParam ("shop") String shop,
                                  @RequestParam ("userId") Integer userId) throws IOException {
@@ -44,7 +40,7 @@ public class ShopController {
 
 
     @PutMapping(ApiPath.SHOP_UPDATE)
-    public Response shopRegister(@RequestParam ("shop") String shop) throws IOException {
+    public Response shopUpdate(@RequestParam ("shop") String shop) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         Shop objShop = mapper.readValue(shop, Shop.class);
 
@@ -55,7 +51,10 @@ public class ShopController {
     @GetMapping(ApiPath.SHOP_BY_USER_ID)
     public Response findShopByUserId(@RequestParam Integer userId) {
         return shopService.findShopByUserId(userId);
+=======
+    @GetMapping(ApiPath.ALL_SHOP)
+    public List<Shop> findAll(){
+        return shopService.findAll();
     }
-
-
+      
 }

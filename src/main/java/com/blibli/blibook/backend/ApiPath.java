@@ -21,6 +21,8 @@ public class ApiPath {
 
     // PRODUCT ENDPOINTS
     public static final String PRODUCT = API + "/products";
+    public static final String PRODUCT_UPDATE = PRODUCT + "/update";
+    public static final String PRODUCT_DELETE = PRODUCT + "/delete";
     public static final String PRODUCT_BY_PRODUCT_CATEGORY_ID = PRODUCT + "/category";
     public static final String PRODUCT_BY_SHOP_ID = PRODUCT + "/shop";
     public static final String PRODUCT_SEARCH_BY_NAME = PRODUCT + "/search";
@@ -31,11 +33,13 @@ public class ApiPath {
 
     // CART ENDPOINTS
     public static final String CART = API + "/carts";
+    public static final String CART_DELETE = CART + "/delete";
     public static final String CART_BY_USER_ID = CART + "/user" ;
     public static final String ADD_PRODUCT_TO_CART = CART + "/addProduct";
 
     // WISHLIST ENDPOINTS
     public static final String WISHLIST = API + "/wishlists";
+    public static final String WISHLIST_DELETE = WISHLIST + "/delete";
     public static final String WISHLIST_BY_USER_ID = WISHLIST + "/user" ;
     public static final String WISHLIST_CART_DELETE_BY_ID = WISHLIST + "/carts/delete" ;
     public static final String ADD_PRODUCT_TO_WISHLIST = WISHLIST + "/addProduct";
@@ -56,6 +60,7 @@ public class ApiPath {
     // ADMIN ENDPOINTS
     public static final String ADMIN = API + "/admin";
     public static final String ALL_USERS =  ADMIN + "/users";
+    public static final String ALL_SHOP = ADMIN + "/shops";
     public static final String ALL_PRODUCTS = ADMIN + "/products";
     public static final String ALL_CARTS =  ADMIN + "/carts";
     public static final String ALL_ORDER = ADMIN + "/orders";

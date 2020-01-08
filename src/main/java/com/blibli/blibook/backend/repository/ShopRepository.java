@@ -11,6 +11,8 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
     Shop findFirstByShopId(Integer shopId);
 
     Shop findFirstByUserUserId(Integer userId);
+  
+    Integer countShopByUser_UserId(Integer userId);
 
     @Transactional
     long deleteByShopId(Integer shopId);

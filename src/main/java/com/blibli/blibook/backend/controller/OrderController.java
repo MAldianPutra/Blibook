@@ -63,20 +63,10 @@ public class OrderController {
         return orderService.findUserLibrary(userId, orderStatusId);
     }
 
-//    @PostMapping(ApiPath.ORDER_INITIATE)
-//    public String initiateOrder(@RequestParam Integer userId,
-//                               @RequestParam Integer productId){
-//        // orderStatusId 1 = NOT_PAID
-//        Integer orderStatusId = 1;
-//        if(orderService.findOrderExists(userId, productId)){
-//            return "Order is already Exists";
-//        }
-//        else
-//        {
-//            constructOrder(orderStatusId, userId, productId);
-//            return "Order Initiated";
-//        }
-//    }
+    @GetMapping(ApiPath.ALL_ORDER)
+    public List<Order> findAll(){
+        return orderService.findAll();
+    }
 
     @PostMapping(ApiPath.ORDER_INITIATE)
     public Response initiateOrder(@RequestParam Integer userId,

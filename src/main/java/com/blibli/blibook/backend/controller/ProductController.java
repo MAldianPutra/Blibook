@@ -9,9 +9,7 @@ import com.blibli.blibook.backend.model.entity.ProductCategory;
 import com.blibli.blibook.backend.model.entity.ProductStatus;
 import com.blibli.blibook.backend.model.entity.Shop;
 import com.blibli.blibook.backend.service.ProductService;
-import com.blibli.blibook.backend.service.impl.FileUploadServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.org.apache.xpath.internal.operations.Mult;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -67,12 +65,11 @@ public class ProductController {
 
     // Kaitkan dengan cek login
     @PostMapping(ApiPath.PRODUCT)
-    public Product save(@RequestParam ("shop") Integer shopId,
-                        @RequestParam ("category") String productCategoryName,
-                        @RequestParam ("item") MultipartFile item,
-                        @RequestParam ("photo") MultipartFile photo,
-                        @RequestParam ("product") String productString
-                        ) throws IOException {
+    public Product createProduct(@RequestParam ("shop") Integer shopId,
+                                 @RequestParam ("category") String productCategoryName,
+                                 @RequestParam ("item") MultipartFile item,
+                                 @RequestParam ("photo") MultipartFile photo,
+                                 @RequestParam ("product") String productString) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         Product product = mapper.readValue(productString, Product.class);
         Optional<ProductCategory> productCategory = productService.findProductCategoryByProductCategoryName(productCategoryName);
@@ -87,7 +84,6 @@ public class ProductController {
         productService.uploadProductPhoto(product.getProductId(), photo);
         return productService.findProductById(product.getProductId());
     }
-
 
     @DeleteMapping(ApiPath.PRODUCT_DELETE_BY_ID)
     public Response deleteProductByID(@RequestParam ("id") Integer productId) {
@@ -107,5 +103,10 @@ public class ProductController {
         productService.uploadProductPhoto(product.getProductId(), photo);
 
         return productService.updateProductByID(product, productCategoryName);
+    }
+
+    @DeleteMapping(ApiPath.PRODUCT_DELETE)
+    public boolean deleteProduct(@RequestParam ("id") Integer productId){
+        return productService.deleteByProductId(productId) > 0;
     }
 }

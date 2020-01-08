@@ -10,6 +10,9 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 
 @Service
 public class ShopService {
@@ -20,13 +23,14 @@ public class ShopService {
     @Autowired
     private UserRepository userRepository;
 
+    public Optional<User> findUserId(Integer userId){
+        return userRepository.findById(userId);
+    }
+
+
     public Shop findByShopId(Integer shopId){
         return shopRepository.findFirstByShopId(shopId);
     }
-
-//    public Shop save(Shop shop){
-//        return shopRepository.save(shop);
-//    }
 
     public Response shopRegister (Shop shop, Integer userId) {
         ArrayList<Shop> objShop = new ArrayList<>();
@@ -47,8 +51,6 @@ public class ShopService {
         } catch (DataAccessException ex) {
             response = new Response(500, ex.getCause().getMessage(), null);
         }
-
-
         return response;
     }
 
@@ -95,6 +97,13 @@ public class ShopService {
         }
 
         return response;
+
+    public Integer countShopByUserId(Integer userId){
+        return shopRepository.countShopByUser_UserId(userId);
+    }
+
+    public List<Shop> findAll(){
+        return shopRepository.findAll();
     }
 
 }

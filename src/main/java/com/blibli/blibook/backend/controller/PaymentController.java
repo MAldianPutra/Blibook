@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Api
@@ -24,6 +25,11 @@ public class PaymentController {
 
     @Autowired
     private OrderService orderService;
+
+    @GetMapping(ApiPath.ALL_PAYMENT)
+    public List<Payment> findAll(){
+        return paymentService.findAll();
+    }
 
     @PostMapping(ApiPath.PAYMENT)
     public Payment paymentProduct(@RequestParam Integer orderId){

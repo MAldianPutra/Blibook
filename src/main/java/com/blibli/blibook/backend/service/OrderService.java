@@ -102,6 +102,10 @@ public class OrderService {
         return orderRepository.existsOrderByUser_UserIdAndProduct_ProductId(userId, productId);
     }
 
+    public List<Order> findAll(){
+        return orderRepository.findAll();
+    }
+
     public Order save(Order order){
         return orderRepository.save(order);
     }

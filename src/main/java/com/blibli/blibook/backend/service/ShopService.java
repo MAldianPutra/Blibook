@@ -1,6 +1,6 @@
 package com.blibli.blibook.backend.service;
 
-import com.blibli.blibook.backend.dto.Response;
+import com.blibli.blibook.backend.dto.ResponseDTO;
 import com.blibli.blibook.backend.model.entity.Shop;
 import com.blibli.blibook.backend.model.entity.User;
 import com.blibli.blibook.backend.repository.ShopRepository;
@@ -32,9 +32,9 @@ public class ShopService {
         return shopRepository.findFirstByShopId(shopId);
     }
 
-    public Response shopRegister (Shop shop, Integer userId) {
+    public ResponseDTO shopRegister (Shop shop, Integer userId) {
         ArrayList<Shop> objShop = new ArrayList<>();
-        Response response;
+        ResponseDTO response;
         User user = userRepository.findFirstByUserId(userId);
         shop.setUser(user);
 
@@ -43,21 +43,21 @@ public class ShopService {
             objShop.add(shopRepository.findFirstByShopId(shop.getShopId()));
 
             if (objShop.get(0) != null) {
-                response = new Response(200, "Success", objShop);
+                response = new ResponseDTO(200, "Success", objShop);
             }
             else {
-                response = new Response(400, "Failed!", null);
+                response = new ResponseDTO(400, "Failed!", null);
             }
         } catch (DataAccessException ex) {
-            response = new Response(500, ex.getCause().getMessage(), null);
+            response = new ResponseDTO(500, ex.getCause().getMessage(), null);
         }
         return response;
     }
 
 
-    public Response updateShop (Shop shop) {
+    public ResponseDTO updateShop (Shop shop) {
         ArrayList<Shop> objShop = new ArrayList<>();
-        Response response;
+        ResponseDTO response;
 
         try {
             Shop temp = shopRepository.findFirstByShopId(shop.getShopId());
@@ -70,33 +70,33 @@ public class ShopService {
             objShop.add(shopRepository.findFirstByShopId(temp.getShopId()));
 
             if (objShop.get(0) != null) {
-                response = new Response(200, "Success", objShop);
+                response = new ResponseDTO(200, "Success", objShop);
             }
             else {
-                response = new Response(400, "Failed!", null);
+                response = new ResponseDTO(400, "Failed!", null);
             }
         } catch (DataAccessException ex) {
-            response = new Response(500, ex.getCause().getMessage(), null);
+            response = new ResponseDTO(500, ex.getCause().getMessage(), null);
         }
 
         return response;
     }
 
 
-    public Response findShopByUserId (Integer userId) {
+    public ResponseDTO findShopByUserId (Integer userId) {
         ArrayList<Shop> objShop = new ArrayList<>();
-        Response response;
+        ResponseDTO response;
         Shop shop = shopRepository.findFirstByUserUserId(userId);
         objShop.add(shop);
 
         if (objShop.get(0) != null) {
-            response = new Response(200, "Success", objShop);
-        }
-        else {
-            response = new Response(400, "Shop Not Found!", null);
+            response = new ResponseDTO(200, "Success", objShop);
+        } else {
+            response = new ResponseDTO(400, "Shop Not Found!", null);
         }
 
         return response;
+    }
 
     public Integer countShopByUserId(Integer userId){
         return shopRepository.countShopByUser_UserId(userId);

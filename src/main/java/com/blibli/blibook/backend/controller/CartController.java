@@ -1,7 +1,7 @@
 package com.blibli.blibook.backend.controller;
 
 import com.blibli.blibook.backend.ApiPath;
-import com.blibli.blibook.backend.dto.Response;
+import com.blibli.blibook.backend.dto.ResponseDTO;
 import com.blibli.blibook.backend.model.entity.*;
 import com.blibli.blibook.backend.service.CartService;
 import io.swagger.annotations.Api;
@@ -20,28 +20,14 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-//    @GetMapping(ApiPath.CART_BY_USER_ID)
-//    public List<Cart> findCartByUser(@RequestParam Integer userId){
-//        // cartStatusId 1 = CART
-//        Integer cartStatusId = 1;
-//        return cartService.findByUserAndCartStatus(userId, cartStatusId);
-//    }
-
-//    @GetMapping(ApiPath.WISHLIST_BY_USER_ID)
-//    public List<Cart> findWishlistByUser(@RequestParam Integer userId){
-//        // cartStatusId 2 = WISHLIST
-//        Integer cartStatusId = 2;
-//        return cartService.findByUserAndCartStatus(userId, cartStatusId);
-//    }
-
     @GetMapping(ApiPath.CART_BY_USER_ID)
-    public Response findCartByUser(@RequestParam Integer userId){
+    public ResponseDTO findCartByUser(@RequestParam Integer userId){
         Integer cartStatusId = 1;
         return cartService.findByUserAndCartStatus(userId, cartStatusId);
     }
 
     @GetMapping(ApiPath.WISHLIST_BY_USER_ID)
-    public Response findWishlistByUser(@RequestParam Integer userId){
+    public ResponseDTO findWishlistByUser(@RequestParam Integer userId){
         Integer cartStatusId = 2;
         return cartService.findByUserAndCartStatus(userId, cartStatusId);
     }
@@ -69,7 +55,7 @@ public class CartController {
 
 
     @DeleteMapping(ApiPath.WISHLIST_CART_DELETE_BY_ID)
-    public Response deleteWishlistCartUser(@RequestParam Integer cartId){
+    public ResponseDTO deleteWishlistCartUser(@RequestParam Integer cartId){
         return cartService.deleteWishlistCartUser(cartId);
     }
 

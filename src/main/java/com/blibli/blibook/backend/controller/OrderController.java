@@ -1,7 +1,7 @@
 package com.blibli.blibook.backend.controller;
 
 import com.blibli.blibook.backend.ApiPath;
-import com.blibli.blibook.backend.dto.Response;
+import com.blibli.blibook.backend.dto.ResponseDTO;
 import com.blibli.blibook.backend.model.entity.*;
 import com.blibli.blibook.backend.dto.ProductPhotoDTO;
 import com.blibli.blibook.backend.dto.ProductReviewDTO;
@@ -43,15 +43,8 @@ public class OrderController {
         return orderService.findByUserIdAndOrderStatusId(userId, orderStatusId);
     }
 
-//    @GetMapping(ApiPath.ORDER_WAITING_CONFIRM_BY_SHOP_ID)
-//    public List<ProductReviewDTO> shopOrderWaitingConfirm(@RequestParam ("id") Integer shopId){
-//        // orderStatusId 2 = WAITING_CONFIRMATION
-//        Integer orderStatusId = 2;
-//        return orderService.findByShopIdAndOrderStatusId(shopId, orderStatusId);
-//    }
-
     @GetMapping(ApiPath.ORDER_WAITING_CONFIRM_BY_SHOP_ID)
-    public Response findOrderWaitingShopId(@RequestParam ("id") Integer shopId){
+    public ResponseDTO findOrderWaitingShopId(@RequestParam ("id") Integer shopId){
         Integer orderStatusId = 2;
         return orderService.findOrderWaitingShopId(shopId, orderStatusId);
     }
@@ -69,9 +62,9 @@ public class OrderController {
     }
 
     @PostMapping(ApiPath.ORDER_INITIATE)
-    public Response initiateOrder(@RequestParam Integer userId,
-                                @RequestParam Integer productId){
-        Response response;
+    public ResponseDTO initiateOrder(@RequestParam Integer userId,
+                                     @RequestParam Integer productId){
+        ResponseDTO response;
 
         Integer orderStatusId = 1;
 //        if(orderService.findOrderExists(userId, productId)){
@@ -101,23 +94,9 @@ public class OrderController {
         return orderService.save(updateOrder);
     }
 
-//    private void constructOrder(@RequestParam Integer statusId,
-//                                @RequestParam Integer userId,
-//                                @RequestParam Integer productId){
-//        Optional<OrderStatus> orderStatus = orderService.findOrderStatusId(statusId);
-//        Optional<User> user = orderService.findUserId(userId);
-//        Optional<Product> product = orderService.findProductId(productId);
-//        Order newOrder = new Order();
-//        orderStatus.ifPresent(newOrder::setOrderStatus);
-//        user.ifPresent(newOrder::setUser);
-//        product.ifPresent(newOrder::setProduct);
-//        newOrder.setShop(product.get().getShop());
-//        orderService.save(newOrder);
-//    }
-
-    private Response constructOrder(@RequestParam Integer statusId,
-                                    @RequestParam Integer userId,
-                                    @RequestParam Integer productId){
+    private ResponseDTO constructOrder(@RequestParam Integer statusId,
+                                       @RequestParam Integer userId,
+                                       @RequestParam Integer productId){
         Optional<OrderStatus> orderStatus = orderService.findOrderStatusId(statusId);
         Optional<User> user = orderService.findUserId(userId);
         Optional<Product> product = orderService.findProductId(productId);

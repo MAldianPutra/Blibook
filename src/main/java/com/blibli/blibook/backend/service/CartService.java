@@ -1,14 +1,13 @@
 package com.blibli.blibook.backend.service;
 
 import com.blibli.blibook.backend.dto.CartDTO;
-import com.blibli.blibook.backend.dto.Response;
+import com.blibli.blibook.backend.dto.ResponseDTO;
 import com.blibli.blibook.backend.model.entity.*;
 import com.blibli.blibook.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,28 +36,24 @@ public class CartService {
         return productRepository.findById(productId);
     }
 
-//    public List<Cart> findByUserAndCartStatus(Integer userId, Integer cartStatusId){
-//        return cartRepository.findByUser_UserIdAndCartStatus_CartStatusId(userId, cartStatusId);
-//    }
-
-    public Response findByUserAndCartStatus(Integer userId, Integer cartStatusId){
+    public ResponseDTO findByUserAndCartStatus(Integer userId, Integer cartStatusId){
         List<Cart> data = cartRepository.findByUser_UserIdAndCartStatus_CartStatusId(userId, cartStatusId);
         ArrayList<CartDTO> cartDTOList = new ArrayList<>();
-        Response response;
+        ResponseDTO response;
 
         for (Cart dataProduct : data) {
             Product product = productRepository.findFirstByProductId(dataProduct.getProduct().getProductId());
             cartDTOList.add(new CartDTO(dataProduct.getCartId(), product));
         }
 
-        response = new Response(200, "Success", cartDTOList);
+        response = new ResponseDTO(200, "Success", cartDTOList);
 
         return response;
     }
 
-    public Response deleteWishlistCartUser(Integer cartId) {
+    public ResponseDTO deleteWishlistCartUser(Integer cartId) {
         ArrayList<CartDTO> cartDTOList = new ArrayList<>();
-        Response response;
+        ResponseDTO response;
 
         try {
             Cart cart = cartRepository.findFirstByCartId(cartId);
@@ -68,12 +63,12 @@ public class CartService {
 
             if (success > 0) {
                 cartDTOList.add(new CartDTO(cartId, product));
-                response = new Response(200, "Sukses", cartDTOList);
+                response = new ResponseDTO(200, "Sukses", cartDTOList);
             } else {
-                response = new Response(404, "ID Not Found", null);
+                response = new ResponseDTO(404, "ID Not Found", null);
             }
         } catch (DataAccessException ex) {
-            response = new Response(500, ex.getCause().getMessage(), null);
+            response = new ResponseDTO(500, ex.getCause().getMessage(), null);
         }
 
         return response;
@@ -87,7 +82,4 @@ public class CartService {
         return cartRepository.findAll();
     }
 
-    public long deleteByCartId(Integer cartId){
-        return cartRepository.deleteByCartId(cartId);
-    }
 }

@@ -1,7 +1,7 @@
 package com.blibli.blibook.backend.controller;
 
 import com.blibli.blibook.backend.ApiPath;
-import com.blibli.blibook.backend.dto.Response;
+import com.blibli.blibook.backend.dto.ResponseDTO;
 import com.blibli.blibook.backend.model.entity.Product;
 import com.blibli.blibook.backend.dto.ProductDetailDTO;
 import com.blibli.blibook.backend.dto.ProductReviewDTO;
@@ -86,7 +86,7 @@ public class ProductController {
     }
 
     @DeleteMapping(ApiPath.PRODUCT_DELETE_BY_ID)
-    public Response deleteProductByID(@RequestParam ("id") Integer productId) {
+    public ResponseDTO deleteProductByID(@RequestParam ("id") Integer productId) {
         return productService.deleteProductByID(productId);
     }
 
@@ -105,8 +105,4 @@ public class ProductController {
         return productService.updateProductByID(product, productCategoryName);
     }
 
-    @DeleteMapping(ApiPath.PRODUCT_DELETE)
-    public boolean deleteProduct(@RequestParam ("id") Integer productId){
-        return productService.deleteByProductId(productId) > 0;
-    }
 }

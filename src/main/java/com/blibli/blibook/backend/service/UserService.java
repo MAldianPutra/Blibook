@@ -1,6 +1,6 @@
 package com.blibli.blibook.backend.service;
 
-import com.blibli.blibook.backend.dto.Response;
+import com.blibli.blibook.backend.dto.ResponseDTO;
 import com.blibli.blibook.backend.model.entity.User;
 import com.blibli.blibook.backend.model.entity.UserRole;
 import com.blibli.blibook.backend.model.entity.UserStatus;
@@ -27,47 +27,46 @@ public class UserService {
     @Autowired
     private UserRoleRepository userRoleRepository;
 
-    public Optional<UserStatus> findUserStatusId(Integer userStatusId){
+    public Optional<UserStatus> findUserStatusId(Integer userStatusId) {
         return userStatusRepository.findById(userStatusId);
     }
 
-    public Optional<UserRole> findUserRoleId(Integer userRoleId){
+    public Optional<UserRole> findUserRoleId(Integer userRoleId) {
         return userRoleRepository.findById(userRoleId);
     }
 
-    public User findFirstByUserId(Integer userId){
+    public User findFirstByUserId(Integer userId) {
         return userRepository.findFirstByUserId(userId);
     }
 
-    public User save (User user){
+    public User save(User user) {
         return userRepository.save(user);
     }
 
-    public Response register (User user) {
+    public ResponseDTO register(User user) {
         ArrayList<User> objUser = new ArrayList<>();
-        Response response;
+        ResponseDTO response;
 
         try {
             userRepository.save(user);
             objUser.add(userRepository.findFirstByUserId(user.getUserId()));
 
             if (objUser.get(0) != null) {
-                response = new Response(200, "Success", objUser);
-            }
-            else {
-                response = new Response(400, "Failed!", null);
+                response = new ResponseDTO(200, "Success", objUser);
+            } else {
+                response = new ResponseDTO(400, "Failed!", null);
             }
         } catch (DataAccessException ex) {
-            response = new Response(500, ex.getCause().getMessage(), null);
+            response = new ResponseDTO(500, ex.getCause().getMessage(), null);
         }
 
         return response;
     }
 
 
-    public Response updateUser (User user) {
+    public ResponseDTO updateUser(User user) {
         ArrayList<User> objUser = new ArrayList<>();
-        Response response;
+        ResponseDTO response;
 
         try {
             User temp = userRepository.findFirstByUserId(user.getUserId());
@@ -81,39 +80,39 @@ public class UserService {
             objUser.add(userRepository.findFirstByUserId(temp.getUserId()));
 
             if (objUser.get(0) != null) {
-                response = new Response(200, "Success", objUser);
-            }
-            else {
-                response = new Response(400, "Failed!", null);
+                response = new ResponseDTO(200, "Success", objUser);
+            } else {
+                response = new ResponseDTO(400, "Failed!", null);
             }
         } catch (DataAccessException ex) {
-            response = new Response(500, ex.getCause().getMessage(), null);
+            response = new ResponseDTO(500, ex.getCause().getMessage(), null);
         }
 
         return response;
     }
 
 
-    public Response login (String email, String password) {
+    public ResponseDTO login(String email, String password) {
         ArrayList<User> objUser = new ArrayList<>();
-        Response response;
+        ResponseDTO response;
 
         objUser.add(userRepository.findFirstByUserEmailAndUserPassword(email, password));
 
         if (objUser.get(0) != null) {
-            response = new Response(200, "Success Login", objUser);
+            response = new ResponseDTO(200, "Success Login", objUser);
         } else {
-            response = new Response(404, "User Not Found!", null);
+            response = new ResponseDTO(404, "User Not Found!", null);
         }
 
         return response;
-
-    public List<User> findAll(){
-        return userRepository.findAll();
     }
 
-    public long deleteByUserId(Integer userId){
-        return userRepository.deleteByUserId(userId);
-    }
+        public List<User> findAll () {
+            return userRepository.findAll();
+        }
+
+        public long deleteByUserId (Integer userId){
+            return userRepository.deleteByUserId(userId);
+        }
 
 }

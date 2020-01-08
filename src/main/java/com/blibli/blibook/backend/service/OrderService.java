@@ -1,13 +1,12 @@
 package com.blibli.blibook.backend.service;
 
 import com.blibli.blibook.backend.dto.OrderShopDTO;
-import com.blibli.blibook.backend.dto.Response;
+import com.blibli.blibook.backend.dto.ResponseDTO;
 import com.blibli.blibook.backend.model.entity.*;
 import com.blibli.blibook.backend.dto.ProductPhotoDTO;
 import com.blibli.blibook.backend.dto.ProductReviewDTO;
 import com.blibli.blibook.backend.repository.*;
 import com.blibli.blibook.backend.service.impl.OrderServiceImpl;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -69,26 +68,26 @@ public class OrderService {
         return orderServiceImpl.findOrderList(orderList);
     }
 
-    public Response findOrderWaitingShopId(Integer shopId, Integer orderStatusId){
+    public ResponseDTO findOrderWaitingShopId(Integer shopId, Integer orderStatusId){
 
         ArrayList<OrderShopDTO> orderShopList = new ArrayList<>();
-        Response response;
+        ResponseDTO response;
 
         try {
             List<Order> orderList = orderRepository.findByShop_ShopIdAndOrderStatus_OrderStatusId(shopId, orderStatusId);
 
             if (orderList.isEmpty()) {
-                response = new Response(404, "Data Not Found!", null);
+                response = new ResponseDTO(404, "Data Not Found!", null);
             } else {
                 for (Order order : orderList) {
                     orderShopList.add(new OrderShopDTO(order.getOrderId(),
                             userRepository.findFirstByUserId(order.getUser().getUserId()),
                             productRepository.findFirstByProductId(order.getProduct().getProductId())));
                 }
-                response = new Response(200, "Success", orderShopList);
+                response = new ResponseDTO(200, "Success", orderShopList);
             }
         } catch (DataAccessException ex) {
-            response = new Response(500, ex.getCause().getMessage(), null);
+            response = new ResponseDTO(500, ex.getCause().getMessage(), null);
         }
 
         return response;
@@ -110,21 +109,21 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public Response findOrder(Order order) {
+    public ResponseDTO findOrder(Order order) {
         ArrayList<Order> objOrder = new ArrayList<>();
-        Response response;
+        ResponseDTO response;
 
         try {
             objOrder.add(orderRepository.findFirstByOrderId(order.getOrderId()));
 
             if (objOrder.get(0) != null) {
-                response = new Response(200, "Success", objOrder);
+                response = new ResponseDTO(200, "Success", objOrder);
             }
             else {
-                response = new Response(400, "Failed!", null);
+                response = new ResponseDTO(400, "Failed!", null);
             }
         } catch (DataAccessException ex) {
-            response = new Response(500, ex.getCause().getMessage(), null);
+            response = new ResponseDTO(500, ex.getCause().getMessage(), null);
         }
 
         return response;

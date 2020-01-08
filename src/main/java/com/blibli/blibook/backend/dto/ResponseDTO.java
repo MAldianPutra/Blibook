@@ -8,7 +8,7 @@ import java.util.ArrayList;
 @Data
 @AllArgsConstructor
 
-public class Response {
+public class ResponseDTO {
     public Integer status;
     public String message;
     public ArrayList data;

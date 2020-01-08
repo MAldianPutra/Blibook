@@ -1,7 +1,7 @@
 package com.blibli.blibook.backend.controller;
 
 import com.blibli.blibook.backend.ApiPath;
-import com.blibli.blibook.backend.dto.Response;
+import com.blibli.blibook.backend.dto.ResponseDTO;
 import com.blibli.blibook.backend.model.entity.User;
 import com.blibli.blibook.backend.model.entity.UserRole;
 import com.blibli.blibook.backend.model.entity.UserStatus;
@@ -15,8 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,18 +50,8 @@ public class UserController {
         return userService.findAll();
     }
 
-    //Testing. Delete Later
-//    @PostMapping(ApiPath.USER_SIGNUP)
-//    public User saveUser(@RequestBody User user){
-//        Optional<UserRole> userRole = userService.findUserRoleId(2);
-//        userRole.ifPresent(user::setUserRole);
-//        Optional<UserStatus> userStatus = userService.findUserStatusId(1);
-//        userStatus.ifPresent(user::setUserStatus);
-//        return userService.save(user);
-//    }
-
     @PostMapping(ApiPath.USER_REGISTER)
-    public Response register(@RequestParam ("user") String user) throws IOException {
+    public ResponseDTO register(@RequestParam ("user") String user) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         User objUser = mapper.readValue(user, User.class);
 
@@ -76,7 +64,7 @@ public class UserController {
     }
 
     @PutMapping(ApiPath.USER_UPDATE)
-    public Response updateUser(@RequestParam ("user") String user) throws IOException {
+    public ResponseDTO updateUser(@RequestParam ("user") String user) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         User objUser = mapper.readValue(user, User.class);
 
@@ -84,7 +72,7 @@ public class UserController {
     }
 
     @PostMapping(ApiPath.USER_LOGIN)
-    public Response login(@RequestParam("email") String email, @RequestParam("password") String password) {
+    public ResponseDTO login(@RequestParam("email") String email, @RequestParam("password") String password) {
         return userService.login(email, password);
     }
 

@@ -1,6 +1,6 @@
 package com.blibli.blibook.backend.service;
 
-import com.blibli.blibook.backend.dto.Response;
+import com.blibli.blibook.backend.dto.ResponseDTO;
 import com.blibli.blibook.backend.model.entity.Product;
 import com.blibli.blibook.backend.dto.ProductDetailDTO;
 import com.blibli.blibook.backend.dto.ProductReviewDTO;
@@ -97,21 +97,21 @@ public class ProductService {
         return productServiceImpl.findShopByShopId(shopId);
     }
 
-    public Response deleteProductByID(Integer productId) {
+    public ResponseDTO deleteProductByID(Integer productId) {
         ArrayList<Product> objProduct = new ArrayList<>();
-        Response response;
+        ResponseDTO response;
 
         try {
             Product product = productRepository.findFirstByProductId(productId);
 
             if (productRepository.deleteByProductId(productId) > 0) {
                 objProduct.add(product);
-                response = new Response(200, "Success", objProduct);
+                response = new ResponseDTO(200, "Success", objProduct);
             } else {
-                response = new Response(404, "ID Not Found!", null);
+                response = new ResponseDTO(404, "ID Not Found!", null);
             }
         } catch (DataAccessException ex) {
-            response = new Response(500, ex.getCause().getMessage(), null);
+            response = new ResponseDTO(500, ex.getCause().getMessage(), null);
         }
 
         return response;
@@ -135,4 +135,5 @@ public class ProductService {
 
         return productRepository.save(temp);
     }
+
 }

@@ -1,6 +1,7 @@
 package com.blibli.blibook.backend.controller;
 
 import com.blibli.blibook.backend.ApiPath;
+import com.blibli.blibook.backend.dto.Response;
 import com.blibli.blibook.backend.model.entity.*;
 import com.blibli.blibook.backend.dto.ProductPhotoDTO;
 import com.blibli.blibook.backend.dto.ProductReviewDTO;
@@ -42,11 +43,17 @@ public class OrderController {
         return orderService.findByUserIdAndOrderStatusId(userId, orderStatusId);
     }
 
+//    @GetMapping(ApiPath.ORDER_WAITING_CONFIRM_BY_SHOP_ID)
+//    public List<ProductReviewDTO> shopOrderWaitingConfirm(@RequestParam ("id") Integer shopId){
+//        // orderStatusId 2 = WAITING_CONFIRMATION
+//        Integer orderStatusId = 2;
+//        return orderService.findByShopIdAndOrderStatusId(shopId, orderStatusId);
+//    }
+
     @GetMapping(ApiPath.ORDER_WAITING_CONFIRM_BY_SHOP_ID)
-    public List<ProductReviewDTO> shopOrderWaitingConfirm(@RequestParam ("id") Integer shopId){
-        // orderStatusId 2 = WAITING_CONFIRMATION
+    public Response findOrderWaitingShopId(@RequestParam ("id") Integer shopId){
         Integer orderStatusId = 2;
-        return orderService.findByShopIdAndOrderStatusId(shopId, orderStatusId);
+        return orderService.findOrderWaitingShopId(shopId, orderStatusId);
     }
 
     @GetMapping(ApiPath.LIBRARY_BY_USER_ID)
@@ -62,18 +69,22 @@ public class OrderController {
     }
 
     @PostMapping(ApiPath.ORDER_INITIATE)
-    public String initiateOrder(@RequestParam Integer userId,
-                               @RequestParam Integer productId){
-        // orderStatusId 1 = NOT_PAID
+    public Response initiateOrder(@RequestParam Integer userId,
+                                @RequestParam Integer productId){
+        Response response;
+
         Integer orderStatusId = 1;
-        if(orderService.findOrderExists(userId, productId)){
-            return "Order is already Exists";
-        }
-        else
-        {
-            constructOrder(orderStatusId, userId, productId);
-            return "Order Initiated";
-        }
+//        if(orderService.findOrderExists(userId, productId)){
+//            response = new Response(500, "Failed!", null);
+//        }
+//        else
+//        {
+//            response = constructOrder(orderStatusId, userId, productId);
+//        }
+
+        response = constructOrder(orderStatusId, userId, productId);
+
+        return response;
     }
 
     @PutMapping(ApiPath.ORDER_CONFIRMATION)
@@ -90,9 +101,23 @@ public class OrderController {
         return orderService.save(updateOrder);
     }
 
-    private void constructOrder(@RequestParam Integer statusId,
-                                @RequestParam Integer userId,
-                                @RequestParam Integer productId){
+//    private void constructOrder(@RequestParam Integer statusId,
+//                                @RequestParam Integer userId,
+//                                @RequestParam Integer productId){
+//        Optional<OrderStatus> orderStatus = orderService.findOrderStatusId(statusId);
+//        Optional<User> user = orderService.findUserId(userId);
+//        Optional<Product> product = orderService.findProductId(productId);
+//        Order newOrder = new Order();
+//        orderStatus.ifPresent(newOrder::setOrderStatus);
+//        user.ifPresent(newOrder::setUser);
+//        product.ifPresent(newOrder::setProduct);
+//        newOrder.setShop(product.get().getShop());
+//        orderService.save(newOrder);
+//    }
+
+    private Response constructOrder(@RequestParam Integer statusId,
+                                    @RequestParam Integer userId,
+                                    @RequestParam Integer productId){
         Optional<OrderStatus> orderStatus = orderService.findOrderStatusId(statusId);
         Optional<User> user = orderService.findUserId(userId);
         Optional<Product> product = orderService.findProductId(productId);
@@ -102,6 +127,8 @@ public class OrderController {
         product.ifPresent(newOrder::setProduct);
         newOrder.setShop(product.get().getShop());
         orderService.save(newOrder);
+
+        return orderService.findOrder(newOrder);
     }
 
 }

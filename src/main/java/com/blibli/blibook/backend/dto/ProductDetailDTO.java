@@ -20,6 +20,7 @@ public class ProductDetailDTO {
     private String productLanguage;
     private String productVariant;
     private String productPhotoLink;
+    private String productCategory;
 
     private Integer shopId;
     private String shopName;

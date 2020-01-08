@@ -1,6 +1,7 @@
 package com.blibli.blibook.backend.controller;
 
 import com.blibli.blibook.backend.ApiPath;
+import com.blibli.blibook.backend.dto.Response;
 import com.blibli.blibook.backend.model.entity.*;
 import com.blibli.blibook.backend.service.CartService;
 import io.swagger.annotations.Api;
@@ -19,16 +20,28 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
+//    @GetMapping(ApiPath.CART_BY_USER_ID)
+//    public List<Cart> findCartByUser(@RequestParam Integer userId){
+//        // cartStatusId 1 = CART
+//        Integer cartStatusId = 1;
+//        return cartService.findByUserAndCartStatus(userId, cartStatusId);
+//    }
+
+//    @GetMapping(ApiPath.WISHLIST_BY_USER_ID)
+//    public List<Cart> findWishlistByUser(@RequestParam Integer userId){
+//        // cartStatusId 2 = WISHLIST
+//        Integer cartStatusId = 2;
+//        return cartService.findByUserAndCartStatus(userId, cartStatusId);
+//    }
+
     @GetMapping(ApiPath.CART_BY_USER_ID)
-    public List<Cart> findCartByUser(@RequestParam Integer userId){
-        // cartStatusId 1 = CART
+    public Response findCartByUser(@RequestParam Integer userId){
         Integer cartStatusId = 1;
         return cartService.findByUserAndCartStatus(userId, cartStatusId);
     }
 
     @GetMapping(ApiPath.WISHLIST_BY_USER_ID)
-    public List<Cart> findWishlistByUser(@RequestParam Integer userId){
-        // cartStatusId 2 = WISHLIST
+    public Response findWishlistByUser(@RequestParam Integer userId){
         Integer cartStatusId = 2;
         return cartService.findByUserAndCartStatus(userId, cartStatusId);
     }
@@ -54,14 +67,10 @@ public class CartController {
         return constructCart(cartStatusId,userId, productId);
     }
 
-    @DeleteMapping(ApiPath.CART_DELETE)
-    public boolean deleteCart(@RequestParam Integer cartId){
-        return cartService.deleteByCartId(cartId) > 0;
-    }
 
-    @DeleteMapping(ApiPath.WISHLIST_DELETE)
-    public boolean deleteWishlist(@RequestParam Integer cartId){
-        return deleteCart(cartId);
+    @DeleteMapping(ApiPath.WISHLIST_CART_DELETE_BY_ID)
+    public Response deleteWishlistCartUser(@RequestParam Integer cartId){
+        return cartService.deleteWishlistCartUser(cartId);
     }
 
     private Cart constructCart(@RequestParam Integer cartStatusId,

@@ -1,6 +1,7 @@
 package com.blibli.blibook.backend.controller;
 
 import com.blibli.blibook.backend.ApiPath;
+import com.blibli.blibook.backend.dto.Response;
 import com.blibli.blibook.backend.model.entity.Product;
 import com.blibli.blibook.backend.dto.ProductDetailDTO;
 import com.blibli.blibook.backend.dto.ProductReviewDTO;
@@ -52,6 +53,11 @@ public class ProductController {
         return productService.findProductReviewByPriceLessThan(priceDemand);
     }
 
+    @GetMapping(ApiPath.PRODUCT_SEARCH_BY_COUNTRY)
+    public List<ProductReviewDTO> findProductByCountry(@RequestParam ("country") String productCountry){
+        return productService.findProductByCountry(productCountry);
+    }
+
     @GetMapping(ApiPath.ALL_PRODUCTS)
     public List<Product> findAll(){
         return productService.findAll();
@@ -79,37 +85,28 @@ public class ProductController {
         return productService.findProductById(product.getProductId());
     }
 
-    @PutMapping(ApiPath.PRODUCT_UPDATE)
-    public Product updateProduct(@RequestParam ("id") Integer productId,
-                                 @RequestParam ("item") MultipartFile item,
-                                 @RequestParam ("photo") MultipartFile photo,
-                                 @RequestParam ("product") String productString) throws IOException{
+    @DeleteMapping(ApiPath.PRODUCT_DELETE_BY_ID)
+    public Response deleteProductByID(@RequestParam ("id") Integer productId) {
+        return productService.deleteProductByID(productId);
+    }
+
+
+    @PutMapping(ApiPath.PRODUCT_UPDATE_BY_ID)
+    public Product updateProductByID(@RequestParam ("product") String productString,
+                                      @RequestParam ("item") MultipartFile item,
+                                      @RequestParam ("photo") MultipartFile photo,
+                                      @RequestParam ("category") String productCategoryName) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         Product product = mapper.readValue(productString, Product.class);
-        Product updatedProduct = productService.findProductById(productId);
-        updatedProduct.setProductName(product.getProductName());
-        updatedProduct.setProductAuthor(product.getProductAuthor());
-        updatedProduct.setProductCountry(product.getProductCountry());
-        updatedProduct.setProductIsbn(product.getProductIsbn());
-        updatedProduct.setProductPrice(product.getProductPrice());
-        updatedProduct.setProductDescription(product.getProductDescription());
-        updatedProduct.setProductLength(product.getProductLength());
-        updatedProduct.setProductReleaseYear(product.getProductReleaseYear());
-        updatedProduct.setProductSku(product.getProductSku());
-        updatedProduct.setProductLanguage(product.getProductVariant());
-        productService.save(updatedProduct);
-        if(!photo.isEmpty()){
-            productService.uploadProductPhoto(product.getProductId(), photo);
-        }
-        if(!item.isEmpty()){
-            productService.uploadProductItem(product.getProductId(), item);
-        }
-        return productService.findProductById(productId);
+
+        productService.uploadProductItem(product.getProductId(), item);
+        productService.uploadProductPhoto(product.getProductId(), photo);
+
+        return productService.updateProductByID(product, productCategoryName);
     }
 
     @DeleteMapping(ApiPath.PRODUCT_DELETE)
     public boolean deleteProduct(@RequestParam ("id") Integer productId){
         return productService.deleteByProductId(productId) > 0;
     }
-
 }

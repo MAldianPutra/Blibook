@@ -4,6 +4,7 @@ import com.blibli.blibook.backend.dto.CartDTO;
 import com.blibli.blibook.backend.dto.ResponseDTO;
 import com.blibli.blibook.backend.model.entity.*;
 import com.blibli.blibook.backend.repository.*;
+import com.blibli.blibook.backend.service.impl.ObjectMapperServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -36,14 +37,18 @@ public class CartService {
         return productRepository.findById(productId);
     }
 
+
+    @Autowired
+    ObjectMapperServiceImpl objectMapperService;
+
     public ResponseDTO findByUserAndCartStatus(Integer userId, Integer cartStatusId){
-        List<Cart> data = cartRepository.findByUser_UserIdAndCartStatus_CartStatusId(userId, cartStatusId);
+        List<Cart> carts = cartRepository.findByUser_UserIdAndCartStatus_CartStatusId(userId, cartStatusId);
         ArrayList<CartDTO> cartDTOList = new ArrayList<>();
         ResponseDTO response;
 
-        for (Cart dataProduct : data) {
-            Product product = productRepository.findFirstByProductId(dataProduct.getProduct().getProductId());
-            cartDTOList.add(new CartDTO(dataProduct.getCartId(), product));
+        for (Cart cart : carts) {
+            Product product = productRepository.findFirstByProductId(cart.getProduct().getProductId());
+            cartDTOList.add(new CartDTO(cart.getCartId(), objectMapperService.mapToProductDetail(product)));
         }
 
         response = new ResponseDTO(200, "Success", cartDTOList);
@@ -62,7 +67,7 @@ public class CartService {
             Long success = cartRepository.deleteByCartId(cartId);
 
             if (success > 0) {
-                cartDTOList.add(new CartDTO(cartId, product));
+                cartDTOList.add(new CartDTO(cartId, objectMapperService.mapToProductDetail(product)));
                 response = new ResponseDTO(200, "Sukses", cartDTOList);
             } else {
                 response = new ResponseDTO(404, "ID Not Found", null);

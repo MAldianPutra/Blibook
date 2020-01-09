@@ -62,5 +62,5 @@ public class ApiPath {
     public static final String ALL_CARTS =  ADMIN + "/carts";
     public static final String ALL_ORDER = ADMIN + "/orders";
     public static final String ALL_PAYMENT = ADMIN + "/payments";
-    
+
 }

@@ -77,8 +77,7 @@ public class ProductServiceImpl {
 
     public ProductDetailDTO findProductDetail(Integer productId){
         Product product = productRepository.findFirstByProductId(productId);
-        Shop shop = shopRepository.findFirstByShopId(product.getShop().getShopId());
-        return objectMapperService.mapToProductDetail(product, shop);
+        return objectMapperService.mapToProductDetail(product);
     }
 
 }

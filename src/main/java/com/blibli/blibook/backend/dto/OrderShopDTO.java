@@ -10,6 +10,6 @@ import lombok.Data;
 
 public class OrderShopDTO {
     public Integer orderId;
-    public User user;
-    public Product product;
+    public UserDTO userDTO;
+    public ProductDetailDTO productDetailDTO;
 }

@@ -35,7 +35,7 @@ public class ShopService {
     public ResponseDTO shopRegister (Shop shop, Integer userId) {
         ArrayList<Shop> objShop = new ArrayList<>();
         ResponseDTO response;
-        User user = userRepository.findFirstByUserId(userId);
+        User user = userRepository.findByUserId(userId);
         shop.setUser(user);
 
         try {

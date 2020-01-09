@@ -81,7 +81,7 @@ public class OrderService {
             } else {
                 for (Order order : orderList) {
                     orderShopList.add(new OrderShopDTO(order.getOrderId(),
-                            userRepository.findFirstByUserId(order.getUser().getUserId()),
+                            userRepository.findByUserId(order.getUser().getUserId()),
                             productRepository.findFirstByProductId(order.getProduct().getProductId())));
                 }
                 response = new ResponseDTO(200, "Success", orderShopList);

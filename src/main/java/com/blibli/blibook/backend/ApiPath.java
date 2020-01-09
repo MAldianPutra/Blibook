@@ -63,5 +63,9 @@ public class ApiPath {
     public static final String ALL_ORDER = ADMIN + "/orders";
     public static final String ALL_PAYMENT = ADMIN + "/payments";
 
+    // AUTH ENDPOINTS
+    public static final String AUTHENTICATION = API + "/auth";
+    public static final String SIGN_IN = AUTHENTICATION + "/signin";
+    public static final String REGISTER = AUTHENTICATION + "/register";
 
 }

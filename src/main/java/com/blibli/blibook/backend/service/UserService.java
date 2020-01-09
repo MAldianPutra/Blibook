@@ -36,7 +36,7 @@ public class UserService {
     }
 
     public User findFirstByUserId(Integer userId) {
-        return userRepository.findFirstByUserId(userId);
+        return userRepository.findByUserId(userId);
     }
 
     public User save(User user) {
@@ -49,7 +49,7 @@ public class UserService {
 
         try {
             userRepository.save(user);
-            objUser.add(userRepository.findFirstByUserId(user.getUserId()));
+            objUser.add(userRepository.findByUserId(user.getUserId()));
 
             if (objUser.get(0) != null) {
                 response = new ResponseDTO(200, "Success", objUser);
@@ -69,7 +69,7 @@ public class UserService {
         ResponseDTO response;
 
         try {
-            User temp = userRepository.findFirstByUserId(user.getUserId());
+            User temp = userRepository.findByUserId(user.getUserId());
             temp.setUserEmail(user.getUserEmail());
             temp.setUserName(user.getUserName());
             temp.setUserBirthdate(user.getUserBirthdate());
@@ -77,7 +77,7 @@ public class UserService {
             temp.setUserGender(user.getUserGender());
 
             userRepository.save(temp);
-            objUser.add(userRepository.findFirstByUserId(temp.getUserId()));
+            objUser.add(userRepository.findByUserId(temp.getUserId()));
 
             if (objUser.get(0) != null) {
                 response = new ResponseDTO(200, "Success", objUser);

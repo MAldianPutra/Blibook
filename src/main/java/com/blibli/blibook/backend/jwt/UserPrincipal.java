@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -30,15 +31,15 @@ public class UserPrincipal implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserPrincipal create(User user){
-        List<GrantedAuthority> authorities = user.getUserRole().stream().map(role ->
-                new SimpleGrantedAuthority(role.getName().name)).collect(Collectors.toList());
+        GrantedAuthority authority = new SimpleGrantedAuthority(user.getUserRole().getUserRoleName());
         return new UserPrincipal(
                 user.getUserId(),
                 user.getUserName(),
                 user.getUserEmail(),
                 user.getUserPassword(),
-                authorities
+                Collections.singleton(authority)
         );
+
     }
 
     @Override

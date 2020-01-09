@@ -1,5 +1,6 @@
 package com.blibli.blibook.backend.dto;
 
+import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -20,7 +21,8 @@ public class ProductDetailDTO {
     private String productLanguage;
     private String productVariant;
     private String productPhotoLink;
-    private String productCategory;
+    private Integer productCategory;
+    private String productCategoryName;
 
     private Integer shopId;
     private String shopName;

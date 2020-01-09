@@ -33,6 +33,9 @@ public class ProductServiceImpl {
     @Autowired
     ShopRepository shopRepository;
 
+    @Autowired
+    ObjectMapperServiceImpl objectMapperService;
+
     public Optional<ProductCategory> findProductCategoryByProductCategoryName(String productCategoryName){
         return productCategoryRepository.findByProductCategoryName(productCategoryName);
     }
@@ -59,15 +62,7 @@ public class ProductServiceImpl {
     public List<ProductReviewDTO> findProductByCountry(List<Product> products) {
         List<ProductReviewDTO> productReviewDTOList = new ArrayList<>();
         for(Product product : products){
-            productReviewDTOList.add(new ProductReviewDTO(
-                    product.getProductId(),
-                    product.getProductName(),
-                    product.getProductAuthor(),
-                    product.getProductLanguage(),
-                    product.getProductDescription(),
-                    product.getProductPrice(),
-                    product.getProductPhotoLink()
-            ));
+            objectMapperService.mapToProductReview(product);
         }
         return productReviewDTOList;
     }
@@ -75,15 +70,7 @@ public class ProductServiceImpl {
     public List<ProductReviewDTO> findProductReviewList(List<Product> products){
         List<ProductReviewDTO> productReviewDTOList = new ArrayList<>();
         for(Product product : products){
-            productReviewDTOList.add(new ProductReviewDTO(
-                    product.getProductId(),
-                    product.getProductName(),
-                    product.getProductAuthor(),
-                    product.getProductLanguage(),
-                    product.getProductDescription(),
-                    product.getProductPrice(),
-                    product.getProductPhotoLink()
-            ));
+            objectMapperService.mapToProductReview(product);
         }
         return productReviewDTOList;
     }
@@ -91,28 +78,7 @@ public class ProductServiceImpl {
     public ProductDetailDTO findProductDetail(Integer productId){
         Product product = productRepository.findFirstByProductId(productId);
         Shop shop = shopRepository.findFirstByShopId(product.getShop().getShopId());
-        ProductCategory productCategory = productCategoryRepository.findFirstByProductCategoryId(product.getProductCategory().getProductCategoryId());
-
-        return new ProductDetailDTO(
-                productId,
-                product.getProductName(),
-                product.getProductAuthor(),
-                product.getProductIsbn(),
-                product.getProductSku(),
-                product.getProductCountry(),
-                product.getProductPrice(),
-                product.getProductDescription(),
-                product.getProductLength(),
-                product.getProductReleaseYear(),
-                product.getProductLanguage(),
-                product.getProductVariant(),
-                product.getProductPhotoLink(),
-                productCategory.getProductCategoryName(),
-                shop.getShopId(),
-                shop.getShopName(),
-                shop.getShopAddress(),
-                shop.getShopCity(),
-                shop.getShopProvince());
+        return objectMapperService.mapToProductDetail(product, shop);
     }
 
 }

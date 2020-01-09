@@ -11,6 +11,6 @@ public class UserDTO {
     private String userEmail;
     private String userBirthdate;
     private String userGender;
-    private String userPhone;
+    private String userHandphone;
 
 }

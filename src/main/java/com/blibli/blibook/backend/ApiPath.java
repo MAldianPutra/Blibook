@@ -39,7 +39,7 @@ public class ApiPath {
     public static final String WISHLIST = API + "/wishlists";
     public static final String WISHLIST_BY_USER_ID = WISHLIST + "/user" ;
     public static final String ADD_PRODUCT_TO_WISHLIST = WISHLIST + "/addProduct";
-    public static final String WISHLIST_CART_DELETE_BY_ID = WISHLIST + CART + "/delete" ;
+    public static final String WISHLIST_CART_DELETE_BY_ID = WISHLIST + "/carts" + "/delete" ;
 
     // ORDER AND PAYMENT ENDPOINTS
     public static final String ORDER = API + "/orders";

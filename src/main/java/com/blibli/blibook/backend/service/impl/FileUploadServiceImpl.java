@@ -53,4 +53,20 @@ public class FileUploadServiceImpl {
         return updateProduct;
     }
 
+    public Boolean validatePhoto(MultipartFile multipartFile) throws IOException {
+        if (multipartFile.getContentType().contains("image/")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Boolean validateItem(MultipartFile multipartFile) throws IOException {
+        if (multipartFile.getContentType().contains("application/pdf")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

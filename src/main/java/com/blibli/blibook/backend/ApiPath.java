@@ -7,7 +7,6 @@ public class ApiPath {
 
     // USER ENDPOINTS
     public static final String USER = API + "/users";
-    public static final String USER_SIGNUP = USER + "/signup";
     public static final String USER_REGISTER = USER + "/register";
     public static final String USER_UPDATE = USER + "/update";
     public static final String USER_LOGIN = USER + "/login";
@@ -62,5 +61,5 @@ public class ApiPath {
     public static final String ALL_CARTS =  ADMIN + "/carts";
     public static final String ALL_ORDER = ADMIN + "/orders";
     public static final String ALL_PAYMENT = ADMIN + "/payments";
-
+    public static final String POPULATE_SKU = ADMIN + "/populate/sku";
 }

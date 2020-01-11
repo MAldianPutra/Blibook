@@ -69,8 +69,15 @@ public class ProductService {
         return productServiceImpl.findProductByCountry(products);
     }
 
-    public List<Product> findAll(){
-        return productRepository.findAll();
+    public List<ProductDetailDTO> findAll(){
+        List<Product> products =  productRepository.findAll();
+        ArrayList<ProductDetailDTO> listProducts = new ArrayList<>();
+
+        for (Product product : products) {
+            listProducts.add(productServiceImpl.findProductDetail(product.getProductId()));
+        }
+
+        return listProducts;
     }
 
     public Product save(Product product){

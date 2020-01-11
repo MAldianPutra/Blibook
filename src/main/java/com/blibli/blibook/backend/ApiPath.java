@@ -16,6 +16,7 @@ public class ApiPath {
     // SHOP ENDPOINTS
     public static final String SHOP = API + "/shops";
     public static final String SHOP_REGISTER = SHOP + "/register";
+    public static final String SHOP_DELETE = SHOP + "/delete";
     public static final String SHOP_UPDATE = SHOP + "/update";
     public static final String SHOP_BY_USER_ID = SHOP + "/user";
 

@@ -62,7 +62,15 @@ public class ProductServiceImpl {
     public List<ProductReviewDTO> findProductByCountry(List<Product> products) {
         List<ProductReviewDTO> productReviewDTOList = new ArrayList<>();
         for(Product product : products){
-            objectMapperService.mapToProductReview(product);
+            productReviewDTOList.add(new ProductReviewDTO(
+                    product.getProductId(),
+                    product.getProductName(),
+                    product.getProductAuthor(),
+                    product.getProductLanguage(),
+                    product.getProductDescription(),
+                    product.getProductPrice(),
+                    product.getProductPhotoLink()
+            ));
         }
         return productReviewDTOList;
     }
@@ -70,7 +78,15 @@ public class ProductServiceImpl {
     public List<ProductReviewDTO> findProductReviewList(List<Product> products){
         List<ProductReviewDTO> productReviewDTOList = new ArrayList<>();
         for(Product product : products){
-            objectMapperService.mapToProductReview(product);
+            productReviewDTOList.add(new ProductReviewDTO(
+                    product.getProductId(),
+                    product.getProductName(),
+                    product.getProductAuthor(),
+                    product.getProductLanguage(),
+                    product.getProductDescription(),
+                    product.getProductPrice(),
+                    product.getProductPhotoLink()
+            ));
         }
         return productReviewDTOList;
     }
@@ -78,7 +94,30 @@ public class ProductServiceImpl {
     public ProductDetailDTO findProductDetail(Integer productId){
         Product product = productRepository.findFirstByProductId(productId);
         Shop shop = shopRepository.findFirstByShopId(product.getShop().getShopId());
-        return objectMapperService.mapToProductDetail(product, shop);
+        ProductCategory productCategory = productCategoryRepository.findFirstByProductCategoryId(product.getProductCategory().getProductCategoryId());
+
+        return new ProductDetailDTO(
+                productId,
+                product.getProductName(),
+                product.getProductAuthor(),
+                product.getProductIsbn(),
+                product.getProductSku(),
+                product.getProductCountry(),
+                product.getProductPrice(),
+                product.getProductDescription(),
+                product.getProductLength(),
+                product.getProductReleaseYear(),
+                product.getProductLanguage(),
+                product.getProductVariant(),
+                product.getProductPhotoLink(),
+                productCategory.getProductCategoryId(),
+                productCategory.getProductCategoryName(),
+                shop.getShopId(),
+                shop.getShopName(),
+                shop.getShopAddress(),
+                shop.getShopCity(),
+                shop.getShopProvince()
+        );
     }
 
 }

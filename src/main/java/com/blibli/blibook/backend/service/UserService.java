@@ -53,6 +53,14 @@ public class UserService {
         return userRepository.findFirstByUserId(userId);
     }
 
+    public UserRole findFirstByUserRoleId(Integer id) {
+        return userRoleRepository.findFirstByUserRoleId(id);
+    }
+
+    public UserStatus findFirstByUserStatusId(Integer id) {
+        return userStatusRepository.findFirstByUserStatusId(id);
+    }
+
     public User save(User user) {
         return userRepository.save(user);
     }
@@ -89,6 +97,8 @@ public class UserService {
             temp.setUserBirthdate(user.getUserBirthdate());
             temp.setUserHandphone(user.getUserHandphone());
             temp.setUserGender(user.getUserGender());
+            temp.setUserRole(user.getUserRole());
+            temp.setUserStatus(user.getUserStatus());
 
             userRepository.save(temp);
             objUser.add(userRepository.findFirstByUserId(temp.getUserId()));
@@ -120,16 +130,55 @@ public class UserService {
             return new ResponseDTO(500, ex.getMessage(), null );
         }
 
+    public ResponseDTO getAllUser() {
+        ArrayList<UserDTO> objUser = new ArrayList<>();
+        ResponseDTO response;
+        List<User> users = userRepository.findAll();
 
+        for(User user : users) {
+            UserRole userRole = userRoleRepository.findFirstByUserRoleId(user.getUserRole().getUserRoleId());
+            UserStatus userStatus = userStatusRepository.findFirstByUserStatusId(user.getUserStatus().getUserStatusId());
+
+            objUser.add(new UserDTO(
+                    user.getUserId(),
+                    user.getUserName(),
+                    user.getUserEmail(),
+                    user.getUserBirthdate(),
+                    user.getUserGender(),
+                    user.getUserHandphone(),
+                    userRole.getUserRoleName(),
+                    userStatus.getUserStatusName()
+            ));
+        }
+
+        if (objUser.get(0) != null) {
+            response = new ResponseDTO(200, "Success", objUser);
+        } else {
+            response = new ResponseDTO(404, "User Is Empty!", null);
+        }
 
     }
 
-        public List<User> findAll () {
-            return userRepository.findAll();
+
+    public ResponseDTO deleteByUserID(Integer userId) {
+        ResponseDTO response;
+        ArrayList<User> objUser = new ArrayList<>();
+
+        try {
+            User user = userRepository.findFirstByUserId(userId);
+            Long success = userRepository.deleteByUserId(userId);
+
+            if (success > 0) {
+                objUser.add(user);
+                response = new ResponseDTO(200, "Success", objUser);
+            } else {
+                response = new ResponseDTO(400, "Failed", null);
+            }
+        } catch (DataAccessException ex) {
+            response = new ResponseDTO(500, ex.getCause().getMessage(), null);
         }
 
-        public long deleteByUserId (Integer userId){
-            return userRepository.deleteByUserId(userId);
-        }
+        return response;
+    }
 
 }

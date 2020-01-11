@@ -75,11 +75,14 @@ public class ObjectMapperServiceImpl {
 
     protected UserDTO mapToUserDTO(User user){
         return new UserDTO(
+                user.getUserId(),
                 user.getUserName(),
                 user.getUserEmail(),
                 user.getUserBirthdate(),
                 user.getUserGender(),
-                user.getUserHandphone()
+                user.getUserHandphone(),
+                user.getUserRole().getUserRoleName(),
+                user.getUserStatus().getUserStatusName()
         );
     }
 

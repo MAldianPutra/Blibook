@@ -59,7 +59,7 @@ public class ProductController {
     }
 
     @GetMapping(ApiPath.ALL_PRODUCTS)
-    public List<Product> findAll(){
+    public List<ProductDetailDTO> findAll(){
         return productService.findAll();
     }
 

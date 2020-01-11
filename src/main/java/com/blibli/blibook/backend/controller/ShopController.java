@@ -51,8 +51,9 @@ public class ShopController {
     }
 
     @GetMapping(ApiPath.ALL_SHOP)
-    public List<Shop> findAll(){
-        return shopService.findAll();
+    public ResponseDTO getAllShops() {
+        return shopService.getAllShops();
     }
+
 
 }

@@ -7,7 +7,6 @@ public class ApiPath {
 
     // USER ENDPOINTS
     public static final String USER = API + "/users";
-    public static final String USER_SIGNUP = USER + "/signup";
     public static final String USER_REGISTER = USER + "/register";
     public static final String USER_UPDATE = USER + "/update";
     public static final String USER_LOGIN = USER + "/login";
@@ -24,7 +23,7 @@ public class ApiPath {
     public static final String PRODUCT = API + "/products";
     public static final String PRODUCT_DELETE_BY_ID = PRODUCT + "/delete";
     public static final String PRODUCT_UPDATE_BY_ID = PRODUCT + "/update";
-    public static final String PRODUCT_BY_PRODUCT_CATEGORY_ID = PRODUCT + "/category";
+    public static final String PRODUCT_BY_PRODUCT_CATEGORY_NAME = PRODUCT + "/category";
     public static final String PRODUCT_BY_SHOP_ID = PRODUCT + "/shop";
     public static final String PRODUCT_SEARCH_BY_NAME = PRODUCT + "/search";
     public static final String PRODUCT_SEARCH_BY_PRICE_LESS_THAN = PRODUCT + "/search/price";
@@ -63,6 +62,5 @@ public class ApiPath {
     public static final String ALL_CARTS =  ADMIN + "/carts";
     public static final String ALL_ORDER = ADMIN + "/orders";
     public static final String ALL_PAYMENT = ADMIN + "/payments";
-
-
+    public static final String POPULATE_SKU = ADMIN + "/populate/sku";
 }

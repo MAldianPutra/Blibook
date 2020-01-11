@@ -11,7 +11,10 @@ import com.blibli.blibook.backend.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -50,18 +53,18 @@ public class UserController {
 
 
     @PostMapping(ApiPath.USER_REGISTER)
-    public ResponseDTO register(@RequestParam ("user") String user,
-                                @RequestParam ("role") Integer role,
-                                @RequestParam ("status") Integer status) throws IOException {
+    public ResponseDTO register(@RequestParam ("user") String userData) throws IOException {
+
         ObjectMapper mapper = new ObjectMapper();
-        User objUser = mapper.readValue(user, User.class);
+        User user = mapper.readValue(userData, User.class);
 
-        Optional<UserRole> userRole = userService.findUserRoleId(role);
-        userRole.ifPresent(objUser::setUserRole);
-        Optional<UserStatus> userStatus = userService.findUserStatusId(status);
-        userStatus.ifPresent(objUser::setUserStatus);
+        Optional<UserRole> userRole = userService.findUserRoleId(2);
+        userRole.ifPresent(user::setUserRole);
+        Optional<UserStatus> userStatus = userService.findUserStatusId(1);
+        userStatus.ifPresent(user::setUserStatus);
 
-        return userService.register(objUser);
+
+        return userService.register(user);
     }
 
     @PutMapping(ApiPath.USER_UPDATE)

@@ -5,20 +5,15 @@ import com.blibli.blibook.backend.dto.ProductPhotoDTO;
 import com.blibli.blibook.backend.dto.ProductReviewDTO;
 import com.blibli.blibook.backend.dto.UserDTO;
 import com.blibli.blibook.backend.model.entity.Product;
+import com.blibli.blibook.backend.model.entity.ProductCategory;
 import com.blibli.blibook.backend.model.entity.Shop;
 import com.blibli.blibook.backend.model.entity.User;
-import com.blibli.blibook.backend.repository.OrderRepository;
-import com.blibli.blibook.backend.repository.ProductRepository;
-import com.blibli.blibook.backend.repository.ShopRepository;
-import com.blibli.blibook.backend.repository.UserRepository;
+import com.blibli.blibook.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ObjectMapperServiceImpl {
-
-    @Autowired
-    UserRepository userRepository;
 
     @Autowired
     ProductRepository productRepository;
@@ -27,9 +22,12 @@ public class ObjectMapperServiceImpl {
     ShopRepository shopRepository;
 
     @Autowired
-    OrderRepository orderRepository;
+    ProductCategoryRepository productCategoryRepository;
 
-    public ProductDetailDTO mapToProductDetail(Product product, Shop shop){
+    public ProductDetailDTO mapToProductDetail(Product product){
+        ProductCategory productCategory = productCategoryRepository.findFirstByProductCategoryId(product.getProductCategory().getProductCategoryId());
+        Shop shop = shopRepository.findFirstByShopId(product.getShop().getShopId());
+
         return new ProductDetailDTO(
                 product.getProductId(),
                 product.getProductName(),
@@ -44,8 +42,8 @@ public class ObjectMapperServiceImpl {
                 product.getProductLanguage(),
                 product.getProductVariant(),
                 product.getProductPhotoLink(),
-                product.getProductCategory().getProductCategoryId(),
-                product.getProductCategory().getProductCategoryName(),
+                productCategory.getProductCategoryId(),
+                productCategory.getProductCategoryName(),
                 shop.getShopId(),
                 shop.getShopName(),
                 shop.getShopAddress(),
@@ -73,7 +71,7 @@ public class ObjectMapperServiceImpl {
         );
     }
 
-    protected UserDTO mapToUserDTO(User user){
+    public UserDTO mapToUserDTO(User user){
         return new UserDTO(
                 user.getUserId(),
                 user.getUserName(),

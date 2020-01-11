@@ -8,10 +8,15 @@ import com.blibli.blibook.backend.model.entity.UserStatus;
 import com.blibli.blibook.backend.repository.UserRepository;
 import com.blibli.blibook.backend.repository.UserRoleRepository;
 import com.blibli.blibook.backend.repository.UserStatusRepository;
+import com.blibli.blibook.backend.service.impl.ObjectMapperServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +32,14 @@ public class UserService {
 
     @Autowired
     private UserRoleRepository userRoleRepository;
+
+    @Autowired
+    private ObjectMapperServiceImpl objectMapperService;
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     public Optional<UserStatus> findUserStatusId(Integer userStatusId) {
         return userStatusRepository.findById(userStatusId);
@@ -57,6 +70,7 @@ public class UserService {
         ResponseDTO response;
 
         try {
+            user.setUserPassword(passwordEncoder().encode(user.getUserPassword()));
             userRepository.save(user);
             objUser.add(userRepository.findFirstByUserId(user.getUserId()));
 
@@ -76,7 +90,6 @@ public class UserService {
     public ResponseDTO updateUser(User user) {
         ArrayList<User> objUser = new ArrayList<>();
         ResponseDTO response;
-
         try {
             User temp = userRepository.findFirstByUserId(user.getUserId());
             temp.setUserEmail(user.getUserEmail());
@@ -105,37 +118,17 @@ public class UserService {
 
     public ResponseDTO login(String email, String password) {
         ArrayList<UserDTO> objUser = new ArrayList<>();
-        User user;
-        ResponseDTO response;
-
         try {
-            user = userRepository.findFirstByUserEmailAndUserPassword(email, password);
-            UserRole userRole = userRoleRepository.findFirstByUserRoleId(user.getUserRole().getUserRoleId());
-            UserStatus userStatus = userStatusRepository.findFirstByUserStatusId(user.getUserStatus().getUserStatusId());
-
-            objUser.add(new UserDTO(
-                    user.getUserId(),
-                    user.getUserName(),
-                    user.getUserEmail(),
-                    user.getUserBirthdate(),
-                    user.getUserGender(),
-                    user.getUserHandphone(),
-                    userRole.getUserRoleName(),
-                    userStatus.getUserStatusName()
-            ));
-
-            if (objUser.get(0) != null) {
-                response = new ResponseDTO(200, "Success Login", objUser);
+            User user = userRepository.findFirstByUserEmail(email);
+            if (user != null && passwordEncoder().matches(password, user.getUserPassword())) {
+                objUser.add(objectMapperService.mapToUserDTO(user));
+                return new ResponseDTO(200, "Success Login", objUser);
             } else {
-                response = new ResponseDTO(404, "User Not Found!", null);
+                return new ResponseDTO(404, "User Not Found!", null);
             }
-        } catch (DataAccessException ex) {
-            response = new ResponseDTO(500, ex.getCause().getMessage(), null);
+        }catch (DataAccessException ex){
+            return new ResponseDTO(500, ex.getMessage(), null );
         }
-
-        return response;
-    }
-
 
     public ResponseDTO getAllUser() {
         ArrayList<UserDTO> objUser = new ArrayList<>();
@@ -164,7 +157,6 @@ public class UserService {
             response = new ResponseDTO(404, "User Is Empty!", null);
         }
 
-        return response;
     }
 
 

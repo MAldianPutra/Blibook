@@ -10,6 +10,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     User findFirstByUserId(Integer userId);
 
+    User findFirstByUserEmail(String email);
+
     User findFirstByUserEmailAndUserPassword(String email, String password);
 
     @Transactional

@@ -6,6 +6,7 @@ import com.blibli.blibook.backend.model.entity.*;
 import com.blibli.blibook.backend.dto.ProductPhotoDTO;
 import com.blibli.blibook.backend.dto.ProductReviewDTO;
 import com.blibli.blibook.backend.repository.*;
+import com.blibli.blibook.backend.service.impl.ObjectMapperServiceImpl;
 import com.blibli.blibook.backend.service.impl.OrderServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -52,7 +53,13 @@ public class OrderService {
     }
 
     @Autowired
+    private ShopRepository shopRepository;
+
+    @Autowired
     private OrderServiceImpl orderServiceImpl;
+
+    @Autowired
+    private ObjectMapperServiceImpl objectMapperService;
 
     public Order findFirstByOrderId(Integer orderId){
         return orderRepository.findFirstByOrderId(orderId);
@@ -81,8 +88,9 @@ public class OrderService {
             } else {
                 for (Order order : orderList) {
                     orderShopList.add(new OrderShopDTO(order.getOrderId(),
-                            userRepository.findFirstByUserId(order.getUser().getUserId()),
-                            productRepository.findFirstByProductId(order.getProduct().getProductId())));
+                            objectMapperService.mapToUserDTO(
+                                    userRepository.findFirstByUserId(order.getUser().getUserId())),
+                            objectMapperService.mapToProductDetail(productRepository.findFirstByProductId(order.getProduct().getProductId()))));
                 }
                 response = new ResponseDTO(200, "Success", orderShopList);
             }

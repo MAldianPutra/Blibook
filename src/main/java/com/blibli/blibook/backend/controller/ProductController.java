@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,7 +37,7 @@ public class ProductController {
         return productService.findProductDetailById(id);
     }
 
-    @GetMapping(ApiPath.PRODUCT_BY_PRODUCT_CATEGORY_ID)
+    @GetMapping(ApiPath.PRODUCT_BY_PRODUCT_CATEGORY_NAME)
     public List<ProductReviewDTO> findByProductCategory(@RequestParam ("name") String productCategoryName){
         return productService.findProductReviewByCategoryName(productCategoryName);
     }
@@ -82,6 +81,7 @@ public class ProductController {
             productStatus.ifPresent(product::setProductStatus);
             Optional<Shop> shop = productService.findShopByShopId(shopId);
             shop.ifPresent(product::setShop);
+
             product = productService.populateSKU(product);
             if(fileUploadService.validatePhoto(photo) && fileUploadService.validateItem(item)){
                     productService.save(product);

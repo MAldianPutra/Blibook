@@ -22,7 +22,7 @@ public class ApiPath {
     public static final String PRODUCT = API + "/products";
     public static final String PRODUCT_DELETE_BY_ID = PRODUCT + "/delete";
     public static final String PRODUCT_UPDATE_BY_ID = PRODUCT + "/update";
-    public static final String PRODUCT_BY_PRODUCT_CATEGORY_ID = PRODUCT + "/category";
+    public static final String PRODUCT_BY_PRODUCT_CATEGORY_NAME = PRODUCT + "/category";
     public static final String PRODUCT_BY_SHOP_ID = PRODUCT + "/shop";
     public static final String PRODUCT_SEARCH_BY_NAME = PRODUCT + "/search";
     public static final String PRODUCT_SEARCH_BY_PRICE_LESS_THAN = PRODUCT + "/search/price";

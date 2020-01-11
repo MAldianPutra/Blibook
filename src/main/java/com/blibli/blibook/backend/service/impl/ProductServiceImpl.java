@@ -88,7 +88,7 @@ public class ProductServiceImpl {
     }
 
     /**
-    SKU = BLI-{SHOP NAME}-{CATEGORY NAME}-{AUTHOR}-{PRODUCT NAME}-{COUNT}
+     SKU = BLI-{SHOP NAME}-{CATEGORY NAME}-{AUTHOR}-{PRODUCT NAME}-{COUNT}
 
      SHOP NAME = 4 huruf terakhir dari toko
      CATEGORY NAME = 3 huruf pertama dari kategori
@@ -96,13 +96,13 @@ public class ProductServiceImpl {
      PRODUCT NAME = 4 huruf pertama dari nama produk + 4 huruf terakhir dari nama produk
      COUNT = Jika sudah ada, beri nomor 02
 
-    contoh (nama toko TOKO SAYA, author ANDREA HIRATA, produk LASKAR PELANGI)
-    BLI-SAYA-NOV-ANDR-LASKANGI-01
+     contoh (nama toko TOKO SAYA, author ANDREA HIRATA, produk LASKAR PELANGI)
+     BLI-SAYA-NOV-ANDR-LASKANGI-01
 
-    jika variabel kurang dari 4 huruf, maka ditambah X hingga 4 huruf.
+     jika variabel kurang dari 4 huruf, maka ditambah X hingga 4 huruf.
 
-    contoh: (nama toko ABC, author SUM, produk NAW)
-    BLI-ABCX-SUMX-NAWXNAWX-01
+     contoh: (nama toko ABC, author SUM, produk NAW)
+     BLI-ABCX-SUMX-NAWXNAWX-01
      */
 
     public Product populateSKU(Product product){

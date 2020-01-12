@@ -9,6 +9,7 @@ import com.blibli.blibook.backend.model.entity.ProductCategory;
 import com.blibli.blibook.backend.model.entity.ProductStatus;
 import com.blibli.blibook.backend.model.entity.Shop;
 import com.blibli.blibook.backend.service.ProductService;
+import com.blibli.blibook.backend.service.impl.FileUploadServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +29,15 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private FileUploadServiceImpl fileUploadService;
+
     @GetMapping(ApiPath.PRODUCT)
     public ProductDetailDTO findByProductId(@RequestParam Integer id){
         return productService.findProductDetailById(id);
     }
 
-    @GetMapping(ApiPath.PRODUCT_BY_PRODUCT_CATEGORY_ID)
+    @GetMapping(ApiPath.PRODUCT_BY_PRODUCT_CATEGORY_NAME)
     public List<ProductReviewDTO> findByProductCategory(@RequestParam ("name") String productCategoryName){
         return productService.findProductReviewByCategoryName(productCategoryName);
     }
@@ -59,35 +63,43 @@ public class ProductController {
     }
 
     @GetMapping(ApiPath.ALL_PRODUCTS)
-    public List<Product> findAll(){
+    public List<ProductDetailDTO> findAll(){
         return productService.findAll();
     }
 
-    // Kaitkan dengan cek login
     @PostMapping(ApiPath.PRODUCT)
     public Product createProduct(@RequestParam ("shop") Integer shopId,
                                  @RequestParam ("category") String productCategoryName,
                                  @RequestParam ("item") MultipartFile item,
                                  @RequestParam ("photo") MultipartFile photo,
                                  @RequestParam ("product") String productString) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        Product product = mapper.readValue(productString, Product.class);
-        Optional<ProductCategory> productCategory = productService.findProductCategoryByProductCategoryName(productCategoryName);
-        productCategory.ifPresent(product::setProductCategory);
-        Optional<ProductStatus> productStatus = productService.findProductStatusByProductStatusName("AVAILABLE");
-        productStatus.ifPresent(product::setProductStatus);
-        Optional<Shop> shop = productService.findShopByShopId(shopId);
-        shop.ifPresent(product::setShop);
-        product.setProductSku(product.getProductId() + "-" + product.getProductName() + "-" + product.getProductVariant());
-        productService.save(product);
-        productService.uploadProductItem(product.getProductId(), item);
-        productService.uploadProductPhoto(product.getProductId(), photo);
-        return productService.findProductById(product.getProductId());
+            ObjectMapper mapper = new ObjectMapper();
+            Product product = mapper.readValue(productString, Product.class);
+            Optional<ProductCategory> productCategory = productService.findProductCategoryByProductCategoryName(productCategoryName);
+            productCategory.ifPresent(product::setProductCategory);
+            Optional<ProductStatus> productStatus = productService.findProductStatusByProductStatusName("AVAILABLE");
+            productStatus.ifPresent(product::setProductStatus);
+            Optional<Shop> shop = productService.findShopByShopId(shopId);
+            shop.ifPresent(product::setShop);
+
+            product = productService.populateSKU(product);
+            if(fileUploadService.validatePhoto(photo) && fileUploadService.validateItem(item)){
+                    productService.save(product);
+                    productService.uploadProductItem(product.getProductId(), item);
+                    productService.uploadProductPhoto(product.getProductId(), photo);
+                    return productService.findProductById(product.getProductId());
+            }
+            return null;
+    }
+
+    @PostMapping(ApiPath.POPULATE_SKU)
+    public ResponseDTO populateAllSKU(){
+        return productService.populateAllSKU();
     }
 
     @DeleteMapping(ApiPath.PRODUCT_DELETE_BY_ID)
-    public ResponseDTO deleteProductByID(@RequestParam ("id") Integer productId) {
-        return productService.deleteProductByID(productId);
+    public ResponseDTO deleteBlockProductByID(@RequestParam ("id") Integer productId) {
+        return productService.deleteBlockProductByID(productId);
     }
 
 

@@ -29,7 +29,7 @@ public class OrderServiceImpl {
         List<ProductPhotoDTO> productPhotoDTOList = new ArrayList<>();
         for (Order order : orderList){
             Product product = productRepository.findFirstByProductId(order.getProduct().getProductId());
-            objectMapperService.mapToProductPhoto(product);
+            productPhotoDTOList.add(objectMapperService.mapToProductPhoto(product));
         }
         return productPhotoDTOList;
     }
@@ -38,7 +38,7 @@ public class OrderServiceImpl {
         List<ProductReviewDTO> productReviewDTOList = new ArrayList<>();
         for (Order order : orderList){
             Product product = productRepository.findFirstByProductId(order.getProduct().getProductId());
-            objectMapperService.mapToProductReview(product);
+            productReviewDTOList.add(objectMapperService.mapToProductReview(product));
         }
         return productReviewDTOList;
     }

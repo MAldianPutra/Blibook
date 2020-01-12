@@ -65,18 +65,14 @@ public class OrderController {
     public ResponseDTO initiateOrder(@RequestParam Integer userId,
                                      @RequestParam Integer productId){
         ResponseDTO response;
-
         Integer orderStatusId = 1;
-//        if(orderService.findOrderExists(userId, productId)){
-//            response = new Response(500, "Failed!", null);
-//        }
-//        else
-//        {
-//            response = constructOrder(orderStatusId, userId, productId);
-//        }
-
-        response = constructOrder(orderStatusId, userId, productId);
-
+        if(orderService.findOrderExists(userId, productId)){
+            response = new ResponseDTO(500, "Failed! Product ordered or purchased before.", null);
+        }
+        else
+        {
+            response = constructOrder(orderStatusId, userId, productId);
+        }
         return response;
     }
 
@@ -87,10 +83,6 @@ public class OrderController {
         Optional<OrderStatus> orderStatus = orderService.findOrderStatusId(orderStatusId);
         Order updateOrder = orderService.findFirstByOrderId(id);
         updateOrder.setOrderStatus(orderStatus.get());
-        if(orderService.existsCartByUserIdAndProductId(updateOrder.getUser().getUserId(), updateOrder.getProduct().getProductId())){
-            Cart cart = orderService.findCartByUserIdAndProductId(updateOrder.getUser().getUserId(), updateOrder.getProduct().getProductId());
-            orderService.deleteCart(cart.getCartId());
-        }
         return orderService.save(updateOrder);
     }
 

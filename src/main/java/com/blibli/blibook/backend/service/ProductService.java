@@ -11,6 +11,7 @@ import com.blibli.blibook.backend.repository.ProductCategoryRepository;
 import com.blibli.blibook.backend.repository.ProductRepository;
 import com.blibli.blibook.backend.service.impl.FileUploadServiceImpl;
 import com.blibli.blibook.backend.service.impl.ProductServiceImpl;
+import com.blibli.blibook.backend.service.impl.SearchKeyServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,10 @@ public class ProductService {
     private ProductServiceImpl productServiceImpl;
 
     @Autowired
-    private FileUploadServiceImpl fileUploadServiceImpl;
+    private FileUploadServiceImpl fileUploadService;
+
+    @Autowired
+    private SearchKeyServiceImpl searchKeyService;
 
     public Product findProductById(Integer productId){
         return productRepository.findFirstByProductId(productId);
@@ -45,44 +49,56 @@ public class ProductService {
     }
 
     public List<ProductReviewDTO> findProductReviewByCategoryName(String productCategoryName){
-        List<Product> products = productRepository.findByProductCategory_ProductCategoryName(productCategoryName);
+        List<Product> products = productRepository.findByProductCategory_ProductCategoryNameAndProductStatus_ProductStatusName(
+                productCategoryName, "AVAILABLE"
+        );
         return productServiceImpl.findProductReviewList(products);
     }
 
     public List<ProductReviewDTO> findProductReviewByShopId(Integer shopId){
-        List<Product> products = productRepository.findByShop_ShopId(shopId);
+        List<Product> products = productRepository.findByShop_ShopIdAndProductStatus_ProductStatusName(
+                shopId, "AVAILABLE");
         return productServiceImpl.findProductReviewList(products);
     }
 
     public List<ProductReviewDTO> findProductReviewBySearchKey(String searchKey){
-        List<Product> products = productRepository.findByProductNameContaining(searchKey);
+        List<Product> products = searchKeyService.findProduct(searchKey);
         return productServiceImpl.findProductReviewList(products);
     }
 
     public List<ProductReviewDTO> findProductReviewByPriceLessThan(Integer priceDemand){
-        List<Product> products = productRepository.findByProductPriceLessThanEqual(priceDemand);
+        List<Product> products = productRepository.findByProductPriceLessThanEqualAndProductStatus_ProductStatusName(
+                priceDemand, "AVAILABLE");
         return productServiceImpl.findProductReviewList(products);
     }
 
     public List<ProductReviewDTO> findProductByCountry(String productCountry) {
-        List<Product> products = productRepository.findByProductCountry(productCountry);
+        List<Product> products = productRepository.findByProductCountryAndProductStatus_ProductStatusName(
+                productCountry, "AVAILABLE");
         return productServiceImpl.findProductByCountry(products);
     }
 
-    public List<Product> findAll(){
-        return productRepository.findAll();
+    public List<ProductDetailDTO> findAll(){
+        List<Product> products =  productRepository.findAll();
+        ArrayList<ProductDetailDTO> listProducts = new ArrayList<>();
+
+        for (Product product : products) {
+            listProducts.add(productServiceImpl.findProductDetail(product.getProductId()));
+        }
+
+        return listProducts;
     }
 
     public Product save(Product product){
         return productRepository.save(product);
     }
 
-    public Product uploadProductPhoto(Integer productId, MultipartFile file) throws IOException {
-        return fileUploadServiceImpl.uploadProductPhoto(productId, file);
+    public void uploadProductPhoto(Integer productId, MultipartFile file) throws IOException {
+        fileUploadService.uploadProductPhoto(productId, file);
     }
 
-    public Product uploadProductItem(Integer productId, MultipartFile file) throws IOException {
-        return fileUploadServiceImpl.uploadProductItem(productId, file);
+    public void uploadProductItem(Integer productId, MultipartFile file) throws IOException {
+        fileUploadService.uploadProductItem(productId, file);
     }
 
     public Optional<ProductCategory> findProductCategoryByProductCategoryName(String productCategoryName){
@@ -97,7 +113,27 @@ public class ProductService {
         return productServiceImpl.findShopByShopId(shopId);
     }
 
-    public ResponseDTO deleteProductByID(Integer productId) {
+    public Product populateSKU(Product product){
+        return productServiceImpl.populateSKU(product);
+    }
+
+    public ResponseDTO populateAllSKU() {
+        ResponseDTO responseDTO;
+        try {
+            List<Product> products = productRepository.findAll();
+            ArrayList<Product> objProduct = new ArrayList<>();
+            for (Product product : products) {
+                product = productServiceImpl.populateSKU(product);
+                productRepository.save(product);
+                objProduct.add(product);
+            }
+            responseDTO = new ResponseDTO(200, "Berhasil", objProduct);
+        }catch(DataAccessException ex){
+                responseDTO = new ResponseDTO(500, ex.getMessage(), null);
+            }
+        return responseDTO;
+    }
+    public ResponseDTO deleteBlockProductByID(Integer productId) {
         ArrayList<Product> objProduct = new ArrayList<>();
         ResponseDTO response;
 
@@ -111,7 +147,10 @@ public class ProductService {
                 response = new ResponseDTO(404, "ID Not Found!", null);
             }
         } catch (DataAccessException ex) {
-            response = new ResponseDTO(500, ex.getCause().getMessage(), null);
+            Product product = productRepository.findFirstByProductId(productId);
+            productServiceImpl.blockProduct(product);
+            objProduct.add(product);
+            response = new ResponseDTO(200, "Success Block Product", objProduct);
         }
 
         return response;

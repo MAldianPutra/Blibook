@@ -126,35 +126,23 @@ public class UserService {
             } else {
                 return new ResponseDTO(404, "User Not Found!", null);
             }
-        }catch (DataAccessException ex){
-            return new ResponseDTO(500, ex.getMessage(), null );
+        } catch (DataAccessException ex) {
+            return new ResponseDTO(500, ex.getMessage(), null);
         }
+    }
 
     public ResponseDTO getAllUser() {
         ArrayList<UserDTO> objUser = new ArrayList<>();
-        ResponseDTO response;
         List<User> users = userRepository.findAll();
 
-        for(User user : users) {
-            UserRole userRole = userRoleRepository.findFirstByUserRoleId(user.getUserRole().getUserRoleId());
-            UserStatus userStatus = userStatusRepository.findFirstByUserStatusId(user.getUserStatus().getUserStatusId());
-
-            objUser.add(new UserDTO(
-                    user.getUserId(),
-                    user.getUserName(),
-                    user.getUserEmail(),
-                    user.getUserBirthdate(),
-                    user.getUserGender(),
-                    user.getUserHandphone(),
-                    userRole.getUserRoleName(),
-                    userStatus.getUserStatusName()
-            ));
+        for (User user : users) {
+            objUser.add(objectMapperService.mapToUserDTO(user));
         }
 
         if (objUser.get(0) != null) {
-            response = new ResponseDTO(200, "Success", objUser);
+            return new ResponseDTO(200, "Success", objUser);
         } else {
-            response = new ResponseDTO(404, "User Is Empty!", null);
+            return new ResponseDTO(404, "User Is Empty!", null);
         }
 
     }
@@ -180,5 +168,4 @@ public class UserService {
 
         return response;
     }
-
 }

@@ -63,4 +63,5 @@ public class ApiPath {
     public static final String ALL_ORDER = ADMIN + "/orders";
     public static final String ALL_PAYMENT = ADMIN + "/payments";
     public static final String POPULATE_SKU = ADMIN + "/populate/sku";
+    public static final String POPULATE_ENCYRPT_PASSWORD = ADMIN + "/populate/encrypt";
 }

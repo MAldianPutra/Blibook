@@ -97,4 +97,9 @@ public class UserController {
         return userService.getAllUser(page);
     }
 
+    @PostMapping(ApiPath.POPULATE_ENCYRPT_PASSWORD)
+    public List<User> populatePassword(){
+        return userService.populateEncyrpt();
+    }
+
 }

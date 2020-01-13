@@ -157,7 +157,6 @@ public class UserService {
 
     }
 
-
     public ResponseDTO deleteByUserID(Integer userId) {
         ResponseDTO response;
         ArrayList<User> objUser = new ArrayList<>();
@@ -177,5 +176,18 @@ public class UserService {
         }
 
         return response;
+    }
+
+    public List<User> populateEncyrpt(){
+        List<User> users = userRepository.findAll();
+        List<User> updatedUser = new ArrayList<>();
+        for (User user : users){
+            if(user.getUserPassword().length() < 30){
+                user.setUserPassword(passwordEncoder().encode(user.getUserPassword()));
+                userRepository.save(user);
+                updatedUser.add(user);
+            }
+        }
+        return updatedUser;
     }
 }

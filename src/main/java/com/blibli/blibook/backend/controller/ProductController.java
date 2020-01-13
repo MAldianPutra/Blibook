@@ -38,27 +38,27 @@ public class ProductController {
     }
 
     @GetMapping(ApiPath.PRODUCT_BY_PRODUCT_CATEGORY_NAME)
-    public List<ProductReviewDTO> findByProductCategory(@RequestParam ("name") String productCategoryName){
+    public ResponseDTO findByProductCategory(@RequestParam ("name") String productCategoryName){
         return productService.findProductReviewByCategoryName(productCategoryName);
     }
 
     @GetMapping(ApiPath.PRODUCT_BY_SHOP_ID)
-    public List<ProductReviewDTO> findByShop(@RequestParam Integer shopId){
+    public ResponseDTO findByShop(@RequestParam Integer shopId){
         return productService.findProductReviewByShopId(shopId);
     }
 
     @GetMapping(ApiPath.PRODUCT_SEARCH_BY_NAME)
-    public List<ProductReviewDTO> findByProductNameLike(@RequestParam ("key") String searchKey){
+    public ResponseDTO findByProductNameLike(@RequestParam ("key") String searchKey){
         return productService.findProductReviewBySearchKey(searchKey);
     }
 
     @GetMapping(ApiPath.PRODUCT_SEARCH_BY_PRICE_LESS_THAN)
-    public List<ProductReviewDTO> findByProductPriceLessThan(@RequestParam ("lessThan") Integer priceDemand){
+    public ResponseDTO findByProductPriceLessThan(@RequestParam ("lessThan") Integer priceDemand){
         return productService.findProductReviewByPriceLessThan(priceDemand);
     }
 
     @GetMapping(ApiPath.PRODUCT_SEARCH_BY_COUNTRY)
-    public List<ProductReviewDTO> findProductByCountry(@RequestParam ("country") String productCountry){
+    public ResponseDTO findProductByCountry(@RequestParam ("country") String productCountry){
         return productService.findProductByCountry(productCountry);
     }
 

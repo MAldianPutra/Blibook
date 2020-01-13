@@ -69,7 +69,7 @@ public class ProductServiceImpl {
     }
 
     public List<ProductReviewDTO> findProductReviewList(List<Product> products){
-        List<ProductReviewDTO> productReviewDTOList = new ArrayList<>();
+        ArrayList<ProductReviewDTO> productReviewDTOList = new ArrayList<>();
         for(Product product : products){
             ProductReviewDTO productReview = objectMapperService.mapToProductReview(product);
             productReviewDTOList.add(productReview);

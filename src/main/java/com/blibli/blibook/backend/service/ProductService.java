@@ -20,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,34 +52,81 @@ public class ProductService {
         return productServiceImpl.findProductDetail(productId);
     }
 
-    public List<ProductReviewDTO> findProductReviewByCategoryName(String productCategoryName){
-        List<Product> products = productRepository.findByProductCategory_ProductCategoryNameAndProductStatus_ProductStatusName(
-                productCategoryName, "AVAILABLE"
-        );
-        return productServiceImpl.findProductReviewList(products);
+    public ResponseDTO findProductReviewByCategoryName(String productCategoryName){
+        try {
+            List<Product> products = productRepository.findByProductCategory_ProductCategoryNameAndProductStatus_ProductStatusName(
+                    productCategoryName, "AVAILABLE"
+            );
+            ArrayList<ProductReviewDTO> productReviewDTOS = (ArrayList<ProductReviewDTO>) productServiceImpl.findProductReviewList(products);
+            if(!productReviewDTOS.isEmpty()){
+                return new ResponseDTO(200, "Success", productReviewDTOS);
+            }else {
+                return new ResponseDTO(404, "Data not found", null);
+            }
+
+        }catch (DataAccessException ex) {
+            return new ResponseDTO(400, ex.getMessage(), null);
+        }
     }
 
-    public List<ProductReviewDTO> findProductReviewByShopId(Integer shopId){
-        List<Product> products = productRepository.findByShop_ShopIdAndProductStatus_ProductStatusName(
-                shopId, "AVAILABLE");
-        return productServiceImpl.findProductReviewList(products);
+    public ResponseDTO findProductReviewByShopId(Integer shopId){
+        try {
+            List<Product> products = productRepository.findByShop_ShopIdAndProductStatus_ProductStatusName(
+                    shopId, "AVAILABLE");
+            ArrayList<ProductReviewDTO> productReviewDTOS = (ArrayList<ProductReviewDTO>) productServiceImpl.findProductReviewList(products);
+            if(!productReviewDTOS.isEmpty()){
+                return new ResponseDTO(200, "Success", productReviewDTOS);
+            }else {
+                return new ResponseDTO(404, "Data not found", null);
+            }
+        }catch (DataAccessException ex){
+            return new ResponseDTO(400, ex.getMessage(), null);
+        }
+
     }
 
-    public List<ProductReviewDTO> findProductReviewBySearchKey(String searchKey){
-        List<Product> products = searchKeyService.findProduct(searchKey);
-        return productServiceImpl.findProductReviewList(products);
+    public ResponseDTO findProductReviewBySearchKey(String searchKey){
+        try {
+            List<Product> products = searchKeyService.findProduct(searchKey);
+            ArrayList<ProductReviewDTO> productReviewDTOS = (ArrayList<ProductReviewDTO>) productServiceImpl.findProductReviewList(products);
+            if(!productReviewDTOS.isEmpty()){
+                return new ResponseDTO(200, "Success", productReviewDTOS);
+            }else {
+                return new ResponseDTO(404, "Data not found", null);
+            }
+        }catch (DataAccessException ex){
+            return new ResponseDTO(400, ex.getMessage(), null);
+        }
     }
 
-    public List<ProductReviewDTO> findProductReviewByPriceLessThan(Integer priceDemand){
-        List<Product> products = productRepository.findByProductPriceLessThanEqualAndProductStatus_ProductStatusName(
-                priceDemand, "AVAILABLE");
-        return productServiceImpl.findProductReviewList(products);
+    public ResponseDTO findProductReviewByPriceLessThan(Integer priceDemand){
+        try {
+            List<Product> products = productRepository.findByProductPriceLessThanEqualAndProductStatus_ProductStatusName(
+                    priceDemand, "AVAILABLE");
+            ArrayList<ProductReviewDTO> productReviewDTOS = (ArrayList<ProductReviewDTO>) productServiceImpl.findProductReviewList(products);
+            if(!productReviewDTOS.isEmpty()){
+                return new ResponseDTO(200, "Success", productReviewDTOS);
+            }else {
+                return new ResponseDTO(404, "Data not found", null);
+            }
+        }catch (DataAccessException ex){
+            return new ResponseDTO(400, ex.getMessage(), null);
+        }
     }
 
-    public List<ProductReviewDTO> findProductByCountry(String productCountry) {
-        List<Product> products = productRepository.findByProductCountryAndProductStatus_ProductStatusName(
-                productCountry, "AVAILABLE");
-        return productServiceImpl.findProductByCountry(products);
+    public ResponseDTO findProductByCountry(String productCountry) {
+        try {
+            List<Product> products = productRepository.findByProductCountryAndProductStatus_ProductStatusName(
+                    productCountry, "AVAILABLE");
+            ArrayList<ProductReviewDTO> productReviewDTOS = (ArrayList<ProductReviewDTO>) productServiceImpl.findProductByCountry(products);
+            if(!productReviewDTOS.isEmpty()){
+                return new ResponseDTO(200, "Success", productReviewDTOS);
+            }else {
+                return new ResponseDTO(404, "Data not found", null);
+            }
+        }catch (DataAccessException ex){
+            return new ResponseDTO(400, ex.getMessage(), null);
+        }
     }
 
     public ResponseDTO findAll(Integer page){
@@ -124,7 +172,7 @@ public class ProductService {
                 productRepository.save(product);
                 objProduct.add(product);
             }
-            responseDTO = new ResponseDTO(200, "Berhasil", objProduct);
+            responseDTO = new ResponseDTO(200, "Success", objProduct);
         }catch(DataAccessException ex){
                 responseDTO = new ResponseDTO(500, ex.getMessage(), null);
             }

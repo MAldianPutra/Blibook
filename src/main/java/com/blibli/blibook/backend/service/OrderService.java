@@ -179,13 +179,16 @@ public class OrderService {
         try{
             Order order = orderRepository.findFirstByOrderId(orderId);
             Product product = productRepository.findFirstByProductId(order.getProduct().getProductId());
-            ArrayList<ProductDetailDTO> data = new ArrayList<>();
-            data.add(objectMapperService.mapToProductDetail(product));
-            if(!data.isEmpty()){
+            OrderStatus orderStatus = orderStatusRepository.findFirstByOrderStatusId(order.getOrderStatus().getOrderStatusId());
+
+            if(orderStatus.getOrderStatusName().equals("NOT_PAID")){
+                ArrayList<ProductDetailDTO> data = new ArrayList<>();
+                data.add(objectMapperService.mapToProductDetail(product));
                 return new ResponseDTO(200, "Success.", data);
-            }else {
-                return new ResponseDTO(400, "Product not found", null);
+            } else{
+                return new ResponseDTO(400, "Order not found", null);
             }
+
         }catch (DataAccessException ex){
             return new ResponseDTO(400, ex.getMessage(), null);
         }

@@ -4,16 +4,22 @@ import com.blibli.blibook.backend.dto.ProductDetailDTO;
 import com.blibli.blibook.backend.dto.ProductPhotoDTO;
 import com.blibli.blibook.backend.dto.ProductReviewDTO;
 import com.blibli.blibook.backend.dto.UserDTO;
-import com.blibli.blibook.backend.model.entity.Product;
-import com.blibli.blibook.backend.model.entity.ProductCategory;
-import com.blibli.blibook.backend.model.entity.Shop;
-import com.blibli.blibook.backend.model.entity.User;
+import com.blibli.blibook.backend.model.entity.*;
 import com.blibli.blibook.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ObjectMapperServiceImpl {
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    UserRoleRepository userRoleRepository;
+
+    @Autowired
+    UserStatusRepository userStatusRepository;
 
     @Autowired
     ProductRepository productRepository;
@@ -72,6 +78,8 @@ public class ObjectMapperServiceImpl {
     }
 
     public UserDTO mapToUserDTO(User user){
+        UserRole userRole = userRoleRepository.findFirstByUserRoleId(user.getUserRole().getUserRoleId());
+        UserStatus userStatus = userStatusRepository.findFirstByUserStatusId(user.getUserStatus().getUserStatusId());
         return new UserDTO(
                 user.getUserId(),
                 user.getUserName(),
@@ -79,8 +87,8 @@ public class ObjectMapperServiceImpl {
                 user.getUserBirthdate(),
                 user.getUserGender(),
                 user.getUserHandphone(),
-                user.getUserRole().getUserRoleName(),
-                user.getUserStatus().getUserStatusName()
+                userRole.getUserRoleName(),
+                userStatus.getUserStatusName()
         );
     }
 

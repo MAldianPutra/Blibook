@@ -123,11 +123,13 @@ public class UserService {
         ArrayList<UserDTO> objUser = new ArrayList<>();
         try {
             User user = userRepository.findFirstByUserEmail(email);
-            if (user != null && passwordEncoder().matches(password, user.getUserPassword())) {
+            UserStatus userStatus = userStatusRepository.findFirstByUserStatusId(user.getUserStatus().getUserStatusId());
+            if (user != null && passwordEncoder().matches(password, user.getUserPassword())
+                    && userStatus.getUserStatusName().equals("AVAILABLE")) {
                 objUser.add(objectMapperService.mapToUserDTO(user));
                 return new ResponseDTO(200, "Success Login", objUser);
             } else {
-                return new ResponseDTO(404, "User Not Found!", null);
+                return new ResponseDTO(404, "User Not Found or Blocked!", null);
             }
         } catch (DataAccessException ex) {
             return new ResponseDTO(500, ex.getMessage(), null);

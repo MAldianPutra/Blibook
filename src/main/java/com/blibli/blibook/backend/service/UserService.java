@@ -12,6 +12,9 @@ import com.blibli.blibook.backend.service.impl.ObjectMapperServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -131,15 +134,20 @@ public class UserService {
         }
     }
 
-    public ResponseDTO getAllUser() {
+    public ResponseDTO getAllUser(Integer page) {
         ArrayList<UserDTO> objUser = new ArrayList<>();
-        List<User> users = userRepository.findAll();
+        Page<User> userPage = userRepository.findAll(PageRequest.of(page, 20, Sort.by("userName").ascending()));
 
-        for (User user : users) {
+        for (User user : userPage) {
             objUser.add(objectMapperService.mapToUserDTO(user));
         }
 
         if (objUser.get(0) != null) {
+            ArrayList<ArrayList> data = new ArrayList<>();
+            ArrayList<String> countData = new ArrayList<>();
+            countData.add("Data count : " + userRepository.count());
+            data.add(countData);
+            data.add(objUser);
             return new ResponseDTO(200, "Success", objUser);
         } else {
             return new ResponseDTO(404, "User Is Empty!", null);

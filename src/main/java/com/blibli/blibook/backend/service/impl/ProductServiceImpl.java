@@ -87,12 +87,13 @@ public class ProductServiceImpl {
         for(Product product : productPage){
             productDetailDTOList.add(objectMapperService.mapToProductDetail(product));
         }
-        ArrayList<ArrayList> data = new ArrayList<>();
-        ArrayList<String> stringArrayList = new ArrayList<>();
-        stringArrayList.add("Data count : " + productRepository.count());
-        data.add(stringArrayList);
-        data.add(productDetailDTOList);
+
         if(!productDetailDTOList.isEmpty()){
+            ArrayList<ArrayList> data = new ArrayList<>();
+            ArrayList<String> countData = new ArrayList<>();
+            countData.add("Data count : " + productRepository.count());
+            data.add(countData);
+            data.add(productDetailDTOList);
             return new ResponseDTO(200, "Success!", data);
         }
         else {

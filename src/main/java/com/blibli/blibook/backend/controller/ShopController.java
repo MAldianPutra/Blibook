@@ -51,8 +51,8 @@ public class ShopController {
     }
 
     @GetMapping(ApiPath.ALL_SHOP)
-    public ResponseDTO getAllShops() {
-        return shopService.getAllShops();
+    public ResponseDTO findAll(@RequestParam ("page") Integer page) {
+        return shopService.getAllShops(page);
     }
 
 

@@ -8,6 +8,9 @@ import com.blibli.blibook.backend.repository.ShopRepository;
 import com.blibli.blibook.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -131,12 +134,10 @@ public class ShopService {
     }
 
 
-    public ResponseDTO getAllShops() {
+    public ResponseDTO getAllShops(Integer page) {
+        Page<Shop> shopPage = shopRepository.findAll(PageRequest.of(page, 20, Sort.by("shopName").ascending()));
         ArrayList<ShopDTO> objShop = new ArrayList<>();
-        ResponseDTO response;
-        List<Shop> shops = shopRepository.findAll();
-
-        for (Shop shop : shops) {
+        for (Shop shop : shopPage) {
             User user = userRepository.findFirstByUserId(shop.getUser().getUserId());
 
             objShop.add(new ShopDTO(
@@ -150,12 +151,15 @@ public class ShopService {
         }
 
         if (objShop.get(0) != null) {
-            response = new ResponseDTO(200, "Success", objShop);
+            ArrayList<ArrayList> data = new ArrayList<>();
+            ArrayList<String> countData =  new ArrayList<>();
+            countData.add("Data count : " + shopRepository.count());
+            data.add(countData);
+            data.add(objShop);
+            return new ResponseDTO(200, "Success", data);
         } else {
-            response = new ResponseDTO(400, "Failed!", null);
+            return new ResponseDTO(400, "Failed!", null);
         }
-
-        return response;
     }
 
     public ResponseDTO deleteByShopId(Integer shopId) {

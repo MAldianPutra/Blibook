@@ -93,8 +93,8 @@ public class UserController {
     }
 
     @GetMapping(ApiPath.ALL_USERS)
-    public ResponseDTO getAllUser() {
-        return userService.getAllUser();
+    public ResponseDTO findAll(@RequestParam ("page") Integer page) {
+        return userService.getAllUser(page);
     }
 
 }

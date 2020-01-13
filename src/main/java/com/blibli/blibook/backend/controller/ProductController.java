@@ -33,7 +33,7 @@ public class ProductController {
     private FileUploadServiceImpl fileUploadService;
 
     @GetMapping(ApiPath.PRODUCT)
-    public ProductDetailDTO findByProductId(@RequestParam Integer id){
+    public ResponseDTO findByProductId(@RequestParam Integer id){
         return productService.findProductDetailById(id);
     }
 

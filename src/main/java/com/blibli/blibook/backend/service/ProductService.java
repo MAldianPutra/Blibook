@@ -48,8 +48,20 @@ public class ProductService {
         return productRepository.findFirstByProductId(productId);
     }
 
-    public ProductDetailDTO findProductDetailById(Integer productId){
-        return productServiceImpl.findProductDetail(productId);
+    public ResponseDTO findProductDetailById(Integer productId){
+        try {
+            ProductDetailDTO productDetailDTO = productServiceImpl.findProductDetail(productId);
+            ArrayList<ProductDetailDTO> productDetailDTOS = new ArrayList<>();
+            productDetailDTOS.add(productDetailDTO);
+            if(!productDetailDTOS.isEmpty()){
+                return new ResponseDTO(200, "Success", productDetailDTOS);
+            }else {
+                return new ResponseDTO(404, "Data not found", null);
+            }
+
+    }catch (DataAccessException ex) {
+        return new ResponseDTO(400, ex.getMessage(), null);
+    }
     }
 
     public ResponseDTO findProductReviewByCategoryName(String productCategoryName){

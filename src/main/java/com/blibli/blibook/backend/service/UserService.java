@@ -138,7 +138,7 @@ public class UserService {
 
     public ResponseDTO getAllUser(Integer page) {
         ArrayList<UserDTO> objUser = new ArrayList<>();
-        Page<User> userPage = userRepository.findAll(PageRequest.of(page, 20, Sort.by("userName").ascending()));
+        Page<User> userPage = userRepository.findAll(PageRequest.of(page, 10, Sort.by("userName").ascending()));
 
         for (User user : userPage) {
             objUser.add(objectMapperService.mapToUserDTO(user));
@@ -146,8 +146,8 @@ public class UserService {
 
         if (objUser.get(0) != null) {
             ArrayList<ArrayList> data = new ArrayList<>();
-            ArrayList<String> countData = new ArrayList<>();
-            countData.add("Data count : " + userRepository.count());
+            ArrayList<Long> countData = new ArrayList<>();
+            countData.add(userRepository.count());
             data.add(countData);
             data.add(objUser);
             return new ResponseDTO(200, "Success", objUser);

@@ -1,9 +1,6 @@
 package com.blibli.blibook.backend.service.impl;
 
-import com.blibli.blibook.backend.dto.ProductDetailDTO;
-import com.blibli.blibook.backend.dto.ProductPhotoDTO;
-import com.blibli.blibook.backend.dto.ProductReviewDTO;
-import com.blibli.blibook.backend.dto.UserDTO;
+import com.blibli.blibook.backend.dto.*;
 import com.blibli.blibook.backend.model.entity.*;
 import com.blibli.blibook.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +23,9 @@ public class ObjectMapperServiceImpl {
 
     @Autowired
     ShopRepository shopRepository;
+
+    @Autowired
+    OrderRepository orderRepository;
 
     @Autowired
     ProductCategoryRepository productCategoryRepository;
@@ -90,6 +90,12 @@ public class ObjectMapperServiceImpl {
                 userRole.getUserRoleName(),
                 userStatus.getUserStatusName()
         );
+    }
+
+    public OrderShopDTO mapToOrderShopDTO(Order order){
+        return new OrderShopDTO(order.getOrderId(),
+                mapToUserDTO(userRepository.findFirstByUserId(order.getUser().getUserId())),
+                mapToProductDetail(productRepository.findFirstByProductId(order.getProduct().getProductId())));
     }
 
 }

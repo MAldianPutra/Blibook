@@ -20,7 +20,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -141,9 +140,19 @@ public class ProductService {
         }
     }
 
-    public ResponseDTO findAll(Integer page){
-        Page<Product> productPage = productRepository.findAll(PageRequest.of(page, 20, Sort.by("productName").ascending()));
-        return productServiceImpl.findAll(productPage);
+    public ResponseDTO findAllWithPaging(Integer page){
+        Page<Product> productPage = productRepository.findAll(PageRequest.of(page, 10, Sort.by("productName").ascending()));
+        return productServiceImpl.findAllWithPaging(productPage);
+    }
+
+    public ResponseDTO findAll(){
+        try {
+            ArrayList<Product> productList = (ArrayList<Product>) productRepository.findAll();
+            return new ResponseDTO(200, "Success", productList);
+        }catch (DataAccessException ex){
+            return new ResponseDTO(400, ex.getMessage(), null);
+        }
+
     }
 
     public Product save(Product product){
@@ -206,7 +215,7 @@ public class ProductService {
         } catch (DataAccessException ex) {
             Product product = productRepository.findFirstByProductId(productId);
             productServiceImpl.blockProduct(product);
-            objProduct.add(product);
+            objProduct.add(productRepository.findFirstByProductId(productId));
             response = new ResponseDTO(200, "Success Block Product", objProduct);
         }
 

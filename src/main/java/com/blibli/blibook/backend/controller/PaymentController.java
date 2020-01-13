@@ -36,7 +36,7 @@ public class PaymentController {
     public Payment paymentProduct(@RequestParam Integer orderId){
         // orderStatusId 2 = WAITING_CONFIRMATION
         Integer orderStatusId = 2;
-        Optional<OrderStatus> orderStatus = orderService.findOrderStatusId(orderStatusId);
+        Optional<OrderStatus> orderStatus = orderService.findOptionalOrderStatusByOrderStatusId(orderStatusId);
         Order updateOrder = orderService.findFirstByOrderId(orderId);
         updateOrder.setOrderStatus(orderStatus.get());
 

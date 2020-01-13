@@ -82,7 +82,7 @@ public class ProductServiceImpl {
         return objectMapperService.mapToProductDetail(product);
     }
 
-    public ResponseDTO findAll(Page<Product> productPage){
+    public ResponseDTO findAllWithPaging(Page<Product> productPage){
         ArrayList<ProductDetailDTO> productDetailDTOList = new ArrayList<>();
         for(Product product : productPage){
             productDetailDTOList.add(objectMapperService.mapToProductDetail(product));
@@ -90,8 +90,8 @@ public class ProductServiceImpl {
 
         if(!productDetailDTOList.isEmpty()){
             ArrayList<ArrayList> data = new ArrayList<>();
-            ArrayList<String> countData = new ArrayList<>();
-            countData.add("Data count : " + productRepository.count());
+            ArrayList<Long> countData = new ArrayList<>();
+            countData.add(productRepository.count());
             data.add(countData);
             data.add(productDetailDTOList);
             return new ResponseDTO(200, "Success!", data);

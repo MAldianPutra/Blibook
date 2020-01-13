@@ -63,8 +63,13 @@ public class ProductController {
     }
 
     @GetMapping(ApiPath.ALL_PRODUCTS)
-    public ResponseDTO findAll(@RequestParam ("page") Integer page) {
-        return productService.findAll(page);
+    public ResponseDTO findAllWithPaging(@RequestParam ("page") Integer page) {
+        return productService.findAllWithPaging(page);
+    }
+
+    @GetMapping(ApiPath.PRODUCT_ALL)
+    public ResponseDTO findAll(){
+        return productService.findAll();
     }
 
     @PostMapping(ApiPath.PRODUCT)

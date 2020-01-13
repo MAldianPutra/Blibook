@@ -61,43 +61,25 @@ public class OrderController {
         return orderService.findAll();
     }
 
+    @GetMapping(ApiPath.ORDERED_PRODUCT_BY_ORDER_ID)
+    public ResponseDTO orderedProductById(@RequestParam ("id") Integer orderId){
+        return orderService.orderedProductById(orderId);
+    }
+
     @PostMapping(ApiPath.ORDER_INITIATE)
     public ResponseDTO initiateOrder(@RequestParam Integer userId,
                                      @RequestParam Integer productId){
-        Integer orderStatusId = 1;
-        if(orderService.findOrderExists(userId, productId)){
-            return new ResponseDTO(500, "Failed! Product ordered or purchased before.", null);
-        }
-        else
-        {
-            return constructOrder(orderStatusId, userId, productId);
-        }
+        return orderService.initiateOrder(userId, productId);
     }
 
     @PutMapping(ApiPath.ORDER_CONFIRMATION)
     public Order confirmOrder(@RequestParam Integer id){
         // orderStatusId 3 = COMPLETED
         Integer orderStatusId = 3;
-        Optional<OrderStatus> orderStatus = orderService.findOrderStatusId(orderStatusId);
+        Optional<OrderStatus> orderStatus = orderService.findOptionalOrderStatusByOrderStatusId(orderStatusId);
         Order updateOrder = orderService.findFirstByOrderId(id);
         updateOrder.setOrderStatus(orderStatus.get());
         return orderService.save(updateOrder);
-    }
-
-    private ResponseDTO constructOrder(@RequestParam Integer statusId,
-                                       @RequestParam Integer userId,
-                                       @RequestParam Integer productId){
-        Optional<OrderStatus> orderStatus = orderService.findOrderStatusId(statusId);
-        Optional<User> user = orderService.findUserId(userId);
-        Optional<Product> product = orderService.findProductId(productId);
-        Order newOrder = new Order();
-        orderStatus.ifPresent(newOrder::setOrderStatus);
-        user.ifPresent(newOrder::setUser);
-        product.ifPresent(newOrder::setProduct);
-        newOrder.setShop(product.get().getShop());
-        orderService.save(newOrder);
-
-        return orderService.findOrder(newOrder);
     }
 
 }

@@ -28,6 +28,7 @@ public class ApiPath {
     public static final String PRODUCT_SEARCH_BY_NAME = PRODUCT + "/search";
     public static final String PRODUCT_SEARCH_BY_PRICE_LESS_THAN = PRODUCT + "/search/price";
     public static final String PRODUCT_SEARCH_BY_COUNTRY = PRODUCT + "/country";
+    public static final String PRODUCT_ALL = PRODUCT + "/all";
 
 
     // CART ENDPOINTS
@@ -50,6 +51,7 @@ public class ApiPath {
     public static final String ORDER_WAITING_CONFIRM_BY_USER_ID = ORDER + "/confirm-order/user";
     public static final String ORDER_WAITING_CONFIRM_BY_SHOP_ID = ORDER + "/confirm-order/shop";
     public static final String ORDER_CONFIRMATION = ORDER + "/confirm";
+    public static final String ORDERED_PRODUCT_BY_ORDER_ID = ORDER + "/products";
 
     // LIBRARY ENDPOINTS (IN ORDER CONTROLLER) LIBRARY = COMPLETED ORDER
     public static final String LIBRARY_BY_USER_ID = API + "/library/user";

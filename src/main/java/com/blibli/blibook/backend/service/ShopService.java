@@ -135,7 +135,7 @@ public class ShopService {
 
 
     public ResponseDTO getAllShops(Integer page) {
-        Page<Shop> shopPage = shopRepository.findAll(PageRequest.of(page, 20, Sort.by("shopName").ascending()));
+        Page<Shop> shopPage = shopRepository.findAll(PageRequest.of(page, 10, Sort.by("shopName").ascending()));
         ArrayList<ShopDTO> objShop = new ArrayList<>();
         for (Shop shop : shopPage) {
             User user = userRepository.findFirstByUserId(shop.getUser().getUserId());
@@ -152,8 +152,8 @@ public class ShopService {
 
         if (objShop.get(0) != null) {
             ArrayList<ArrayList> data = new ArrayList<>();
-            ArrayList<String> countData =  new ArrayList<>();
-            countData.add("Data count : " + shopRepository.count());
+            ArrayList<Long> countData =  new ArrayList<>();
+            countData.add(shopRepository.count());
             data.add(countData);
             data.add(objShop);
             return new ResponseDTO(200, "Success", data);
@@ -186,9 +186,5 @@ public class ShopService {
     public Integer countShopByUserId(Integer userId){
         return shopRepository.countShopByUser_UserId(userId);
     }
-
-//    public List<Shop> findAll(){
-//        return shopRepository.findAll();
-//    }
 
 }

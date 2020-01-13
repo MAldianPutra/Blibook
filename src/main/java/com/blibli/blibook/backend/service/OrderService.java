@@ -1,13 +1,11 @@
 package com.blibli.blibook.backend.service;
 
-import com.blibli.blibook.backend.dto.OrderShopDTO;
-import com.blibli.blibook.backend.dto.ResponseDTO;
+import com.blibli.blibook.backend.dto.*;
 import com.blibli.blibook.backend.model.entity.*;
-import com.blibli.blibook.backend.dto.ProductPhotoDTO;
-import com.blibli.blibook.backend.dto.ProductReviewDTO;
 import com.blibli.blibook.backend.repository.*;
 import com.blibli.blibook.backend.service.impl.ObjectMapperServiceImpl;
 import com.blibli.blibook.backend.service.impl.OrderServiceImpl;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -24,8 +22,11 @@ public class OrderService {
 
     @Autowired
     private OrderStatusRepository orderStatusRepository;
-    public Optional<OrderStatus> findOrderStatusId(Integer orderStatusId){
+    public Optional<OrderStatus> findOptionalOrderStatusByOrderStatusId(Integer orderStatusId){
         return orderStatusRepository.findById(orderStatusId);
+    }
+    public OrderStatus findOrderStatusByOrderStatusId(Integer orderStatusId){
+        return orderStatusRepository.findFirstByOrderStatusId(orderStatusId);
     }
 
     @Autowired
@@ -137,4 +138,56 @@ public class OrderService {
         return response;
     }
 
+    public ResponseDTO initiateOrder(Integer userId, Integer productId){
+        try {
+            ArrayList<OrderShopDTO> data = new ArrayList<>();
+            Integer orderStatusId = 1;
+            if(findOrderExists(userId, productId)){
+                Order order = orderRepository.findByUser_UserIdAndProduct_ProductId(userId, productId);
+                OrderStatus orderStatus = findOrderStatusByOrderStatusId(order.getOrderStatus().getOrderStatusId());
+                if(orderStatus.getOrderStatusName().equals("NOT_PAID")){
+                    data.add(objectMapperService.mapToOrderShopDTO(order));
+                    return new ResponseDTO(200, "Product ordered before.", data);
+                }else{
+                    return new ResponseDTO(403, "Product was purchased or waiting for confirmation", null);
+                }
+            }
+            else
+            {
+                return constructOrder(orderStatusId, userId, productId);
+            }
+        }catch (DataAccessException ex){
+            return new ResponseDTO(400, ex.getMessage(), null);
+        }
+    }
+
+    private ResponseDTO constructOrder(Integer statusId, Integer userId, Integer productId){
+        Optional<OrderStatus> orderStatus = findOptionalOrderStatusByOrderStatusId(statusId);
+        Optional<User> user = findUserId(userId);
+        Optional<Product> product = findProductId(productId);
+        Order newOrder = new Order();
+        orderStatus.ifPresent(newOrder::setOrderStatus);
+        user.ifPresent(newOrder::setUser);
+        product.ifPresent(newOrder::setProduct);
+        newOrder.setShop(product.get().getShop());
+        orderRepository.save(newOrder);
+
+        return findOrder(newOrder);
+    }
+
+    public ResponseDTO orderedProductById(Integer orderId) {
+        try{
+            Order order = orderRepository.findFirstByOrderId(orderId);
+            Product product = productRepository.findFirstByProductId(order.getProduct().getProductId());
+            ArrayList<ProductDetailDTO> data = new ArrayList<>();
+            data.add(objectMapperService.mapToProductDetail(product));
+            if(!data.isEmpty()){
+                return new ResponseDTO(200, "Success.", data);
+            }else {
+                return new ResponseDTO(400, "Product not found", null);
+            }
+        }catch (DataAccessException ex){
+            return new ResponseDTO(400, ex.getMessage(), null);
+        }
+    }
 }

@@ -14,6 +14,9 @@ import com.blibli.blibook.backend.service.impl.ProductServiceImpl;
 import com.blibli.blibook.backend.service.impl.SearchKeyServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -78,15 +81,9 @@ public class ProductService {
         return productServiceImpl.findProductByCountry(products);
     }
 
-    public List<ProductDetailDTO> findAll(){
-        List<Product> products =  productRepository.findAll();
-        ArrayList<ProductDetailDTO> listProducts = new ArrayList<>();
-
-        for (Product product : products) {
-            listProducts.add(productServiceImpl.findProductDetail(product.getProductId()));
-        }
-
-        return listProducts;
+    public ResponseDTO findAll(Integer page){
+        Page<Product> productPage = productRepository.findAll(PageRequest.of(page, 20, Sort.by("productName").ascending()));
+        return productServiceImpl.findAll(productPage);
     }
 
     public Product save(Product product){

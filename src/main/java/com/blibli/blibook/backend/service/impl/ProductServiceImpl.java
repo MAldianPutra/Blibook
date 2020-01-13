@@ -13,6 +13,7 @@ import com.blibli.blibook.backend.repository.ProductRepository;
 import com.blibli.blibook.backend.repository.ProductStatusRepository;
 import com.blibli.blibook.backend.repository.ShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -79,6 +80,24 @@ public class ProductServiceImpl {
     public ProductDetailDTO findProductDetail(Integer productId){
         Product product = productRepository.findFirstByProductId(productId);
         return objectMapperService.mapToProductDetail(product);
+    }
+
+    public ResponseDTO findAll(Page<Product> productPage){
+        ArrayList<ProductDetailDTO> productDetailDTOList = new ArrayList<>();
+        for(Product product : productPage){
+            productDetailDTOList.add(objectMapperService.mapToProductDetail(product));
+        }
+        ArrayList<ArrayList> data = new ArrayList<>();
+        ArrayList<String> stringArrayList = new ArrayList<>();
+        stringArrayList.add("Data count : " + productRepository.count());
+        data.add(stringArrayList);
+        data.add(productDetailDTOList);
+        if(!productDetailDTOList.isEmpty()){
+            return new ResponseDTO(200, "Success!", data);
+        }
+        else {
+            return new ResponseDTO(400, "Data not found.", null);
+        }
     }
 
     public void blockProduct(Product product){

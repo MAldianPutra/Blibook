@@ -64,16 +64,14 @@ public class OrderController {
     @PostMapping(ApiPath.ORDER_INITIATE)
     public ResponseDTO initiateOrder(@RequestParam Integer userId,
                                      @RequestParam Integer productId){
-        ResponseDTO response;
         Integer orderStatusId = 1;
         if(orderService.findOrderExists(userId, productId)){
-            response = new ResponseDTO(500, "Failed! Product ordered or purchased before.", null);
+            return new ResponseDTO(500, "Failed! Product ordered or purchased before.", null);
         }
         else
         {
-            response = constructOrder(orderStatusId, userId, productId);
+            return constructOrder(orderStatusId, userId, productId);
         }
-        return response;
     }
 
     @PutMapping(ApiPath.ORDER_CONFIRMATION)

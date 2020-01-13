@@ -63,8 +63,8 @@ public class ProductController {
     }
 
     @GetMapping(ApiPath.ALL_PRODUCTS)
-    public List<ProductDetailDTO> findAll(){
-        return productService.findAll();
+    public ResponseDTO findAll(@RequestParam ("page") Integer page) {
+        return productService.findAll(page);
     }
 
     @PostMapping(ApiPath.PRODUCT)

@@ -11,10 +11,7 @@ import com.blibli.blibook.backend.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -93,13 +90,13 @@ public class UserController {
     }
 
     @GetMapping(ApiPath.ALL_USERS)
-    public ResponseDTO findAll(@RequestParam ("page") Integer page) {
-        return userService.getAllUser(page);
+    public ResponseDTO findAllWithPaging(@RequestParam ("page") Integer page) {
+        return userService.findAllWithPaging(page);
     }
 
-    @PostMapping(ApiPath.POPULATE_ENCYRPT_PASSWORD)
-    public List<User> populatePassword(){
-        return userService.populateEncyrpt();
+    @GetMapping(ApiPath.USER_ALL)
+    public ResponseDTO findAll(){
+        return userService.findAll();
     }
 
 }

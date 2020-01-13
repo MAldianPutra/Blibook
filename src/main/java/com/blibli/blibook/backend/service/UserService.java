@@ -136,7 +136,7 @@ public class UserService {
         }
     }
 
-    public ResponseDTO getAllUser(Integer page) {
+    public ResponseDTO findAllWithPaging(Integer page) {
         ArrayList<UserDTO> objUser = new ArrayList<>();
         Page<User> userPage = userRepository.findAll(PageRequest.of(page, 10, Sort.by("userName").ascending()));
 
@@ -178,16 +178,13 @@ public class UserService {
         return response;
     }
 
-    public List<User> populateEncyrpt(){
-        List<User> users = userRepository.findAll();
-        List<User> updatedUser = new ArrayList<>();
-        for (User user : users){
-            if(user.getUserPassword().length() < 30){
-                user.setUserPassword(passwordEncoder().encode(user.getUserPassword()));
-                userRepository.save(user);
-                updatedUser.add(user);
-            }
+    public ResponseDTO findAll(){
+        try{
+            ArrayList<User> data = (ArrayList<User>) userRepository.findAll();
+            return new ResponseDTO(200, "Success", data);
+        }catch (DataAccessException ex){
+            return new ResponseDTO(400, ex.getCause().getMessage(), null);
         }
-        return updatedUser;
     }
+
 }

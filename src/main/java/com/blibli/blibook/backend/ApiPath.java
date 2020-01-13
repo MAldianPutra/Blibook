@@ -11,6 +11,7 @@ public class ApiPath {
     public static final String USER_UPDATE = USER + "/update";
     public static final String USER_LOGIN = USER + "/login";
     public static final String USER_DELETE = USER + "/delete";
+    public static final String USER_ALL = USER + "/all";
 
     // SHOP ENDPOINTS
     public static final String SHOP = API + "/shops";
@@ -18,6 +19,7 @@ public class ApiPath {
     public static final String SHOP_BLOCK = SHOP + "/block";
     public static final String SHOP_UPDATE = SHOP + "/update";
     public static final String SHOP_BY_USER_ID = SHOP + "/user";
+    public static final String SHOP_ALL = SHOP + "/all";
 
     // PRODUCT ENDPOINTS
     public static final String PRODUCT = API + "/products";

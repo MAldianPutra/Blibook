@@ -6,6 +6,7 @@ import com.blibli.blibook.backend.model.entity.Shop;
 import com.blibli.blibook.backend.model.entity.User;
 import com.blibli.blibook.backend.repository.ShopRepository;
 import com.blibli.blibook.backend.repository.UserRepository;
+import com.blibli.blibook.backend.service.impl.ObjectMapperServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,9 @@ public class ShopService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ObjectMapperServiceImpl objectMapperService;
 
     public Optional<User> findUserId(Integer userId){
         return userRepository.findById(userId);
@@ -108,16 +112,7 @@ public class ShopService {
             if (temp.get(0) == null) {
                 response = new ResponseDTO(404, "Shop Not Found!", null);
             } else {
-                User user = userRepository.findFirstByUserId(userId);
-                objShop.add(new ShopDTO(
-                        shop.getShopId(),
-                        shop.getShopName(),
-                        shop.getShopAddress(),
-                        shop.getShopCity(),
-                        shop.getShopProvince(),
-                        user.getUserName()
-                ));
-
+                objShop.add(objectMapperService.mapToShopDTO(shop));
                 if (objShop.get(0) != null) {
                     response = new ResponseDTO(200, "Success", objShop);
                 }
@@ -134,7 +129,7 @@ public class ShopService {
     }
 
 
-    public ResponseDTO getAllShops(Integer page) {
+    public ResponseDTO findAllShopWithPaging(Integer page) {
         Page<Shop> shopPage = shopRepository.findAll(PageRequest.of(page, 10, Sort.by("shopName").ascending()));
         ArrayList<ShopDTO> objShop = new ArrayList<>();
         for (Shop shop : shopPage) {
@@ -183,8 +178,13 @@ public class ShopService {
         return response;
     }
 
-    public Integer countShopByUserId(Integer userId){
-        return shopRepository.countShopByUser_UserId(userId);
-    }
+    public ResponseDTO findAll() {
+        try{
+            ArrayList<Shop> data = (ArrayList<Shop>) shopRepository.findAll();
+            return new ResponseDTO(200, "Success.", data);
+        }catch (DataAccessException ex){
+            return new ResponseDTO(400, ex.getMessage(), null);
+        }
 
+    }
 }

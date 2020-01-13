@@ -98,4 +98,9 @@ public class ObjectMapperServiceImpl {
                 mapToProductDetail(productRepository.findFirstByProductId(order.getProduct().getProductId())));
     }
 
+    public ShopDTO mapToShopDTO(Shop shop){
+        User user = userRepository.findFirstByUserId(shop.getUser().getUserId());
+        return new ShopDTO(shop.getShopId(), shop.getShopName(), shop.getShopAddress(), shop.getShopCity(), shop.getShopProvince(), user.getUserName());
+    }
+
 }

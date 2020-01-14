@@ -131,30 +131,23 @@ public class ShopService {
 
     public ResponseDTO findAllShopWithPaging(Integer page) {
         Page<Shop> shopPage = shopRepository.findAll(PageRequest.of(page, 10, Sort.by("shopName").ascending()));
-        ArrayList<ShopDTO> objShop = new ArrayList<>();
+        ArrayList<ShopDTO> shopDTOS = new ArrayList<>();
         for (Shop shop : shopPage) {
             User user = userRepository.findFirstByUserId(shop.getUser().getUserId());
-
-            objShop.add(new ShopDTO(
-                    shop.getShopId(),
-                    shop.getShopName(),
-                    shop.getShopAddress(),
-                    shop.getShopCity(),
-                    shop.getShopProvince(),
-                    user.getUserName()
-            ));
+            shopDTOS.add(objectMapperService.mapToShopDTO(shop));
         }
 
-        if (objShop.get(0) != null) {
+        if (shopDTOS.get(0) != null) {
             ArrayList<ArrayList> data = new ArrayList<>();
             ArrayList<Long> countData =  new ArrayList<>();
             countData.add(shopRepository.count());
             data.add(countData);
-            data.add(objShop);
+            data.add(shopDTOS);
             return new ResponseDTO(200, "Success", data);
         } else {
             return new ResponseDTO(400, "Failed!", null);
         }
+
     }
 
     public ResponseDTO deleteByShopId(Integer shopId) {

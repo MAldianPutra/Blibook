@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     User findFirstByUserEmail(String email);
 
-    User findFirstByUserEmailAndUserPassword(String email, String password);
+    Boolean existsByUserEmail(String email);
 
     @Transactional
     long deleteByUserId(Integer userId);

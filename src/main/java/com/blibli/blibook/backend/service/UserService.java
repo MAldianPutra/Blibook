@@ -122,14 +122,18 @@ public class UserService {
     public ResponseDTO login(String email, String password) {
         ArrayList<UserDTO> objUser = new ArrayList<>();
         try {
-            User user = userRepository.findFirstByUserEmail(email);
-            UserStatus userStatus = userStatusRepository.findFirstByUserStatusId(user.getUserStatus().getUserStatusId());
-            if (user != null && passwordEncoder().matches(password, user.getUserPassword())
-                    && userStatus.getUserStatusName().equals("AVAILABLE")) {
-                objUser.add(objectMapperService.mapToUserDTO(user));
-                return new ResponseDTO(200, "Success Login", objUser);
+            if (userRepository.existsByUserEmail(email)) {
+                User user = userRepository.findFirstByUserEmail(email);
+                UserStatus userStatus = userStatusRepository.findFirstByUserStatusId(user.getUserStatus().getUserStatusId());
+                if(passwordEncoder().matches(password, user.getUserPassword())
+                        && userStatus.getUserStatusName().equals("AVAILABLE")){
+                    objUser.add(objectMapperService.mapToUserDTO(user));
+                    return new ResponseDTO(200, "Success Login!", objUser);
+                } else {
+                    return new ResponseDTO(400, "User was blocked!", null);
+                }
             } else {
-                return new ResponseDTO(404, "User Not Found or Blocked!", null);
+                return new ResponseDTO(404, "User Not Found!", null);
             }
         } catch (DataAccessException ex) {
             return new ResponseDTO(500, ex.getMessage(), null);
@@ -150,7 +154,7 @@ public class UserService {
             countData.add(userRepository.count());
             data.add(countData);
             data.add(objUser);
-            return new ResponseDTO(200, "Success", objUser);
+            return new ResponseDTO(200, "Success", data);
         } else {
             return new ResponseDTO(404, "User Is Empty!", null);
         }

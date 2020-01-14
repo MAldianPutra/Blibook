@@ -89,7 +89,7 @@ public class OrderService {
                 for (Order order : orderList) {
                     orderShopList.add(new OrderShopDTO(order.getOrderId(),
                             objectMapperService.mapToUserDTO(
-                                    userRepository.findByUserId(order.getUser().getUserId())),
+                                    userRepository.findFirstByUserId(order.getUser().getUserId())),
                             objectMapperService.mapToProductDetailDTO(productRepository.findFirstByProductId(order.getProduct().getProductId()))));
                 }
                 response = new ResponseDTO(200, "Success", orderShopList);

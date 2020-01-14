@@ -1,6 +1,7 @@
 package com.blibli.blibook.backend.jwt;
 
 import com.blibli.blibook.backend.model.entity.User;
+import com.blibli.blibook.backend.model.entity.UserRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,27 +20,21 @@ import java.util.stream.Collectors;
 public class UserPrincipal implements UserDetails {
 
     private Integer id;
-
     private String userName;
-
-    @JsonIgnore
     private String userEmail;
-
-    @JsonIgnore
     private String userPassword;
-
     private Collection<? extends GrantedAuthority> authorities;
 
-    public static UserPrincipal create(User user){
-        GrantedAuthority authority = new SimpleGrantedAuthority(user.getUserRole().getUserRoleName());
-        return new UserPrincipal(
+    public static UserPrincipal create(User user, UserRole userRole){
+        GrantedAuthority authority = new SimpleGrantedAuthority(userRole.getUserRoleName());
+        UserPrincipal userPrincipal = new UserPrincipal(
                 user.getUserId(),
                 user.getUserName(),
                 user.getUserEmail(),
                 user.getUserPassword(),
-                Collections.singleton(authority)
-        );
-
+                Collections.singleton(authority));
+        System.out.println(userPrincipal.getUserPassword());
+        return userPrincipal;
     }
 
     @Override
@@ -57,31 +52,31 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return userPassword;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return userName;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }

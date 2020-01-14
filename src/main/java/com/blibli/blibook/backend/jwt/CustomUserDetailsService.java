@@ -1,7 +1,9 @@
 package com.blibli.blibook.backend.jwt;
 
 import com.blibli.blibook.backend.model.entity.User;
+import com.blibli.blibook.backend.model.entity.UserRole;
 import com.blibli.blibook.backend.repository.UserRepository;
+import com.blibli.blibook.backend.repository.UserRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,12 +17,16 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    UserRoleRepository userRoleRepository;
+
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
         User user = userRepository.findByUserEmail(userEmail).orElseThrow(() ->
                 new UsernameNotFoundException("User not found with email : " + userEmail));
-        return UserPrincipal.create(user);
+        UserRole userRole = userRoleRepository.findFirstByUserRoleId(user.getUserRole().getUserRoleId());
+        return UserPrincipal.create(user, userRole);
     };
 
     @Transactional
@@ -28,7 +34,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new UsernameNotFoundException("User not found with id : " + id)
         );
-        return UserPrincipal.create(user);
+        UserRole userRole = userRoleRepository.findFirstByUserRoleId(user.getUserRole().getUserRoleId());
+        return UserPrincipal.create(user, userRole);
     }
 
 }

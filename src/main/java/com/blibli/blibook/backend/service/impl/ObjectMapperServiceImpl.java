@@ -94,12 +94,12 @@ public class ObjectMapperServiceImpl {
 
     public OrderShopDTO mapToOrderShopDTO(Order order){
         return new OrderShopDTO(order.getOrderId(),
-                mapToUserDTO(userRepository.findByUserId(order.getUser().getUserId())),
+                mapToUserDTO(userRepository.findFirstByUserId(order.getUser().getUserId())),
                 mapToProductDetailDTO(productRepository.findFirstByProductId(order.getProduct().getProductId())));
     }
 
     public ShopDTO mapToShopDTO(Shop shop){
-        User user = userRepository.findByUserId(shop.getUser().getUserId());
+        User user = userRepository.findFirstByUserId(shop.getUser().getUserId());
         return new ShopDTO(shop.getShopId(), shop.getShopName(), shop.getShopAddress(), shop.getShopCity(), shop.getShopProvince(), user.getUserName());
     }
 

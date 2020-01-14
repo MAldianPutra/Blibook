@@ -51,7 +51,7 @@ public class UserService {
     }
 
     public User findFirstByUserId(Integer userId) {
-        return userRepository.findByUserId(userId);
+        return userRepository.findFirstByUserId(userId);
     }
 
     public UserRole findFirstByUserRoleId(Integer id) {
@@ -73,7 +73,7 @@ public class UserService {
         try {
             user.setUserPassword(passwordEncoder2().encode(user.getUserPassword()));
             userRepository.save(user);
-            objUser.add(userRepository.findByUserId(user.getUserId()));
+            objUser.add(userRepository.findFirstByUserId(user.getUserId()));
 
             if (objUser.get(0) != null) {
                 response = new ResponseDTO(200, "Success", objUser);
@@ -92,7 +92,7 @@ public class UserService {
         ArrayList<User> objUser = new ArrayList<>();
         ResponseDTO response;
         try {
-            User temp = userRepository.findByUserId(user.getUserId());
+            User temp = userRepository.findFirstByUserId(user.getUserId());
             temp.setUserEmail(user.getUserEmail());
             temp.setUserName(user.getUserName());
             temp.setUserBirthdate(user.getUserBirthdate());
@@ -102,7 +102,7 @@ public class UserService {
             temp.setUserStatus(user.getUserStatus());
 
             userRepository.save(temp);
-            objUser.add(userRepository.findByUserId(temp.getUserId()));
+            objUser.add(userRepository.findFirstByUserId(temp.getUserId()));
 
             if (objUser.get(0) != null) {
                 response = new ResponseDTO(200, "Success", objUser);
@@ -164,7 +164,7 @@ public class UserService {
         ArrayList<User> objUser = new ArrayList<>();
 
         try {
-            User user = userRepository.findByUserId(userId);
+            User user = userRepository.findFirstByUserId(userId);
             Long success = userRepository.deleteByUserId(userId);
 
             if (success > 0) {
@@ -191,7 +191,7 @@ public class UserService {
 
     public ResponseDTO blockByUserId(Integer userId) {
         try{
-            User user = userRepository.findByUserId(userId);
+            User user = userRepository.findFirstByUserId(userId);
             UserStatus userStatus = userStatusRepository.findFirstByUserStatusName("BLOCKED");
             user.setUserStatus(userStatus);
             save(user);

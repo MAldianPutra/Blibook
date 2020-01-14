@@ -33,7 +33,6 @@ public class ApiPath {
     public static final String PRODUCT_SEARCH_BY_COUNTRY = PRODUCT + "/country";
     public static final String PRODUCT_ALL = PRODUCT + "/all";
 
-
     // CART ENDPOINTS
     public static final String CART = API + "/carts";
     public static final String CART_BY_USER_ID = CART + "/user" ;

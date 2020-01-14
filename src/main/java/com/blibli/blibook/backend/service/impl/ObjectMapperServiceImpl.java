@@ -100,7 +100,14 @@ public class ObjectMapperServiceImpl {
 
     public ShopDTO mapToShopDTO(Shop shop){
         User user = userRepository.findFirstByUserId(shop.getUser().getUserId());
-        return new ShopDTO(shop.getShopId(), shop.getShopName(), shop.getShopAddress(), shop.getShopCity(), shop.getShopProvince(), user.getUserName());
+        return new ShopDTO(
+                shop.getShopId(),
+                shop.getShopName(),
+                shop.getShopAddress(),
+                shop.getShopCity(),
+                shop.getShopProvince(),
+                user.getUserId(),
+                user.getUserName());
     }
 
     public CartDTO mapToCartDTO(Cart cart){

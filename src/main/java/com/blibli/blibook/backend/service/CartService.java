@@ -106,12 +106,13 @@ public class CartService {
             ArrayList<CartDTO> data = new ArrayList<>();
             if(cartRepository.existsCartByUser_UserIdAndProduct_ProductId(userId, productId)){
                 Cart cart = cartRepository.findByUser_UserIdAndProduct_ProductId(userId, productId);
-                if(cart.getCartStatus().getCartStatusName().equals("CART")){
-                    CartStatus cartStatus = cartStatusRepository.findFirstByCartStatusName("WISHLIST");
-                    cart.setCartStatus(cartStatus);
-                }else if(cart.getCartStatus().getCartStatusName().equals("WISHLIST")){
-                    CartStatus cartStatus = cartStatusRepository.findFirstByCartStatusName("CART");
-                    cart.setCartStatus(cartStatus);
+                CartStatus cartStatus = cartStatusRepository.findFirstByCartStatusId(cart.getCartStatus().getCartStatusId());
+                if(cartStatus.getCartStatusName().equals("CART")){
+                    CartStatus updatedStatus = cartStatusRepository.findFirstByCartStatusName("CART");
+                    cart.setCartStatus(updatedStatus);
+                }else if(cartStatus.getCartStatusName().equals("WISHLIST")){
+                    CartStatus updatedStatus = cartStatusRepository.findFirstByCartStatusName("CART");
+                    cart.setCartStatus(updatedStatus);
                 }
                 save(cart);
                 CartDTO cartDTO = objectMapperService.mapToCartDTO(cart);

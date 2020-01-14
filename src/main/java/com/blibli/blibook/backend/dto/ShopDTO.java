@@ -11,5 +11,6 @@ public class ShopDTO {
     String shopAddress;
     String shopCity;
     String shopProvince;
-    String shopOwner;
+    Integer userId;
+    String userName;
 }

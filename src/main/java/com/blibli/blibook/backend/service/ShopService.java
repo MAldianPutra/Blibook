@@ -31,13 +31,15 @@ public class ShopService {
     @Autowired
     private ObjectMapperServiceImpl objectMapperService;
 
-    public Optional<User> findUserId(Integer userId){
-        return userRepository.findById(userId);
-    }
-
-
-    public Shop findByShopId(Integer shopId){
-        return shopRepository.findFirstByShopId(shopId);
+    public ResponseDTO findByShopId(Integer shopId){
+        try{
+            Shop shop = shopRepository.findFirstByShopId(shopId);
+            ArrayList<ShopDTO> data = new ArrayList<>();
+            data.add(objectMapperService.mapToShopDTO(shop));
+            return new ResponseDTO(200, "Success.", data);
+        }catch (DataAccessException ex){
+            return new ResponseDTO(400, ex.getCause().getMessage(), null);
+        }
     }
 
     public ResponseDTO shopRegister (Shop shop, Integer userId) {

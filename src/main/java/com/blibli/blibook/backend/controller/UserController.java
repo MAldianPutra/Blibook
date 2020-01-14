@@ -99,4 +99,9 @@ public class UserController {
         return userService.findAll();
     }
 
+    @PutMapping(ApiPath.USER_BLOCK)
+    public ResponseDTO blockUser(@RequestParam("id") Integer userId){
+        return userService.blockByUserId(userId);
+    }
+
 }

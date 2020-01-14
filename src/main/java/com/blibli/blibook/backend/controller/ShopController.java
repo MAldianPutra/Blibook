@@ -22,7 +22,7 @@ public class ShopController {
     private ShopService shopService;
 
     @GetMapping(ApiPath.SHOP)
-    public Shop findByShopId(@RequestParam Integer id){
+    public ResponseDTO findByShopId(@RequestParam Integer id){
         return shopService.findByShopId(id);
     }
 

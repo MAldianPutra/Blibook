@@ -208,7 +208,7 @@ public class ProductService {
 
             if (productRepository.deleteByProductId(productId) > 0) {
                 objProduct.add(product);
-                response = new ResponseDTO(200, "Success", objProduct);
+                response = new ResponseDTO(200, "Success Delete Product", objProduct);
             } else {
                 response = new ResponseDTO(404, "ID Not Found!", null);
             }

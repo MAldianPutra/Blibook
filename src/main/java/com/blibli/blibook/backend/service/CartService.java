@@ -48,7 +48,7 @@ public class CartService {
 
         for (Cart cart : carts) {
             Product product = productRepository.findFirstByProductId(cart.getProduct().getProductId());
-            cartDTOList.add(new CartDTO(cart.getCartId(), objectMapperService.mapToProductDetail(product)));
+            cartDTOList.add(new CartDTO(cart.getCartId(), objectMapperService.mapToProductDetailDTO(product)));
         }
 
         response = new ResponseDTO(200, "Success", cartDTOList);
@@ -67,7 +67,7 @@ public class CartService {
             Long success = cartRepository.deleteByCartId(cartId);
 
             if (success > 0) {
-                cartDTOList.add(new CartDTO(cartId, objectMapperService.mapToProductDetail(product)));
+                cartDTOList.add(new CartDTO(cartId, objectMapperService.mapToProductDetailDTO(product)));
                 response = new ResponseDTO(200, "Sukses", cartDTOList);
             } else {
                 response = new ResponseDTO(404, "ID Not Found", null);
@@ -85,6 +85,47 @@ public class CartService {
 
     public List<Cart> findAll(){
         return cartRepository.findAll();
+    }
+
+    public Cart constructCart(Integer userId, Integer productId, String cartStatusName) {
+        CartStatus cartStatus = cartStatusRepository.findFirstByCartStatusName(cartStatusName);
+        Optional<User> user = findUserId(userId);
+        Optional<Product> product = findProductId(productId);
+        Cart newCart = new Cart();
+        newCart.setCartStatus(cartStatus);
+        user.ifPresent(newCart::setUser);
+        product.ifPresent(newCart::setProduct);
+        newCart.setShop(product.get().getShop());
+        save(newCart);
+        return newCart;
+    }
+
+
+    public ResponseDTO addCartOrWishlist(Integer userId, Integer productId, String cartStatusName) {
+        try{
+            ArrayList<CartDTO> data = new ArrayList<>();
+            if(cartRepository.existsCartByUser_UserIdAndProduct_ProductId(userId, productId)){
+                Cart cart = cartRepository.findByUser_UserIdAndProduct_ProductId(userId, productId);
+                if(cart.getCartStatus().getCartStatusName().equals("CART")){
+                    CartStatus cartStatus = cartStatusRepository.findFirstByCartStatusName("WISHLIST");
+                    cart.setCartStatus(cartStatus);
+                }else if(cart.getCartStatus().getCartStatusName().equals("WISHLIST")){
+                    CartStatus cartStatus = cartStatusRepository.findFirstByCartStatusName("CART");
+                    cart.setCartStatus(cartStatus);
+                }
+                save(cart);
+                CartDTO cartDTO = objectMapperService.mapToCartDTO(cart);
+                data.add(cartDTO);
+                return new ResponseDTO(200, "Changed to Cart or Wishlist!", data);
+            }else{
+                Cart cart = constructCart(userId, productId, cartStatusName);
+                CartDTO cartDTO = objectMapperService.mapToCartDTO(cart);
+                data.add(cartDTO);
+                return new ResponseDTO(200, "Cart or Wishlist created!", data);
+            }
+        }catch (DataAccessException ex){
+            return new ResponseDTO(400, ex.getCause().getMessage(), null);
+        }
     }
 
 }

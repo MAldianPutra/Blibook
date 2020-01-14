@@ -79,13 +79,13 @@ public class ProductServiceImpl {
 
     public ProductDetailDTO findProductDetail(Integer productId){
         Product product = productRepository.findFirstByProductId(productId);
-        return objectMapperService.mapToProductDetail(product);
+        return objectMapperService.mapToProductDetailDTO(product);
     }
 
     public ResponseDTO findAllWithPaging(Page<Product> productPage){
         ArrayList<ProductDetailDTO> productDetailDTOList = new ArrayList<>();
         for(Product product : productPage){
-            productDetailDTOList.add(objectMapperService.mapToProductDetail(product));
+            productDetailDTOList.add(objectMapperService.mapToProductDetailDTO(product));
         }
 
         if(!productDetailDTOList.isEmpty()){
@@ -102,8 +102,8 @@ public class ProductServiceImpl {
     }
 
     public void blockProduct(Product product){
-        ProductCategory categoryBlocked = productCategoryRepository.findFirstByProductCategoryName("BLOCKED");
-        product.setProductCategory(categoryBlocked);
+        ProductStatus statusBlocked = productStatusRepository.findFirstByProductStatusName("BLOCKED");
+        product.setProductStatus(statusBlocked);
         productRepository.save(product);
     }
 

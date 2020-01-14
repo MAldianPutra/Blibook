@@ -3,8 +3,6 @@ package com.blibli.blibook.backend.controller;
 import com.blibli.blibook.backend.ApiPath;
 import com.blibli.blibook.backend.dto.ResponseDTO;
 import com.blibli.blibook.backend.model.entity.Product;
-import com.blibli.blibook.backend.dto.ProductDetailDTO;
-import com.blibli.blibook.backend.dto.ProductReviewDTO;
 import com.blibli.blibook.backend.model.entity.ProductCategory;
 import com.blibli.blibook.backend.model.entity.ProductStatus;
 import com.blibli.blibook.backend.model.entity.Shop;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 @Api
@@ -102,7 +99,7 @@ public class ProductController {
         return productService.populateAllSKU();
     }
 
-    @DeleteMapping(ApiPath.PRODUCT_DELETE_BY_ID)
+    @DeleteMapping(ApiPath.PRODUCT_DELETE_BLOCK_BY_ID)
     public ResponseDTO deleteBlockProductByID(@RequestParam ("id") Integer productId) {
         return productService.deleteBlockProductByID(productId);
     }

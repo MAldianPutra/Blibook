@@ -191,4 +191,17 @@ public class UserService {
         }
     }
 
+    public ResponseDTO blockByUserId(Integer userId) {
+        try{
+            User user = userRepository.findFirstByUserId(userId);
+            UserStatus userStatus = userStatusRepository.findFirstByUserStatusName("BLOCKED");
+            user.setUserStatus(userStatus);
+            save(user);
+            ArrayList<UserDTO> data = new ArrayList<>();
+            data.add(objectMapperService.mapToUserDTO(user));
+            return new ResponseDTO(200, "Success.", data);
+        }catch (DataAccessException ex){
+            return new ResponseDTO (400, ex.getCause().getMessage(), null);
+        }
+    }
 }

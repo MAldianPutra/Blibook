@@ -5,7 +5,6 @@ import com.blibli.blibook.backend.model.entity.*;
 import com.blibli.blibook.backend.repository.*;
 import com.blibli.blibook.backend.service.impl.ObjectMapperServiceImpl;
 import com.blibli.blibook.backend.service.impl.OrderServiceImpl;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -91,7 +90,7 @@ public class OrderService {
                     orderShopList.add(new OrderShopDTO(order.getOrderId(),
                             objectMapperService.mapToUserDTO(
                                     userRepository.findFirstByUserId(order.getUser().getUserId())),
-                            objectMapperService.mapToProductDetail(productRepository.findFirstByProductId(order.getProduct().getProductId()))));
+                            objectMapperService.mapToProductDetailDTO(productRepository.findFirstByProductId(order.getProduct().getProductId()))));
                 }
                 response = new ResponseDTO(200, "Success", orderShopList);
             }
@@ -183,7 +182,7 @@ public class OrderService {
 
             if(orderStatus.getOrderStatusName().equals("NOT_PAID")){
                 ArrayList<ProductDetailDTO> data = new ArrayList<>();
-                data.add(objectMapperService.mapToProductDetail(product));
+                data.add(objectMapperService.mapToProductDetailDTO(product));
                 return new ResponseDTO(200, "Success.", data);
             } else{
                 return new ResponseDTO(400, "Order not found", null);

@@ -30,7 +30,7 @@ public class ObjectMapperServiceImpl {
     @Autowired
     ProductCategoryRepository productCategoryRepository;
 
-    public ProductDetailDTO mapToProductDetail(Product product){
+    public ProductDetailDTO mapToProductDetailDTO(Product product){
         ProductCategory productCategory = productCategoryRepository.findFirstByProductCategoryId(product.getProductCategory().getProductCategoryId());
         Shop shop = shopRepository.findFirstByShopId(product.getShop().getShopId());
 
@@ -95,12 +95,17 @@ public class ObjectMapperServiceImpl {
     public OrderShopDTO mapToOrderShopDTO(Order order){
         return new OrderShopDTO(order.getOrderId(),
                 mapToUserDTO(userRepository.findFirstByUserId(order.getUser().getUserId())),
-                mapToProductDetail(productRepository.findFirstByProductId(order.getProduct().getProductId())));
+                mapToProductDetailDTO(productRepository.findFirstByProductId(order.getProduct().getProductId())));
     }
 
     public ShopDTO mapToShopDTO(Shop shop){
         User user = userRepository.findFirstByUserId(shop.getUser().getUserId());
         return new ShopDTO(shop.getShopId(), shop.getShopName(), shop.getShopAddress(), shop.getShopCity(), shop.getShopProvince(), user.getUserName());
+    }
+
+    public CartDTO mapToCartDTO(Cart cart){
+        Product product = productRepository.findFirstByProductId(cart.getProduct().getProductId());
+        return new CartDTO(cart.getCartId(), mapToProductDetailDTO(product));
     }
 
 }

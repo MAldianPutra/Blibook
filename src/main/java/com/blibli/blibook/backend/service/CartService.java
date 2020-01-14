@@ -108,7 +108,7 @@ public class CartService {
                 Cart cart = cartRepository.findByUser_UserIdAndProduct_ProductId(userId, productId);
                 CartStatus cartStatus = cartStatusRepository.findFirstByCartStatusId(cart.getCartStatus().getCartStatusId());
                 if(cartStatus.getCartStatusName().equals("CART")){
-                    CartStatus updatedStatus = cartStatusRepository.findFirstByCartStatusName("CART");
+                    CartStatus updatedStatus = cartStatusRepository.findFirstByCartStatusName("WISHLIST");
                     cart.setCartStatus(updatedStatus);
                 }else if(cartStatus.getCartStatusName().equals("WISHLIST")){
                     CartStatus updatedStatus = cartStatusRepository.findFirstByCartStatusName("CART");

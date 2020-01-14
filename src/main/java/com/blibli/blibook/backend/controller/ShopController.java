@@ -11,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
 
 
 @Api
@@ -23,7 +22,7 @@ public class ShopController {
     private ShopService shopService;
 
     @GetMapping(ApiPath.SHOP)
-    public Shop findByShopId(@RequestParam Integer id){
+    public ResponseDTO findByShopId(@RequestParam Integer id){
         return shopService.findByShopId(id);
     }
 
@@ -51,7 +50,12 @@ public class ShopController {
     }
 
     @GetMapping(ApiPath.ALL_SHOP)
-    public List<Shop> findAll(){
+    public ResponseDTO findAllWithPaging(@RequestParam ("page") Integer page) {
+        return shopService.findAllShopWithPaging(page);
+    }
+
+    @GetMapping(ApiPath.SHOP_ALL)
+    public ResponseDTO findAll(){
         return shopService.findAll();
     }
 

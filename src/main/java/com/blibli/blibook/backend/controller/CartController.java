@@ -10,7 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Api
 @RestController
@@ -38,39 +37,25 @@ public class CartController {
     }
 
     @PostMapping(ApiPath.ADD_PRODUCT_TO_CART)
-    public Cart addCart(@RequestParam Integer userId,
+    public ResponseDTO addCart(@RequestParam Integer userId,
                         @RequestParam Integer productId){
         // cartStatusId 1 = CART
-        Integer cartStatusId = 1;
-        return constructCart(cartStatusId, userId, productId);
+        String cartStatusName = "CART";
+        return cartService.addCartOrWishlist(userId, productId, cartStatusName);
     }
 
     @PostMapping(ApiPath.ADD_PRODUCT_TO_WISHLIST)
-    public Cart addWishlist(@RequestParam Integer userId,
+    public ResponseDTO addWishlist(@RequestParam Integer userId,
                             @RequestParam Integer productId){
         // cartStatusId 2 = WISHLIST
-        Integer cartStatusId = 2;
-        return constructCart(cartStatusId,userId, productId);
+        String cartStatusName = "WISHLIST";
+        return cartService.addCartOrWishlist(userId, productId, cartStatusName);
     }
 
 
     @DeleteMapping(ApiPath.WISHLIST_CART_DELETE_BY_ID)
     public ResponseDTO deleteWishlistCartUser(@RequestParam Integer cartId){
         return cartService.deleteWishlistCartUser(cartId);
-    }
-
-    private Cart constructCart(@RequestParam Integer cartStatusId,
-                               @RequestParam Integer userId,
-                               @RequestParam Integer productId) {
-        Optional<CartStatus> cartStatus = cartService.findCartStatusId(cartStatusId);
-        Optional<User> user = cartService.findUserId(userId);
-        Optional<Product> product = cartService.findProductId(productId);
-        Cart newCart = new Cart();
-        cartStatus.ifPresent(newCart::setCartStatus);
-        user.ifPresent(newCart::setUser);
-        product.ifPresent(newCart::setProduct);
-        newCart.setShop(product.get().getShop());
-        return cartService.save(newCart);
     }
 
 }

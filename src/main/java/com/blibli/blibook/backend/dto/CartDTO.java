@@ -9,5 +9,5 @@ import lombok.Data;
 
 public class CartDTO {
     public Integer cartId;
-    public Product product;
+    public ProductDetailDTO productDetailDTO;
 }

@@ -7,10 +7,13 @@ import lombok.Data;
 @AllArgsConstructor
 public class UserDTO {
 
+    private Integer userId;
     private String userName;
     private String userEmail;
     private String userBirthdate;
     private String userGender;
-    private String userPhone;
+    private String userHandphone;
+    private String userRole;
+    private String userStatus;
 
 }

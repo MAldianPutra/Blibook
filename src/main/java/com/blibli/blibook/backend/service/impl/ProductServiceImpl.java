@@ -1,5 +1,6 @@
 package com.blibli.blibook.backend.service.impl;
 
+import com.blibli.blibook.backend.dto.ResponseDTO;
 import com.blibli.blibook.backend.model.entity.Product;
 import com.blibli.blibook.backend.model.entity.ProductCategory;
 import com.blibli.blibook.backend.model.entity.ProductStatus;
@@ -12,6 +13,7 @@ import com.blibli.blibook.backend.repository.ProductRepository;
 import com.blibli.blibook.backend.repository.ProductStatusRepository;
 import com.blibli.blibook.backend.repository.ShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,6 +35,9 @@ public class ProductServiceImpl {
     @Autowired
     ShopRepository shopRepository;
 
+    @Autowired
+    ObjectMapperServiceImpl objectMapperService;
+
     public Optional<ProductCategory> findProductCategoryByProductCategoryName(String productCategoryName){
         return productCategoryRepository.findByProductCategoryName(productCategoryName);
     }
@@ -48,10 +53,8 @@ public class ProductServiceImpl {
     public List<ProductPhotoDTO> findProductPhotoList(List<Product> products){
         List<ProductPhotoDTO> productPhotoDTOList = new ArrayList<>();
         for(Product product : products){
-            productPhotoDTOList.add(new ProductPhotoDTO(
-                    product.getProductId(),
-                    product.getProductPhotoLink()
-            ));
+            ProductPhotoDTO productPhotoDTO = objectMapperService.mapToProductPhoto(product);
+            productPhotoDTOList.add(productPhotoDTO);
         }
         return productPhotoDTOList;
     }
@@ -59,60 +62,115 @@ public class ProductServiceImpl {
     public List<ProductReviewDTO> findProductByCountry(List<Product> products) {
         List<ProductReviewDTO> productReviewDTOList = new ArrayList<>();
         for(Product product : products){
-            productReviewDTOList.add(new ProductReviewDTO(
-                    product.getProductId(),
-                    product.getProductName(),
-                    product.getProductAuthor(),
-                    product.getProductLanguage(),
-                    product.getProductDescription(),
-                    product.getProductPrice(),
-                    product.getProductPhotoLink()
-            ));
+            ProductReviewDTO productReview = objectMapperService.mapToProductReview(product);
+            productReviewDTOList.add(productReview);
         }
         return productReviewDTOList;
     }
 
     public List<ProductReviewDTO> findProductReviewList(List<Product> products){
-        List<ProductReviewDTO> productReviewDTOList = new ArrayList<>();
+        ArrayList<ProductReviewDTO> productReviewDTOList = new ArrayList<>();
         for(Product product : products){
-            productReviewDTOList.add(new ProductReviewDTO(
-                    product.getProductId(),
-                    product.getProductName(),
-                    product.getProductAuthor(),
-                    product.getProductLanguage(),
-                    product.getProductDescription(),
-                    product.getProductPrice(),
-                    product.getProductPhotoLink()
-            ));
+            ProductReviewDTO productReview = objectMapperService.mapToProductReview(product);
+            productReviewDTOList.add(productReview);
         }
         return productReviewDTOList;
     }
 
     public ProductDetailDTO findProductDetail(Integer productId){
         Product product = productRepository.findFirstByProductId(productId);
-        Shop shop = shopRepository.findFirstByShopId(product.getShop().getShopId());
-        ProductCategory productCategory = productCategoryRepository.findFirstByProductCategoryId(product.getProductCategory().getProductCategoryId());
+        return objectMapperService.mapToProductDetailDTO(product);
+    }
 
-        return new ProductDetailDTO(
-                productId,
-                product.getProductName(),
-                product.getProductAuthor(),
-                product.getProductIsbn(),
-                product.getProductSku(),
-                product.getProductCountry(),
-                product.getProductPrice(),
-                product.getProductDescription(),
-                product.getProductLength(),
-                product.getProductReleaseYear(),
-                product.getProductLanguage(),
-                product.getProductVariant(),
-                product.getProductPhotoLink(),
-                productCategory.getProductCategoryName(),
-                shop.getShopId(),
-                shop.getShopName(),
-                shop.getShopAddress(),
-                shop.getShopCity(),
-                shop.getShopProvince());
+    public ResponseDTO findAllWithPaging(Page<Product> productPage){
+        ArrayList<ProductDetailDTO> productDetailDTOList = new ArrayList<>();
+        for(Product product : productPage){
+            productDetailDTOList.add(objectMapperService.mapToProductDetailDTO(product));
+        }
+
+        if(!productDetailDTOList.isEmpty()){
+            ArrayList<ArrayList> data = new ArrayList<>();
+            ArrayList<Long> countData = new ArrayList<>();
+            countData.add(productRepository.count());
+            data.add(countData);
+            data.add(productDetailDTOList);
+            return new ResponseDTO(200, "Success!", data);
+        }
+        else {
+            return new ResponseDTO(400, "Data not found.", null);
+        }
+    }
+
+    public void blockProduct(Product product){
+        ProductStatus statusBlocked = productStatusRepository.findFirstByProductStatusName("BLOCKED");
+        product.setProductStatus(statusBlocked);
+        productRepository.save(product);
+    }
+
+    /**
+     SKU = BLI-{SHOP NAME}-{CATEGORY NAME}-{AUTHOR}-{PRODUCT NAME}-{COUNT}
+
+     SHOP NAME = 4 huruf terakhir dari toko
+     CATEGORY NAME = 3 huruf pertama dari kategori
+     AUTHOR = 4 huruf pertama dari author
+     PRODUCT NAME = 4 huruf pertama dari nama produk + 4 huruf terakhir dari nama produk
+     COUNT = Jika sudah ada, beri nomor 02
+
+     contoh (nama toko TOKO SAYA, author ANDREA HIRATA, produk LASKAR PELANGI)
+     BLI-SAYA-NOV-ANDR-LASKANGI-01
+
+     jika variabel kurang dari 4 huruf, maka ditambah X hingga 4 huruf.
+
+     contoh: (nama toko ABC, author SUM, produk NAW)
+     BLI-ABCX-SUMX-NAWXNAWX-01
+     */
+
+    public Product populateSKU(Product product){
+        // Mencari Nama Toko
+        String shopName = shopRepository.findFirstByShopId(product.getShop().getShopId()).getShopName();
+        shopName = shopName.replaceAll("\\s+","");
+        while (shopName.length() < 4){
+            shopName = shopName + "X";
+        }
+        String skuShopName = shopName.substring(shopName.length() - 4);
+
+        // Mencari Category
+        String categoryName = productCategoryRepository.findFirstByProductCategoryId(
+                product.getProductCategory().getProductCategoryId())
+                .getProductCategoryName();
+        categoryName = categoryName.replaceAll("\\s+", "");
+        while (categoryName.length() < 4){
+            categoryName = categoryName + "X";
+        }
+        String skuCategoryName = categoryName.substring(0, 3);
+
+        // Mencari Nama Author
+        String authorName = product.getProductAuthor();
+        authorName = authorName.replaceAll("\\s", "");
+        while (authorName.length() < 4){
+            authorName = authorName + "X";
+        }
+        String skuAuthorName = authorName.substring(0, 4);
+
+        // Mencari Nama Produk
+        String productName = product.getProductName();
+        productName =  productName.replaceAll("\\s+", "");
+        while (productName.length() < 4){
+            productName = productName + "X";
+        }
+        String skuProductName = productName.substring(0, 4) + productName.substring(productName.length() - 4);
+
+        Integer count = 1;
+        String sku = "BLI" + "-" + skuShopName + "-" + skuCategoryName + "-" +
+                skuAuthorName + "-" + skuProductName + "-" + count;
+        while(productRepository.existsByProductSku(sku)){
+            count = count + 1;
+            sku = "BLI" + "-" + skuShopName + "-" + skuCategoryName + "-" +
+                    skuAuthorName + "-" + skuProductName + "-" + count;
+        }
+        sku = sku.toUpperCase();
+        product.setProductSku(sku);
+        return product;
     }
 
 }

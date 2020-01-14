@@ -21,14 +21,15 @@ public class OrderServiceImpl {
     @Autowired
     ProductRepository productRepository;
 
+    @Autowired
+    ObjectMapperServiceImpl objectMapperService;
+
     public List<ProductPhotoDTO> findUserLibrary(Integer userId, Integer orderStatusId){
         List<Order> orderList = orderRepository.findByUser_UserIdAndOrderStatus_OrderStatusId(userId, orderStatusId);
         List<ProductPhotoDTO> productPhotoDTOList = new ArrayList<>();
         for (Order order : orderList){
             Product product = productRepository.findFirstByProductId(order.getProduct().getProductId());
-            productPhotoDTOList.add(new ProductPhotoDTO(
-                    product.getProductId(),
-                    product.getProductPhotoLink()));
+            productPhotoDTOList.add(objectMapperService.mapToProductPhoto(product));
         }
         return productPhotoDTOList;
     }
@@ -37,15 +38,7 @@ public class OrderServiceImpl {
         List<ProductReviewDTO> productReviewDTOList = new ArrayList<>();
         for (Order order : orderList){
             Product product = productRepository.findFirstByProductId(order.getProduct().getProductId());
-            productReviewDTOList.add(new ProductReviewDTO(
-                    product.getProductId(),
-                    product.getProductName(),
-                    product.getProductAuthor(),
-                    product.getProductLanguage(),
-                    product.getProductDescription(),
-                    product.getProductPrice(),
-                    product.getProductPhotoLink()
-            ));
+            productReviewDTOList.add(objectMapperService.mapToProductReview(product));
         }
         return productReviewDTOList;
     }

@@ -1,6 +1,7 @@
 package com.blibli.blibook.backend.controller;
 
 import com.blibli.blibook.backend.ApiPath;
+import com.blibli.blibook.backend.model.entity.Cart;
 import com.blibli.blibook.backend.model.entity.Order;
 import com.blibli.blibook.backend.model.entity.OrderStatus;
 import com.blibli.blibook.backend.model.entity.Payment;
@@ -35,12 +36,18 @@ public class PaymentController {
     public Payment paymentProduct(@RequestParam Integer orderId){
         // orderStatusId 2 = WAITING_CONFIRMATION
         Integer orderStatusId = 2;
-        Optional<OrderStatus> orderStatus = orderService.findOrderStatusId(orderStatusId);
+        Optional<OrderStatus> orderStatus = orderService.findOptionalOrderStatusByOrderStatusId(orderStatusId);
         Order updateOrder = orderService.findFirstByOrderId(orderId);
         updateOrder.setOrderStatus(orderStatus.get());
 
         // Update orderStatusId in Order table
         orderService.save(updateOrder);
+
+        // Delete Cart
+        if(orderService.existsCartByUserIdAndProductId(updateOrder.getUser().getUserId(), updateOrder.getProduct().getProductId())){
+            Cart cart = orderService.findCartByUserIdAndProductId(updateOrder.getUser().getUserId(), updateOrder.getProduct().getProductId());
+            orderService.deleteCart(cart.getCartId());
+        }
 
         // Save new Payment to DB
         Optional<Order> order = paymentService.findOrderId(orderId);
@@ -48,6 +55,8 @@ public class PaymentController {
         payment.setDatePayment(LocalDateTime.now());
         payment.setOrder(order.get());
         return paymentService.save(payment);
+
+
     }
 
 

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -52,6 +51,22 @@ public class FileUploadServiceImpl {
         updateProduct.setProductItemLink(pathServer + uploadDir + "productItem/" + productId + ".pdf");
         productService.save(updateProduct);
         return updateProduct;
+    }
+
+    public Boolean validatePhoto(MultipartFile multipartFile) throws IOException {
+        if (multipartFile.getContentType().contains("image/")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Boolean validateItem(MultipartFile multipartFile) throws IOException {
+        if (multipartFile.getContentType().contains("application/pdf")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

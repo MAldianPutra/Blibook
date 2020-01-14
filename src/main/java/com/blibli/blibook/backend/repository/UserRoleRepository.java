@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface UserRoleRepository extends JpaRepository<UserRole, Integer> {
 
+    UserRole findFirstByUserRoleId(Integer userRoleId);
+
 }

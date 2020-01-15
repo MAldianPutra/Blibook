@@ -1,9 +1,10 @@
-package com.blibli.blibook.backend.jwt;
+package com.blibli.blibook.backend.service.impl;
 
 import com.blibli.blibook.backend.model.entity.User;
 import com.blibli.blibook.backend.model.entity.UserRole;
 import com.blibli.blibook.backend.repository.UserRepository;
 import com.blibli.blibook.backend.repository.UserRoleRepository;
+import com.blibli.blibook.backend.service.impl.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     UserRepository userRepository;
@@ -26,7 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByUserEmail(userEmail).orElseThrow(() ->
                 new UsernameNotFoundException("User not found with email : " + userEmail));
         UserRole userRole = userRoleRepository.findFirstByUserRoleId(user.getUserRole().getUserRoleId());
-        return UserPrincipal.create(user, userRole);
+        return UserDetailsImpl.create(user, userRole);
     };
 
     @Transactional
@@ -35,7 +36,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 () -> new UsernameNotFoundException("User not found with id : " + id)
         );
         UserRole userRole = userRoleRepository.findFirstByUserRoleId(user.getUserRole().getUserRoleId());
-        return UserPrincipal.create(user, userRole);
+        return UserDetailsImpl.create(user, userRole);
     }
 
 }

@@ -1,8 +1,8 @@
 package com.blibli.blibook.backend.configuration;
 
-import com.blibli.blibook.backend.jwt.CustomUserDetailsService;
-import com.blibli.blibook.backend.jwt.JwtAuthenticationEntryPoint;
-import com.blibli.blibook.backend.jwt.JwtAuthenticationFilter;
+import com.blibli.blibook.backend.service.impl.UserDetailsServiceImpl;
+import com.blibli.blibook.backend.security.JwtAuthenticationEntryPoint;
+import com.blibli.blibook.backend.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +29,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    CustomUserDetailsService customUserDetailService;
+    UserDetailsServiceImpl customUserDetailService;
 
     @Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;
@@ -70,7 +70,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 // Admin API
                 .antMatchers("/api/admin/**")
-                .hasRole("ROLE_ADMIN")
+                .hasRole("ADMIN")
                 // Product API
                 .antMatchers(HttpMethod.GET, "/api/products/**")
                 .permitAll()

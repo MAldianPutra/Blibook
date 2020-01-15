@@ -2,7 +2,9 @@ package com.blibli.blibook.backend.model.entity;
 
 import com.blibli.blibook.backend.model.constants.OrderConstant;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -10,6 +12,8 @@ import java.io.Serializable;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @EntityListeners(value = {AuditingEntityListener.class})
 @Table(name = OrderConstant.TABLE_NAME, uniqueConstraints = {
         @UniqueConstraint(columnNames = OrderConstant.ORDER_ID),

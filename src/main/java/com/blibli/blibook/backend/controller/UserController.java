@@ -8,6 +8,7 @@ import com.blibli.blibook.backend.model.entity.UserStatus;
 import com.blibli.blibook.backend.dto.UserDTO;
 import com.blibli.blibook.backend.service.impl.FileUploadServiceImpl;
 import com.blibli.blibook.backend.service.UserService;
+import com.blibli.blibook.backend.service.impl.ObjectMapperServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 @Api
@@ -27,25 +27,12 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private FileUploadServiceImpl fileUploadServiceImpl;
+    private ObjectMapperServiceImpl objectMapperService;
 
     @GetMapping(ApiPath.USER)
     public UserDTO findByUserId(@RequestParam ("id") Integer userId) {
         User user = userService.findFirstByUserId(userId);
-        UserDTO userDTO = null;
-
-        UserRole userRole = userService.findFirstByUserRoleId(user.getUserRole().getUserRoleId());
-        UserStatus userStatus = userService.findFirstByUserStatusId(user.getUserStatus().getUserStatusId());
-
-        if (user != null) {
-            userDTO = new UserDTO(user.getUserId(), user.getUserName(), user.getUserEmail(), user.getUserBirthdate(),
-                    user.getUserGender(), user.getUserHandphone(), userRole.getUserRoleName(), userStatus.getUserStatusName());
-        } else {
-            userDTO = new UserDTO(0, "-", "-", "-",
-                    "-", "-", "-", "-");
-        }
-
-        return userDTO;
+        return objectMapperService.mapToUserDTO(user);
     }
 
 
@@ -104,6 +91,5 @@ public class UserController {
     public ResponseDTO blockUser(@RequestParam("id") Integer userId){
         return userService.blockByUserId(userId);
     }
-
 
 }

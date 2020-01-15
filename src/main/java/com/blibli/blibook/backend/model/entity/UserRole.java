@@ -2,7 +2,9 @@ package com.blibli.blibook.backend.model.entity;
 
 import com.blibli.blibook.backend.model.constants.UserRoleConstant;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -11,6 +13,7 @@ import java.util.Set;
 
 @Entity
 @Data
+@AllArgsConstructor
 @EntityListeners(value = {AuditingEntityListener.class})
 @Table(name = UserRoleConstant.TABLE_NAME, uniqueConstraints = {
         @UniqueConstraint(columnNames = UserRoleConstant.USER_ROLE_ID),

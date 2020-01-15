@@ -206,7 +206,8 @@ public class OrderService {
         Product product = productRepository.findFirstByProductId(productId);
         Shop shop = shopRepository.findFirstByShopId(product.getShop().getShopId());
         if(!userStatus.getUserStatusName().equals("BLOCKED")){
-            return shop.getUser().equals(user);
+            User user2 = userRepository.findFirstByUserId(shop.getUser().getUserId());
+            return !user2.getUserId().equals(user.getUserId());
         }else {
             return false;
         }

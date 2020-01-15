@@ -152,7 +152,8 @@ public class CartService {
         Product product = productRepository.findFirstByProductId(productId);
         Shop shop = shopRepository.findFirstByShopId(product.getShop().getShopId());
         if(!userStatus.getUserStatusName().equals("BLOCKED")){
-            return !shop.getUser().getUserId().equals(user.getUserId());
+            User user2 = userRepository.findFirstByUserId(shop.getUser().getUserId());
+            return !user2.getUserId().equals(user.getUserId());
         }else {
             return false;
         }

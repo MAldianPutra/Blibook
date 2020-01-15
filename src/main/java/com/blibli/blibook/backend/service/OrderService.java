@@ -56,6 +56,9 @@ public class OrderService {
     private ShopRepository shopRepository;
 
     @Autowired
+    private UserStatusRepository userStatusRepository;
+
+    @Autowired
     private OrderServiceImpl orderServiceImpl;
 
     @Autowired
@@ -139,21 +142,25 @@ public class OrderService {
 
     public ResponseDTO initiateOrder(Integer userId, Integer productId){
         try {
-            ArrayList<OrderShopDTO> data = new ArrayList<>();
-            Integer orderStatusId = 1;
-            if(findOrderExists(userId, productId)){
-                Order order = orderRepository.findByUser_UserIdAndProduct_ProductId(userId, productId);
-                OrderStatus orderStatus = findOrderStatusByOrderStatusId(order.getOrderStatus().getOrderStatusId());
-                if(orderStatus.getOrderStatusName().equals("NOT_PAID")){
-                    data.add(objectMapperService.mapToOrderShopDTO(order));
-                    return new ResponseDTO(200, "Product ordered before.", data);
-                }else{
-                    return new ResponseDTO(403, "Product was purchased or waiting for confirmation", null);
+            if(validateUser(userId, productId)){
+                ArrayList<OrderShopDTO> data = new ArrayList<>();
+                Integer orderStatusId = 1;
+                if(findOrderExists(userId, productId)){
+                    Order order = orderRepository.findByUser_UserIdAndProduct_ProductId(userId, productId);
+                    OrderStatus orderStatus = findOrderStatusByOrderStatusId(order.getOrderStatus().getOrderStatusId());
+                    if(orderStatus.getOrderStatusName().equals("NOT_PAID")){
+                        data.add(objectMapperService.mapToOrderShopDTO(order));
+                        return new ResponseDTO(200, "Product ordered before.", data);
+                    }else{
+                        return new ResponseDTO(403, "Product was purchased or waiting for confirmation", null);
+                    }
                 }
-            }
-            else
-            {
-                return constructOrder(orderStatusId, userId, productId);
+                else
+                {
+                    return constructOrder(orderStatusId, userId, productId);
+                }
+            }else {
+                return new ResponseDTO(400, "Sorry, you are blocked or you attempted to buy your own product.", null);
             }
         }catch (DataAccessException ex){
             return new ResponseDTO(400, ex.getMessage(), null);
@@ -190,6 +197,18 @@ public class OrderService {
 
         }catch (DataAccessException ex){
             return new ResponseDTO(400, ex.getMessage(), null);
+        }
+    }
+
+    private Boolean validateUser(Integer userId, Integer productId){
+        User user = userRepository.findFirstByUserId(userId);
+        UserStatus userStatus = userStatusRepository.findFirstByUserStatusId(user.getUserStatus().getUserStatusId());
+        Product product = productRepository.findFirstByProductId(productId);
+        Shop shop = shopRepository.findFirstByShopId(product.getShop().getShopId());
+        if(!userStatus.getUserStatusName().equals("BLOCKED")){
+            return shop.getUser().equals(user);
+        }else {
+            return false;
         }
     }
 }

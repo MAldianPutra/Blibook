@@ -32,11 +32,16 @@ public class CartService {
     }
 
     @Autowired
+    private UserStatusRepository userStatusRepository;
+
+    @Autowired
     private ProductRepository productRepository;
     public Optional<Product> findProductId(Integer productId){
         return productRepository.findById(productId);
     }
 
+    @Autowired
+    private ShopRepository shopRepository;
 
     @Autowired
     ObjectMapperServiceImpl objectMapperService;
@@ -103,29 +108,53 @@ public class CartService {
 
     public ResponseDTO addCartOrWishlist(Integer userId, Integer productId, String cartStatusName) {
         try{
-            ArrayList<CartDTO> data = new ArrayList<>();
-            if(cartRepository.existsCartByUser_UserIdAndProduct_ProductId(userId, productId)){
-                Cart cart = cartRepository.findByUser_UserIdAndProduct_ProductId(userId, productId);
-                CartStatus cartStatus = cartStatusRepository.findFirstByCartStatusId(cart.getCartStatus().getCartStatusId());
-                if(cartStatus.getCartStatusName().equals("CART")){
-                    CartStatus updatedStatus = cartStatusRepository.findFirstByCartStatusName("WISHLIST");
-                    cart.setCartStatus(updatedStatus);
-                }else if(cartStatus.getCartStatusName().equals("WISHLIST")){
-                    CartStatus updatedStatus = cartStatusRepository.findFirstByCartStatusName("CART");
-                    cart.setCartStatus(updatedStatus);
+            if(validateUser(userId, productId)){
+                ArrayList<CartDTO> data = new ArrayList<>();
+                if(cartRepository.existsCartByUser_UserIdAndProduct_ProductId(userId, productId)){
+                    Cart cart = cartRepository.findByUser_UserIdAndProduct_ProductId(userId, productId);
+                    CartStatus cartStatus = cartStatusRepository.findFirstByCartStatusId(cart.getCartStatus().getCartStatusId());
+                    if(cartStatus.getCartStatusName().equals("CART") &&
+                            !cartStatus.getCartStatusName().equals(cartStatusName)){
+                        CartStatus updatedStatus = cartStatusRepository.findFirstByCartStatusName("WISHLIST");
+                        cart.setCartStatus(updatedStatus);
+                        save(cart);
+                        CartDTO cartDTO = objectMapperService.mapToCartDTO(cart);
+                        data.add(cartDTO);
+                        return new ResponseDTO(200, "Changed to Wishlist!", data);
+                    }else if(cartStatus.getCartStatusName().equals("WISHLIST") &&
+                            !cartStatus.getCartStatusName().equals(cartStatusName)){
+                        CartStatus updatedStatus = cartStatusRepository.findFirstByCartStatusName("CART");
+                        cart.setCartStatus(updatedStatus);
+                        save(cart);
+                        CartDTO cartDTO = objectMapperService.mapToCartDTO(cart);
+                        data.add(cartDTO);
+                        return new ResponseDTO(200, "Changed to Cart!", data);
+                    }else{
+                        return new ResponseDTO(400, "Failed! Cart or Wishlist Already Created.", null);
+                    }
+                }else{
+                    Cart cart = constructCart(userId, productId, cartStatusName);
+                    CartDTO cartDTO = objectMapperService.mapToCartDTO(cart);
+                    data.add(cartDTO);
+                    return new ResponseDTO(200, "Cart or Wishlist created!", data);
                 }
-                save(cart);
-                CartDTO cartDTO = objectMapperService.mapToCartDTO(cart);
-                data.add(cartDTO);
-                return new ResponseDTO(200, "Changed to Cart or Wishlist!", data);
             }else{
-                Cart cart = constructCart(userId, productId, cartStatusName);
-                CartDTO cartDTO = objectMapperService.mapToCartDTO(cart);
-                data.add(cartDTO);
-                return new ResponseDTO(200, "Cart or Wishlist created!", data);
+                return new ResponseDTO(400, "Sorry, you are blocked or you attempted to buy your own product!", null);
             }
         }catch (DataAccessException ex){
             return new ResponseDTO(400, ex.getCause().getMessage(), null);
+        }
+    }
+
+    private Boolean validateUser(Integer userId, Integer productId){
+        User user = userRepository.findFirstByUserId(userId);
+        UserStatus userStatus = userStatusRepository.findFirstByUserStatusId(user.getUserStatus().getUserStatusId());
+        Product product = productRepository.findFirstByProductId(productId);
+        Shop shop = shopRepository.findFirstByShopId(product.getShop().getShopId());
+        if(!userStatus.getUserStatusName().equals("BLOCKED")){
+            return !shop.getUser().getUserId().equals(user.getUserId());
+        }else {
+            return false;
         }
     }
 

@@ -50,33 +50,34 @@ public class UserController {
 
 
     @PostMapping(ApiPath.USER_REGISTER)
-    public ResponseDTO register(@RequestParam ("user") String userData) throws IOException {
+    public ResponseDTO register(@RequestParam ("user") String userData,
+                                @RequestParam ("role") Integer role,
+                                @RequestParam ("status") Integer status) throws IOException {
 
         ObjectMapper mapper = new ObjectMapper();
         User user = mapper.readValue(userData, User.class);
 
-        Optional<UserRole> userRole = userService.findUserRoleId(2);
+        Optional<UserRole> userRole = userService.findUserRoleId(role);
         userRole.ifPresent(user::setUserRole);
-        Optional<UserStatus> userStatus = userService.findUserStatusId(1);
+        Optional<UserStatus> userStatus = userService.findUserStatusId(status);
         userStatus.ifPresent(user::setUserStatus);
-
 
         return userService.register(user);
     }
 
     @PutMapping(ApiPath.USER_UPDATE)
-    public ResponseDTO updateUser(@RequestParam ("user") String user,
+    public ResponseDTO updateUser(@RequestParam ("user") String userData,
                                   @RequestParam ("role") Integer role,
                                   @RequestParam ("status") Integer status) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        User objUser = mapper.readValue(user, User.class);
+        User user = mapper.readValue(userData, User.class);
 
         Optional<UserRole> userRole = userService.findUserRoleId(role);
-        userRole.ifPresent(objUser::setUserRole);
+        userRole.ifPresent(user::setUserRole);
         Optional<UserStatus> userStatus = userService.findUserStatusId(status);
-        userStatus.ifPresent(objUser::setUserStatus);
+        userStatus.ifPresent(user::setUserStatus);
 
-        return userService.updateUser(objUser);
+        return userService.updateUser(user);
     }
 
     @PostMapping(ApiPath.USER_LOGIN)

@@ -29,6 +29,9 @@ public class UserController {
     @Autowired
     private ObjectMapperServiceImpl objectMapperService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @GetMapping(ApiPath.USER)
     public UserDTO findByUserId(@RequestParam ("id") Integer userId) {
         User user = userService.findFirstByUserId(userId);
@@ -40,15 +43,7 @@ public class UserController {
     public ResponseDTO register(@RequestParam ("user") String userData,
                                 @RequestParam ("role") Integer role,
                                 @RequestParam ("status") Integer status) throws IOException {
-
-        ObjectMapper mapper = new ObjectMapper();
-        User user = mapper.readValue(userData, User.class);
-
-        Optional<UserRole> userRole = userService.findUserRoleId(role);
-        userRole.ifPresent(user::setUserRole);
-        Optional<UserStatus> userStatus = userService.findUserStatusId(status);
-        userStatus.ifPresent(user::setUserStatus);
-
+        User user = mapToUser(userData, role, status);
         return userService.register(user);
     }
 
@@ -56,14 +51,7 @@ public class UserController {
     public ResponseDTO updateUser(@RequestParam ("user") String userData,
                                   @RequestParam ("role") Integer role,
                                   @RequestParam ("status") Integer status) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        User user = mapper.readValue(userData, User.class);
-
-        Optional<UserRole> userRole = userService.findUserRoleId(role);
-        userRole.ifPresent(user::setUserRole);
-        Optional<UserStatus> userStatus = userService.findUserStatusId(status);
-        userStatus.ifPresent(user::setUserStatus);
-
+        User user = mapToUser(userData, role, status);
         return userService.updateUser(user);
     }
 
@@ -77,11 +65,6 @@ public class UserController {
         return userService.deleteByUserID(userId);
     }
 
-    @GetMapping(ApiPath.ALL_USERS)
-    public ResponseDTO findAllWithPaging(@RequestParam ("page") Integer page) {
-        return userService.findAllWithPaging(page);
-    }
-
     @GetMapping(ApiPath.USER_ALL)
     public ResponseDTO findAll(){
         return userService.findAll();
@@ -90,6 +73,15 @@ public class UserController {
     @PutMapping(ApiPath.USER_BLOCK)
     public ResponseDTO blockUser(@RequestParam("id") Integer userId){
         return userService.blockByUserId(userId);
+    }
+
+    User mapToUser(String userData, Integer role, Integer status) throws IOException {
+        User user = objectMapper.readValue(userData, User.class);
+        Optional<UserRole> userRole = userService.findUserRoleId(role);
+        userRole.ifPresent(user::setUserRole);
+        Optional<UserStatus> userStatus = userService.findUserStatusId(status);
+        userStatus.ifPresent(user::setUserStatus);
+        return user;
     }
 
 }

@@ -9,6 +9,9 @@ import com.blibli.blibook.backend.repository.UserRepository;
 import com.blibli.blibook.backend.repository.UserRoleRepository;
 import com.blibli.blibook.backend.repository.UserStatusRepository;
 import com.blibli.blibook.backend.service.impl.ObjectMapperServiceImpl;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DataAccessException;
@@ -20,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.xml.crypto.Data;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -56,44 +60,32 @@ public class UserService {
         return userRepository.findFirstByUserId(userId);
     }
 
-    public UserRole findFirstByUserRoleId(Integer id) {
-        return userRoleRepository.findFirstByUserRoleId(id);
-    }
-
-    public UserStatus findFirstByUserStatusId(Integer id) {
-        return userStatusRepository.findFirstByUserStatusId(id);
-    }
-
     public User save(User user) {
         return userRepository.save(user);
     }
 
     public ResponseDTO register(User user) {
-        ArrayList<User> objUser = new ArrayList<>();
-        ResponseDTO response;
-
         try {
+            ArrayList<User> objUser = new ArrayList<>();
             user.setUserPassword(passwordEncoder().encode(user.getUserPassword()));
             userRepository.save(user);
             objUser.add(userRepository.findFirstByUserId(user.getUserId()));
 
             if (objUser.get(0) != null) {
-                response = new ResponseDTO(200, "Success", objUser);
+                return new ResponseDTO(200, "Success", objUser);
             } else {
-                response = new ResponseDTO(400, "Failed!", null);
+                return new ResponseDTO(400, "Failed!", null);
             }
-        } catch (DataAccessException ex) {
-            response = new ResponseDTO(500, ex.getCause().getMessage(), null);
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            return new ResponseDTO(400, e.getMessage(), null);
         }
-
-        return response;
     }
 
 
     public ResponseDTO updateUser(User user) {
-        ArrayList<User> objUser = new ArrayList<>();
-        ResponseDTO response;
         try {
+            ArrayList<User> objUser = new ArrayList<>();
             User temp = userRepository.findFirstByUserId(user.getUserId());
             temp.setUserEmail(user.getUserEmail());
             temp.setUserName(user.getUserName());
@@ -107,15 +99,13 @@ public class UserService {
             objUser.add(userRepository.findFirstByUserId(temp.getUserId()));
 
             if (objUser.get(0) != null) {
-                response = new ResponseDTO(200, "Success", objUser);
+                return new ResponseDTO(200, "Success", objUser);
             } else {
-                response = new ResponseDTO(400, "Failed!", null);
+                return new ResponseDTO(400, "Failed!", null);
             }
         } catch (DataAccessException ex) {
-            response = new ResponseDTO(500, ex.getCause().getMessage(), null);
+            return new ResponseDTO(500, ex.getCause().getMessage(), null);
         }
-
-        return response;
     }
 
 
@@ -140,7 +130,7 @@ public class UserService {
         }
     }
 
-    public ResponseDTO findAllWithPaging(Integer page) {
+    public ResponseDTO findAllUserWithPaging(Integer page) {
         ArrayList<UserDTO> objUser = new ArrayList<>();
         Page<User> userPage = userRepository.findAll(PageRequest.of(page, 10, Sort.by("userName").ascending()));
 

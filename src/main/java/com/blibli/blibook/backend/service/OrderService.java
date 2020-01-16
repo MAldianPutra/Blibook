@@ -65,19 +65,32 @@ public class OrderService {
         return orderRepository.findFirstByOrderId(orderId);
     }
 
-    public List<ProductReviewDTO> findByUserIdAndOrderStatusId(Integer userId, Integer orderStatusId){
-        List<Order> orderList = orderRepository.findByUser_UserIdAndOrderStatus_OrderStatusId(userId, orderStatusId);
-        return orderServiceImpl.findOrderList(orderList);
+    public ResponseDTO findByUserIdAndOrderStatusId(Integer userId, Integer orderStatusId){
+        try{
+            List<Order> orderList = orderRepository.findByUser_UserIdAndOrderStatus_OrderStatusId(userId, orderStatusId);
+            List<ProductReviewDTO> productReviewDTOS = orderServiceImpl.findOrderList(orderList);
+            ArrayList<ProductReviewDTO> data = new ArrayList<>(productReviewDTOS);
+            return new ResponseDTO(200, "Success.", data);
+        }catch (DataAccessException ex){
+            return new ResponseDTO(400, ex.getCause().getMessage(), null);
+        }
+
     }
 
-    public List<ProductReviewDTO> findByShopIdAndOrderStatusId(Integer shopId, Integer orderStatusId){
-        List<Order> orderList = orderRepository.findByShop_ShopIdAndOrderStatus_OrderStatusId(shopId, orderStatusId);
-        return orderServiceImpl.findOrderList(orderList);
+    public ResponseDTO findByShopIdAndOrderStatusId(Integer shopId, Integer orderStatusId){
+        try{
+            List<Order> orderList = orderRepository.findByShop_ShopIdAndOrderStatus_OrderStatusId(shopId, orderStatusId);
+            List<ProductReviewDTO> productReviewDTOS = orderServiceImpl.findOrderList(orderList);
+            ArrayList<ProductReviewDTO> data = new ArrayList<>(productReviewDTOS);
+            return new ResponseDTO(200, "Success.", data);
+        }catch (DataAccessException ex){
+            return new ResponseDTO(400, ex.getCause().getMessage(), null);
+        }
     }
 
     public ResponseDTO findOrderWaitingShopId(Integer shopId, Integer orderStatusId){
 
-        ArrayList<OrderShopDTO> orderShopList = new ArrayList<>();
+        ArrayList<OrderShopDTO> data = new ArrayList<>();
         ResponseDTO response;
 
         try {
@@ -87,12 +100,12 @@ public class OrderService {
                 response = new ResponseDTO(404, "Data Not Found!", null);
             } else {
                 for (Order order : orderList) {
-                    orderShopList.add(new OrderShopDTO(order.getOrderId(),
+                    data.add(new OrderShopDTO(order.getOrderId(),
                             objectMapperService.mapToUserDTO(
                                     userRepository.findFirstByUserId(order.getUser().getUserId())),
                             objectMapperService.mapToProductDetailDTO(productRepository.findFirstByProductId(order.getProduct().getProductId()))));
                 }
-                response = new ResponseDTO(200, "Success", orderShopList);
+                response = new ResponseDTO(200, "Success", data);
             }
         } catch (DataAccessException ex) {
             response = new ResponseDTO(500, ex.getCause().getMessage(), null);
@@ -101,16 +114,31 @@ public class OrderService {
         return response;
     }
 
-    public List<ProductPhotoDTO> findUserLibrary(Integer userId, Integer orderStatusId){
-        return orderServiceImpl.findUserLibrary(userId, orderStatusId);
+    public ResponseDTO findUserLibrary(Integer userId, Integer orderStatusId){
+        try{
+            ArrayList<ProductPhotoDTO> productPhotoDTOS =
+                    new ArrayList<>(orderServiceImpl.findUserLibrary(userId, orderStatusId));
+            return new ResponseDTO(200, "Success.", null);
+        }catch (DataAccessException ex){
+            return new ResponseDTO(400, ex.getCause().getMessage(), null);
+        }
     }
 
     public boolean findOrderExists(Integer userId, Integer productId){
         return orderRepository.existsOrderByUser_UserIdAndProduct_ProductId(userId, productId);
     }
 
-    public List<Order> findAll(){
-        return orderRepository.findAll();
+    public ResponseDTO findAll(){
+        try{
+            ArrayList<OrderShopDTO> data = new ArrayList<>();
+            List<Order> orders = orderRepository.findAll();
+            for(Order order : orders){
+                data.add(objectMapperService.mapToOrderShopDTO(order));
+            }
+            return new ResponseDTO(200, "Success.", data);
+        }catch (DataAccessException ex){
+            return new ResponseDTO(400, ex.getCause().getMessage(), null);
+        }
     }
 
     public Order save(Order order){
@@ -188,6 +216,22 @@ public class OrderService {
                 return new ResponseDTO(400, "Order not found", null);
             }
 
+        }catch (DataAccessException ex){
+            return new ResponseDTO(400, ex.getMessage(), null);
+        }
+    }
+
+    public ResponseDTO confirmOrder(Integer id) {
+        try{
+            // orderStatusId 3 = COMPLETED
+            Integer orderStatusId = 3;
+            Optional<OrderStatus> orderStatus = findOptionalOrderStatusByOrderStatusId(orderStatusId);
+            Order updateOrder = findFirstByOrderId(id);
+            updateOrder.setOrderStatus(orderStatus.get());
+            save(updateOrder);
+            ArrayList<OrderShopDTO> data = new ArrayList<>();
+            data.add(objectMapperService.mapToOrderShopDTO(updateOrder));
+            return new ResponseDTO(200, "Success", data);
         }catch (DataAccessException ex){
             return new ResponseDTO(400, ex.getMessage(), null);
         }

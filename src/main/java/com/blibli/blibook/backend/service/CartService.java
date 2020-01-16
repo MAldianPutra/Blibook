@@ -83,8 +83,17 @@ public class CartService {
         return cartRepository.save(cart);
     }
 
-    public List<Cart> findAll(){
-        return cartRepository.findAll();
+    public ResponseDTO findAll(){
+        try{
+            ArrayList<CartDTO> data = new ArrayList<>();
+            List<Cart> carts = cartRepository.findAll();
+            for(Cart cart : carts){
+                data.add(objectMapperService.mapToCartDTO(cart));
+            }
+            return new ResponseDTO(200, "Success.", data);
+        }catch (DataAccessException ex){
+            return new ResponseDTO(400, ex.getCause().getMessage(), null);
+        }
     }
 
     public Cart constructCart(Integer userId, Integer productId, String cartStatusName) {

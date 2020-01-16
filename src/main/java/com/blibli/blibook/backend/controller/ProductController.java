@@ -29,6 +29,9 @@ public class ProductController {
     @Autowired
     private FileUploadServiceImpl fileUploadService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @GetMapping(ApiPath.PRODUCT)
     public ResponseDTO findByProductId(@RequestParam Integer id){
         return productService.findProductDetailById(id);
@@ -59,11 +62,6 @@ public class ProductController {
         return productService.findProductByCountry(productCountry);
     }
 
-    @GetMapping(ApiPath.ALL_PRODUCTS)
-    public ResponseDTO findAllWithPaging(@RequestParam ("page") Integer page) {
-        return productService.findAllWithPaging(page);
-    }
-
     @GetMapping(ApiPath.PRODUCT_ALL)
     public ResponseDTO findAll(){
         return productService.findAll();
@@ -75,8 +73,7 @@ public class ProductController {
                                  @RequestParam ("item") MultipartFile item,
                                  @RequestParam ("photo") MultipartFile photo,
                                  @RequestParam ("product") String productString) throws IOException {
-            ObjectMapper mapper = new ObjectMapper();
-            Product product = mapper.readValue(productString, Product.class);
+            Product product = objectMapper.readValue(productString, Product.class);
             Optional<ProductCategory> productCategory = productService.findProductCategoryByProductCategoryName(productCategoryName);
             productCategory.ifPresent(product::setProductCategory);
             Optional<ProductStatus> productStatus = productService.findProductStatusByProductStatusName("AVAILABLE");
@@ -92,11 +89,6 @@ public class ProductController {
                     return productService.findProductById(product.getProductId());
             }
             return null;
-    }
-
-    @PostMapping(ApiPath.POPULATE_SKU)
-    public ResponseDTO populateAllSKU(){
-        return productService.populateAllSKU();
     }
 
     @DeleteMapping(ApiPath.PRODUCT_DELETE_BLOCK_BY_ID)

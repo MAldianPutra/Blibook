@@ -21,42 +21,39 @@ public class ShopController {
     @Autowired
     private ShopService shopService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @GetMapping(ApiPath.SHOP)
     public ResponseDTO findByShopId(@RequestParam Integer id){
         return shopService.findByShopId(id);
     }
 
     @PostMapping(ApiPath.SHOP_REGISTER)
-    public ResponseDTO shopRegister(@RequestParam ("shop") String shop,
+    public ResponseDTO shopRegister(@RequestParam ("shop") String shopData,
                                     @RequestParam ("userId") Integer userId) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        Shop objShop = mapper.readValue(shop, Shop.class);
-
-        return shopService.shopRegister(objShop, userId);
+        Shop shop = mapToShop(shopData);
+        return shopService.shopRegister(shop, userId);
     }
 
     @PutMapping(ApiPath.SHOP_UPDATE)
-    public ResponseDTO shopUpdate(@RequestParam ("shop") String shop) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        Shop objShop = mapper.readValue(shop, Shop.class);
-
-        return shopService.updateShop(objShop);
+    public ResponseDTO shopUpdate(@RequestParam ("shop") String shopData) throws IOException {
+        Shop shop = mapToShop(shopData);
+        return shopService.updateShop(shop);
     }
-
 
     @GetMapping(ApiPath.SHOP_BY_USER_ID)
     public ResponseDTO findShopByUserId(@RequestParam Integer userId) {
         return shopService.findShopByUserId(userId);
     }
 
-    @GetMapping(ApiPath.ALL_SHOP)
-    public ResponseDTO findAllWithPaging(@RequestParam ("page") Integer page) {
-        return shopService.findAllShopWithPaging(page);
-    }
-
     @GetMapping(ApiPath.SHOP_ALL)
     public ResponseDTO findAll(){
         return shopService.findAll();
+    }
+
+    Shop mapToShop(String shopData) throws IOException {
+        return objectMapper.readValue(shopData, Shop.class);
     }
 
 }

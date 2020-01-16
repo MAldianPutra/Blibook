@@ -140,7 +140,7 @@ public class ProductService {
         }
     }
 
-    public ResponseDTO findAllWithPaging(Integer page){
+    public ResponseDTO findAllProductWithPaging(Integer page){
         Page<Product> productPage = productRepository.findAll(PageRequest.of(page, 10, Sort.by("productName").ascending()));
         return productServiceImpl.findAllWithPaging(productPage);
     }
